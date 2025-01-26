@@ -1,4 +1,4 @@
-import { query, where, getDocs, collection, doc, setDoc, increment, addDoc, getDoc, updateDoc } from '@firebase/firestore';
+import { collection, addDoc} from '@firebase/firestore';
 import { firestore } from '../firebase_setup/firebase';
 
 export const handleSubmit = async (text, setStatusMessage, setInputText) => {

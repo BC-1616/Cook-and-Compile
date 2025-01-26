@@ -3,6 +3,8 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import Menu from './components/Menu';
 import Page from './pages/Page';
+import BlankPage from './pages/BlankPage';
+import Pull from './pages/Pull';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -35,7 +37,6 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 
 setupIonicReact();
-
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -44,10 +45,30 @@ const App: React.FC = () => {
           <Menu />
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
-              <Redirect to="/folder/Inbox" />
+              <Redirect to="/folder/Push" />
             </Route>
-            <Route path="/folder/:name" exact={true}>
+            <Route path="/folder/Push" exact={true}>
               <Page />
+            </Route>
+
+            <Route path="/folder/Pull" exact={true}>
+              <Pull />
+            </Route>
+
+            <Route path="/folder/Favorites" exact={true}>
+              <BlankPage />
+            </Route>
+
+            <Route path="/folder/Archived" exact={true}>
+              <BlankPage />
+            </Route>
+
+            <Route path="/folder/Trash" exact={true}>
+              <BlankPage />
+            </Route>
+
+            <Route path="/folder/Spam" exact={true}>
+              <BlankPage />
             </Route>
           </IonRouterOutlet>
         </IonSplitPane>

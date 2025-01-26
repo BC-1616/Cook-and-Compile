@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonText } from '@ionic/react';
 import { useParams } from 'react-router';
-import ExploreContainer from '../components/ExploreContainer';
 import './Page.css';
 
 import { handleSubmit } from '../handles/handlesubmit.js';
@@ -36,11 +35,10 @@ const Page: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">{name}</IonTitle>
+            <IonTitle size="large">Push</IonTitle>
           </IonToolbar>
         </IonHeader>
-        
-        <ExploreContainer name={name} />
+
         
         {/* Text Box and Button Section */}
         <div style={{ marginTop: '20px', padding: '10px' }}>
