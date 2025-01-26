@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
-import { collection, getDocs, query, orderBy, Timestamp } from '@firebase/firestore';
-import { firestore } from '../firebase_setup/firebase';
 import { useLocation } from 'react-router-dom';
+import { handleFetchMessage } from '../handles/handleFetchMessage'; 
 import './Pull.css';
 
 const Pull: React.FC = () => {
-  const [messages, setMessages] = useState<any[]>([]); // State to store fetched messages
-  const [loading, setLoading] = useState<boolean>(true); // Loading state to show spinner while fetching
-  const [error, setError] = useState<string>(''); // Error state for any fetch errors
+  const [messages, setMessages] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   const location = useLocation();
 
@@ -17,15 +16,7 @@ const Pull: React.FC = () => {
     const fetchMessages = async () => {
       setLoading(true);
       try {
-        // Fetch messages from Firestore, ordered by timestamp
-        const messagesQuery = query(collection(firestore, 'messages'), orderBy('timestamp', 'desc'));
-        const querySnapshot = await getDocs(messagesQuery);
-
-        const messagesData = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          const timestamp = data.timestamp instanceof Timestamp ? data.timestamp.toDate() : null;
-          return { ...data, timestamp };
-        });
+        const messagesData = await handleFetchMessage();
 
         setMessages(messagesData);
         setLoading(false);
@@ -48,7 +39,6 @@ const Pull: React.FC = () => {
           <IonTitle>Pull</IonTitle>
         </IonToolbar>
       </IonHeader>
-
 
       <IonContent fullscreen>
         <IonHeader collapse="condense">
@@ -73,8 +63,8 @@ const Pull: React.FC = () => {
             {messages.map((message, index) => (
               <IonItem key={index}>
                 <IonLabel>
-                  <h2>{message.message || 'No text available'}</h2> {}
-                  {message.timestamp && <p>{message.timestamp.toLocaleString()}</p>} {}
+                  <h2>{message.message || 'No text available'}</h2>
+                  {message.timestamp && <p>{message.timestamp.toLocaleString()}</p>}
                 </IonLabel>
               </IonItem>
             ))}

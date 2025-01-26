@@ -3,8 +3,8 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { useParams } from 'react-router';
 import './Page.css';
 
-import { handleSubmit } from '../handles/handlesubmit.js';
-import { firestore } from '../firebase_setup/firebase.js';
+import { handleSubmit } from '../handles/handlesubmit';
+import { firestore } from '../firebase_setup/firebase';
 import { collection, getDocs } from '@firebase/firestore';
 
 const Page: React.FC = () => {
