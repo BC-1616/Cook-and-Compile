@@ -3,7 +3,7 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { useParams } from 'react-router';
 import './Push.css';
 
-import { handleSubmit } from '../handles/handlesubmit';
+import { handleSubmit } from '../handles/handleSubmit';
 import { firestore } from '../firebase_setup/firebase';
 import { collection, getDocs } from '@firebase/firestore';
 
