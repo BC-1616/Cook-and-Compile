@@ -17,7 +17,7 @@ const Page: React.FC = () => {
 
   const handleSendMessage = async () => {
     if (inputText.trim() !== '') {
-      await handlesubmit(inputText, setStatusMessage, setInputText);
+      await handleSubmit(inputText, setStatusMessage, setInputText);
     }
   };
 
