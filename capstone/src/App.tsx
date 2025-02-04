@@ -56,11 +56,11 @@ const App: React.FC = () => {
               <Pull />
             </Route>
 
-            <Route path="/folder/IngredentPage" exact={true}>
+            <Route path="/folder/IngredientPage" exact={true}>
               <IngredientPage />
             </Route> 
             
-            <Route path="/folder/BlankPage" exact={true}>
+            <Route path="/folder/Test" exact={true}>
               <BlankPage />
             </Route> 
 
