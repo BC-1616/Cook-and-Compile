@@ -1,70 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
 import { useLocation } from 'react-router-dom';
-import { handleFetchMessage } from '../handles/handleFetch'; 
-import './Pull.css';
+import { handleFetchIngredient } from '../handles/handleFetch'; 
+import './IngredientList.css';
 
-const Pull: React.FC = () => {
-  const [messages, setMessages] = useState<any[]>([]);
+const IngredientPage: React.FC = () => {
+  const [ingredients, setIngredients] = useState<any[]>([]); //'foodData' is stored in an array of any type here
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
   const location = useLocation();
 
-  // Fetch messages when component is mounted or when the route changes
   useEffect(() => {
-    const fetchMessages = async () => {
+    const fetchIngredients = async () => {
       setLoading(true);
       try {
-        const messagesData = await handleFetchMessage();
+        const foodData = await handleFetchIngredient(); //Fetch ingredients through this function in 'handleFetch'
 
-        setMessages(messagesData);
+        setIngredients(foodData);
         setLoading(false);
       } catch (error) {
-        setError('Failed to fetch messages');
+        setError('Failed to fetch ingredients');
         setLoading(false);
       }
     };
 
-    fetchMessages();
+    fetchIngredients();
   }, [location.pathname]);
-
-  return (
+   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Pull</IonTitle>
+          <IonTitle>Ingredients</IonTitle>
         </IonToolbar>
       </IonHeader>
-
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Messages</IonTitle>
+            <IonTitle size="large">Ingredient List</IonTitle>
           </IonToolbar>
         </IonHeader>
-
-        {/* Loading spinner or error message */}
+        <p>This is a list of ingredients in our database</p>
+        {/*Just a list of fruits*/}
         {loading ? (
           <IonSpinner name="dots" style={{ display: 'block', margin: 'auto', marginTop: '50px' }} />
         ) : error ? (
           <IonText color="danger" style={{ display: 'block', textAlign: 'center', marginTop: '20px' }}>
             {error}
           </IonText>
-        ) : messages.length === 0 ? (
+        ) : ingredients.length === 0 ? (
           <IonText style={{ display: 'block', textAlign: 'center', marginTop: '20px' }}>
-            No messages available.
+            No ingredients available.
           </IonText>
         ) : (
+        
           <IonList style={{ marginTop: '20px' }}>
-            {messages.map((message, index) => (
+            {ingredients.map((ingredient, index) => (
               <IonItem key={index}>
                 <IonLabel>
-                  <h2>{message.message || 'No text available'}</h2>
-                  {message.timestamp && <p>{message.timestamp.toLocaleString()}</p>}
+                  <h2>{ingredient.name || 'No text available'}</h2>
                 </IonLabel>
               </IonItem>
             ))}
@@ -75,4 +72,4 @@ const Pull: React.FC = () => {
   );
 };
 
-export default Pull;
+export default IngredientPage;

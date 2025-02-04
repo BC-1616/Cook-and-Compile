@@ -20,3 +20,23 @@ export const handleFetchMessage = async () => {
     throw new Error('Failed to fetch messages');
   }
 };
+
+export const handleFetchIngredient = async () => {
+  try {
+    // Fetch messages from Firestore, ordered by timestamp
+    const ingredientsQuery = collection(firestore, 'ingredients');
+    const fruitsQuery = collection(ingredientsQuery, 'fruits'); // Queries collection inside ingredients collection
+
+
+    const querySnapshot = await getDocs(fruitsQuery);
+
+    const fruitData = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return { ...data };
+    });
+
+    return fruitData;
+  } catch (error) {
+    throw new Error('Failed to fetch ingredients');
+  }
+};
