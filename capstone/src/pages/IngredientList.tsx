@@ -61,7 +61,7 @@ const IngredientPage: React.FC = () => {
             {ingredients.map((ingredient, index) => (
               <IonItem key={index}>
                 <IonLabel>
-                  <h2>{ingredient.name || 'No text available'}</h2>
+                  <h2>{ingredient.category || 'No text available'}</h2>
                 </IonLabel>
               </IonItem>
             ))}
