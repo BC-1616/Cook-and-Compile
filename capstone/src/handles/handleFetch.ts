@@ -25,13 +25,12 @@ export const handleFetchIngredient = async () => {
   try {
     // Fetch messages from Firestore, ordered by timestamp
     const ingredientsQuery = collection(firestore, 'ingredients');
-    //Change
 
     const querySnapshot = await getDocs(ingredientsQuery);
 
     const fruitData = querySnapshot.docs.map((doc) => {
       const data = doc.data();
-      return { ...data };
+      return { ...data};
     });
 
     return fruitData;
