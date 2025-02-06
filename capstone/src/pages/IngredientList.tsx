@@ -4,12 +4,27 @@ import { useLocation } from 'react-router-dom';
 import { handleFetchIngredient } from '../handles/handleFetch'; 
 import './IngredientList.css';
 
+//This function is used for taking a list and making it a list of Ionic components.
+//I can move this to a file that could be imported to other files in the future.
+function populateList(ing: string[], size: number) {
+  const ingredientList = [];
+  for(let i=0; i<size; i++){
+    ingredientList.push(
+      <IonItem key={i}>
+        <IonLabel>{ing[i]}</IonLabel>
+      </IonItem>
+    );
+  }
+  return ingredientList;
+}
+
 const IngredientPage: React.FC = () => {
   const [ingredients, setIngredients] = useState<any[]>([]); //'foodData' is stored in an array of any type here
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
   const location = useLocation();
+
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -27,6 +42,7 @@ const IngredientPage: React.FC = () => {
 
     fetchIngredients();
   }, [location.pathname]);
+  var listBuffer = [];
    return (
     <IonPage>
       <IonHeader>
@@ -62,7 +78,7 @@ const IngredientPage: React.FC = () => {
               <IonItem key={index}>
                 <IonLabel>
                   <h2>{ingredient.category || 'No text available'}</h2>
-                  <p>{ingredient.items[0]}</p>
+                  <p>{populateList(ingredient.items, ingredient.items.length)}</p>
                 </IonLabel>
               </IonItem>
             ))}
