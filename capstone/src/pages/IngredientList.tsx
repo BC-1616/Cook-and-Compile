@@ -6,13 +6,15 @@ import './IngredientList.css';
 
 //This function is used for taking a list and making it a list of Ionic components.
 //I can move this to a file that could be imported to other files in the future.
-function populateList(ing: string[], size: number) {
-  const ingredientList = [];
+function populateList(ing: string[], size: number): React.ReactNode[] {
+  const ingredientList: React.ReactNode[] = [];
   for(let i=0; i<size; i++){
     ingredientList.push(
-      <IonItem key={i}>
-        <IonLabel>{ing[i]}</IonLabel>
-      </IonItem>
+      <React.Fragment>
+        <IonItem key={i}>
+          <IonLabel>{ing[i]}</IonLabel>
+        </IonItem>
+      </React.Fragment>
     );
   }
   return ingredientList;
