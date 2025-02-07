@@ -27,7 +27,7 @@ const IngredientPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
-  //const location = useLocation();
+  const location = useLocation();
 
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const IngredientPage: React.FC = () => {
     };
 
     fetchIngredients();
-  });
+  }, [location.pathname]);
   var listBuffer = [];
    return (
     <IonPage>
@@ -64,7 +64,6 @@ const IngredientPage: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <p>This is a list of ingredients in our database</p>
-        {/*Just a list of fruits*/}
         {loading ? (
           <IonSpinner name="dots" style={{ display: 'block', margin: 'auto', marginTop: '50px' }} />
         ) : error ? (
@@ -77,11 +76,11 @@ const IngredientPage: React.FC = () => {
           </IonText>
         ) : (
         
-          <IonList style={{ marginTop: '20px' }}>
+          <IonList style={{ marginTop: '20px', marginBottom: '10px'}}>
             {ingredients.map((ingredient, index) => (
               <IonItem key={index}>
                 <IonLabel>
-                  <h2>{ingredient.category || 'No text available'}</h2>
+                  <h2 style={{fontSize: '30px'}}>{ingredient.category || 'No text available'}</h2>
                   <p>{populateList(ingredient.items, ingredient.items.length)}</p>
                 </IonLabel>
               </IonItem>
