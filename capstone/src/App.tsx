@@ -5,6 +5,7 @@ import Menu from './components/Menu';
 import Push from './pages/Push';
 import BlankPage from './pages/BlankPage';
 import Pull from './pages/Pull';
+import Recipe from './pages/Recipe';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -59,7 +60,7 @@ const App: React.FC = () => {
               <BlankPage />
             </Route>
 
-            <Route path="/folder/Archived" exact={true}>
+            <Route path="/folder/Recipe" exact={true}>
               <BlankPage />
             </Route>
 
