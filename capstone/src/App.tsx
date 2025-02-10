@@ -61,7 +61,7 @@ const App: React.FC = () => {
             </Route>
 
             <Route path="/folder/Recipe" exact={true}>
-              <BlankPage />
+              <Recipe />
             </Route>
 
             <Route path="/folder/Trash" exact={true}>
