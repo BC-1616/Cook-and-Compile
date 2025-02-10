@@ -5,6 +5,7 @@ import Menu from './components/Menu';
 import Push from './pages/Push';
 import BlankPage from './pages/BlankPage';
 import Pull from './pages/Pull';
+import Recipes from './pages/Recipes';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -69,6 +70,10 @@ const App: React.FC = () => {
 
             <Route path="/folder/Spam" exact={true}>
               <BlankPage />
+            </Route>
+
+            <Route path="/recipes" exact={true}>
+              <Recipes />
             </Route>
           </IonRouterOutlet>
         </IonSplitPane>

@@ -57,6 +57,12 @@ const appPages: AppPage[] = [
     url: '/folder/Spam',
     iosIcon: warningOutline,
     mdIcon: warningSharp
+  },
+  {
+    title: 'Add Recipes', // New entry for RecipePage
+    url: '/recipes',
+    iosIcon: paperPlaneOutline, // Choose an appropriate icon
+    mdIcon: paperPlaneOutline
   }
 ];
 
