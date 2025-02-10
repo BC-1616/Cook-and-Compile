@@ -35,30 +35,6 @@ const appPages: AppPage[] = [
     mdIcon: paperPlaneSharp
   },
   {
-    title: 'Favorites',
-    url: '/folder/Favorites',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
-  },
-  {
-    title: 'Archived',
-    url: '/folder/Archived',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
-  },
-  {
-    title: 'Trash',
-    url: '/folder/Trash',
-    iosIcon: trashOutline,
-    mdIcon: trashSharp
-  },
-  {
-    title: 'Spam',
-    url: '/folder/Spam',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
-  },
-  {
     title: 'Add Recipes', // New entry for RecipePage
     url: '/recipes',
     iosIcon: paperPlaneOutline, // Choose an appropriate icon
@@ -66,7 +42,7 @@ const appPages: AppPage[] = [
   }
 ];
 
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+const labels = ['placeholder', 'placeholder', 'placeholder', 'placeholder', 'placeholder'];
 
 const Menu: React.FC = () => {
   const location = useLocation();

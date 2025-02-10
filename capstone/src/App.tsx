@@ -56,22 +56,6 @@ const App: React.FC = () => {
               <Pull />
             </Route>
 
-            <Route path="/folder/Favorites" exact={true}>
-              <BlankPage />
-            </Route>
-
-            <Route path="/folder/Archived" exact={true}>
-              <BlankPage />
-            </Route>
-
-            <Route path="/folder/Trash" exact={true}>
-              <BlankPage />
-            </Route>
-
-            <Route path="/folder/Spam" exact={true}>
-              <BlankPage />
-            </Route>
-
             <Route path="/recipes" exact={true}>
               <Recipes />
             </Route>
