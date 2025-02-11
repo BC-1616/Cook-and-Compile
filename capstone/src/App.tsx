@@ -3,8 +3,9 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import Menu from './components/Menu';
 import Push from './pages/Push';
-import BlankPage from './pages/BlankPage';
+import IngredientPage from './pages/IngredientList';
 import Pull from './pages/Pull';
+import BlankPage from './pages/BlankPage'
 import Recipe from './pages/Recipe';
 
 /* Core CSS required for Ionic components to work properly */
@@ -56,21 +57,18 @@ const App: React.FC = () => {
               <Pull />
             </Route>
 
-            <Route path="/folder/Favorites" exact={true}>
-              <BlankPage />
-            </Route>
+            <Route path="/folder/IngredientPage" exact={true}>
+              <IngredientPage />
+            </Route> 
 
             <Route path="/folder/Recipe" exact={true}>
               <Recipe />
             </Route>
 
-            <Route path="/folder/Trash" exact={true}>
+            <Route path="/folder/Test" exact={true}>
               <BlankPage />
-            </Route>
+            </Route> 
 
-            <Route path="/folder/Spam" exact={true}>
-              <BlankPage />
-            </Route>
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
