@@ -5,7 +5,8 @@ import Menu from './components/Menu';
 import Push from './pages/Push';
 import BlankPage from './pages/BlankPage';
 import Pull from './pages/Pull';
-import Recipes from './pages/Recipes';
+import CreateRecipes from './pages/CreateRecipes'; // Update this import for CreateRecipes
+import RecipeModifier from './pages/RecipeModifier'; // Update this import for RecipeModifier
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -56,9 +57,14 @@ const App: React.FC = () => {
               <Pull />
             </Route>
 
-            <Route path="/recipes" exact={true}>
-              <Recipes />
+            <Route path="/CreateRecipes" exact={true}>
+              <CreateRecipes />
             </Route>
+            
+            <Route path="/RecipeModifier" exact={true}>
+              <RecipeModifier />
+            </Route>
+
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
