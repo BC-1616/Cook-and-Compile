@@ -2,12 +2,12 @@ import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/r
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import Menu from './components/Menu';
-import Push from './pages/Push';
-import IngredientPage from './pages/IngredientList';
-import Pull from './pages/Pull';
-import BlankPage from './pages/BlankPage'
-import CreateRecipes from './pages/CreateRecipes'; // Update this import for CreateRecipes
-import RecipeModifier from './pages/RecipeModifier'; // Update this import for RecipeModifier
+import Push from './components/Push';
+import IngredientPage from './components/IngredientList';
+import Pull from './components/Pull';
+import BlankPage from './components/BlankPage'
+import CreateRecipes from './components/CreateRecipes'; // Update this import for CreateRecipes
+import RecipeModifier from './components/RecipeModifier'; // Update this import for RecipeModifier
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -37,7 +37,7 @@ import '@ionic/react/css/display.css';
 import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
-import './theme/variables.css';
+import './styles/variables.css';
 
 setupIonicReact();
 const App: React.FC = () => {

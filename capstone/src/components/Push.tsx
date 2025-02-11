@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonText } from '@ionic/react';
 import { useParams } from 'react-router';
-import './Push.css';
+import '../styles/Push.css';
 
 import { handleSubmit } from '../handles/handlesubmit';
 import { firestore } from '../firebase_setup/firebase';
