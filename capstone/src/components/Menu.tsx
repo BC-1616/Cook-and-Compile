@@ -40,6 +40,12 @@ const appPages: AppPage[] = [
     iosIcon: pizzaOutline,
     mdIcon: pizzaOutline
   },
+  {
+    title: 'Recipes',
+    url: '/folder/Recipe',
+    iosIcon: archiveOutline,
+    mdIcon: archiveSharp
+  },
 ];
 
 
