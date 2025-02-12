@@ -11,7 +11,7 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { pizzaOutline, pizzaSharp, addCircleOutline, addCircleSharp, archiveOutline, archiveSharp, bookmarkOutline, cutOutline, cutSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { pizzaOutline, pizzaSharp, flaskOutline, addCircleOutline, addCircleSharp, archiveOutline, archiveSharp, bookmarkOutline, cutOutline, cutSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import '../Styles/Menu.css';
 
 interface AppPage {
@@ -39,6 +39,12 @@ const appPages: AppPage[] = [
     url: '/folder/IngredientPage',
     iosIcon: pizzaOutline,
     mdIcon: pizzaOutline
+  },
+  {
+    title: 'Recipes',
+    url: '/Recipes',
+    iosIcon: flaskOutline,
+    mdIcon: flaskOutline 
   },
   {
     title: 'Create Recipes', // New entry for Recipe Creation Page

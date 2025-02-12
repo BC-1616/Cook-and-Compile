@@ -5,7 +5,7 @@ import Menu from './components/Menu';
 import Push from './components/Push';
 import IngredientPage from './components/IngredientList';
 import Pull from './components/Pull';
-import BlankPage from './components/BlankPage'
+import Recipe from './components/Recipe'
 import CreateRecipes from './components/CreateRecipes'; // Update this import for CreateRecipes
 import RecipeModifier from './components/RecipeModifier'; // Update this import for RecipeModifier
 
@@ -52,6 +52,7 @@ const App: React.FC = () => {
               <Route path="/" exact={true}>
                 <Redirect to="/folder/Push" />
               </Route>
+ 
               <Route path="/folder/Push" exact={true}>
                 <Push />
               </Route>
@@ -60,21 +61,22 @@ const App: React.FC = () => {
                 <Pull />
               </Route>
 
-            <Route path="/folder/IngredientPage" exact={true}>
-              <IngredientPage />
-            </Route> 
-            
-            <Route path="/folder/Test" exact={true}>
-              <BlankPage />
-            </Route> 
-            <Route path="/CreateRecipes" exact={true}>
-              <CreateRecipes />
-            </Route>
-            
-            <Route path="/RecipeModifier" exact={true}>
-              <RecipeModifier />
-            </Route>
+              <Route path="/folder/IngredientPage" exact={true}>
+                <IngredientPage />
+              </Route> 
 
+              <Route path="/Recipes" exact={true}>
+                <Recipe />
+              </Route>
+
+              <Route path="/CreateRecipes" exact={true}>
+                <CreateRecipes />
+              </Route>
+
+              <Route path="/RecipeModifier" exact={true}>
+                <RecipeModifier />
+              </Route>
+            </Switch>
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
