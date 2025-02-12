@@ -2,11 +2,12 @@ import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/r
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Menu from './components/Menu';
-import Push from './pages/Push';
-import IngredientPage from './pages/IngredientList';
-import Pull from './pages/Pull';
-import BlankPage from './pages/BlankPage'
-import Recipe from './pages/Recipe';
+import Push from './components/Push';
+import IngredientPage from './components/IngredientList';
+import Pull from './components/Pull';
+import BlankPage from './components/BlankPage'
+import CreateRecipes from './components/CreateRecipes'; // Update this import for CreateRecipes
+import RecipeModifier from './components/RecipeModifier'; // Update this import for RecipeModifier
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -36,7 +37,7 @@ import '@ionic/react/css/display.css';
 import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
-import './theme/variables.css';
+import './Styles/variables.css';
 
 /* this was causing an issue with the pages not updating correctly when switching between them. adding the switch fixed it. */
 setupIonicReact();
@@ -59,18 +60,21 @@ const App: React.FC = () => {
                 <Pull />
               </Route>
 
-              <Route path="/folder/IngredientPage" exact={true}>
-                <IngredientPage />
-              </Route> 
+            <Route path="/folder/IngredientPage" exact={true}>
+              <IngredientPage />
+            </Route> 
+            
+            <Route path="/folder/Test" exact={true}>
+              <BlankPage />
+            </Route> 
+            <Route path="/CreateRecipes" exact={true}>
+              <CreateRecipes />
+            </Route>
+            
+            <Route path="/RecipeModifier" exact={true}>
+              <RecipeModifier />
+            </Route>
 
-              <Route path="/folder/Recipe" exact={true}>
-                <Recipe />
-              </Route>
-
-              <Route path="/folder/Test" exact={true}>
-                <BlankPage />
-              </Route> 
-            </Switch>
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

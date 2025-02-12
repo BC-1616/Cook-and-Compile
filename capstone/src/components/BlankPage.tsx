@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, } from '@ionic/react';
 import { useParams } from 'react-router';
-import './BlankPage.css';
+import '../Styles/BlankPage.css';
 
 const BlankPage: React.FC = () => {
 

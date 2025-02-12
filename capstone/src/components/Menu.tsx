@@ -11,8 +11,8 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, pizzaOutline, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
-import './Menu.css';
+import { pizzaOutline, pizzaSharp, addCircleOutline, addCircleSharp, archiveOutline, archiveSharp, bookmarkOutline, cutOutline, cutSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import '../Styles/Menu.css';
 
 interface AppPage {
   url: string;
@@ -41,11 +41,17 @@ const appPages: AppPage[] = [
     mdIcon: pizzaOutline
   },
   {
-    title: 'Recipes',
-    url: '/folder/Recipe',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
+    title: 'Create Recipes', // New entry for Recipe Creation Page
+    url: '/CreateRecipes',
+    iosIcon: addCircleOutline, // Choose an appropriate icon
+    mdIcon: addCircleSharp
   },
+  {
+    title: 'Recipe Modifier', // New entry for Recipe Viewer Page
+    url: '/RecipeModifier',
+    iosIcon: cutOutline, // Choose an appropriate icon
+    mdIcon: cutSharp
+  }
 ];
 
 
