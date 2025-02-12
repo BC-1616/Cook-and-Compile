@@ -12,6 +12,7 @@ interface Recipe {
     name: string;
     ingredients: { [key: string]: string };
     instructions: string;
+    tags: string; //again, maybe make this a list
 }
 
 // NOTE: There are other handle functions in this file and not in folder handles because they are important for the RecipeModifier component and are not used elsewhere in the app. If you want to use them in other components, you can move them to the handles folder.

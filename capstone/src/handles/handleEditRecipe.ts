@@ -6,6 +6,7 @@ interface Recipe {
     name: string;
     ingredients: { [key: string]: string };
     instructions: string;
+    tags: string; // maybe make this a list
 }
 
 export const handleEditRecipe = async (recipe: Recipe): Promise<void> => {
@@ -14,7 +15,8 @@ export const handleEditRecipe = async (recipe: Recipe): Promise<void> => {
         await updateDoc(recipeDocRef, {
             name: recipe.name,
             ingredients: recipe.ingredients,
-            instructions: recipe.instructions
+            instructions: recipe.instructions,
+            tags: recipe.tags
         });
         console.log(`Recipe with ID ${recipe.id} updated successfully.`);
     } catch (error) {

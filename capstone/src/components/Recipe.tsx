@@ -48,6 +48,8 @@ const Recipe: React.FC = () => {
                   </ul>
                   <h3>Instructions:</h3>
                   <p>{recipe.instructions}</p>
+                  <h3>User Tags:</h3>
+                  <p>{recipe.tags}</p> {/*This will probably be a list */}
                 </div>
               </div>
             ))
