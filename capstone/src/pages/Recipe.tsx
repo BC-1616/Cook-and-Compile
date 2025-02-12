@@ -20,27 +20,37 @@ const Recipe: React.FC = () => {
       fetchRecipes();
     }, []);
   
-  return (
-    <div>
-      {recipes.length === 0 ? (
-        <div>No recipes found</div>
-      ) : (
-        recipes.map((recipe) => (
-          <div key={recipe.id}>
-            <h2>{recipe.name}</h2>
-            <h3>Ingredients:</h3>
-            <ul>
-              {recipe.ingredients.map((ingredient: string, index: number) => (
-                <li key={index}>{ingredient}</li>
-              ))}
-            </ul>
-            <h3>Instructions:</h3>
-            <p>{recipe.instructions}</p>
-          </div>
-        ))
-      )}
-    </div>
-  );
-};
+    return (
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonMenuButton />
+            </IonButtons>
+            <IonTitle>Recipes</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          {recipes.length === 0 ? (
+            <div>No recipes found</div>
+          ) : (
+            recipes.map((recipe) => (
+              <div key={recipe.id}>
+                <h2>{recipe.name}</h2>
+                <h3>Ingredients:</h3>
+                <ul>
+                  {recipe.ingredients.map((ingredient: string, index: number) => (
+                    <li key={index}>{ingredient}</li>
+                  ))}
+                </ul>
+                <h3>Instructions:</h3>
+                <p>{recipe.instructions}</p>
+              </div>
+            ))
+          )}
+        </IonContent>
+      </IonPage>
+      );
+    };
 
 export default Recipe;
