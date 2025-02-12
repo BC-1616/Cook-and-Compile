@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // added search bar to the imports so that the user can search for recipes by name and edit/delete them
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonInput, IonModal, IonText, IonTextarea, IonIcon, IonSearchbar, IonSelect, IonSelectOption } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonInput, IonModal, IonText, IonTextarea, IonIcon, IonSearchbar, IonSelect, IonSelectOption, IonMenuButton } from '@ionic/react';
 import { removeCircleOutline, addCircleOutline } from 'ionicons/icons'; // Import icons for add and remove buttons
 import '../Styles/RecipeModifier.css';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
@@ -144,6 +144,10 @@ const RecipeModifier: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
+                { /* Add IonMenuButton to open the side menu */ }
+                <IonButton slot="start">
+                    <IonMenuButton />
+                </IonButton>
                     <IonTitle>Recipe Modifier</IonTitle>
                 </IonToolbar>
             </IonHeader>
