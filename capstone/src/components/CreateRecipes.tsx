@@ -1,65 +1,72 @@
 import React, { useState } from 'react';
-import { IonButton, IonContent, IonInput, IonPage, IonItem, IonLabel, IonList, IonTextarea } from '@ionic/react';
+import { IonButton, IonContent, IonInput, IonPage, IonItem, IonLabel, IonList, IonTextarea, IonHeader } from '@ionic/react';
 import { handleCreateRecipe } from '../handles/handleCreateRecipe';
 
 const RecipePage: React.FC = () => {
-    const [recipeName, setRecipeName] = useState(''); // State for recipe name
-    const [recipeIngredients, setRecipeIngredients] = useState<{ [key: string]: string }>({}); // State for ingredients map
-    const [ingredientName, setIngredientName] = useState(''); // State for ingredient name input
-    const [ingredientAmount, setIngredientAmount] = useState(''); // State for ingredient amount input
-    const [recipeInstructions, setRecipeInstructions] = useState(''); // State for recipe instructions
-    const [statusMessage, setStatusMessage] = useState(''); // State for status message
+    // state variables for recipe name, ingredients, ingredient name, ingredient amount, instructions, and status message
+    const [recipeName, setRecipeName] = useState(''); 
+    const [recipeIngredients, setRecipeIngredients] = useState<{ [key: string]: string }>({}); 
+    const [ingredientName, setIngredientName] = useState(''); 
+    const [ingredientAmount, setIngredientAmount] = useState(''); 
+    const [recipeInstructions, setRecipeInstructions] = useState(''); 
+    const [statusMessage, setStatusMessage] = useState(''); 
 
+    // function to add ingredient
     const addIngredient = () => {
         if (ingredientName && ingredientAmount) {
             setRecipeIngredients(prevIngredients => ({
                 ...prevIngredients,
                 [ingredientName]: ingredientAmount // Add ingredient to ingredients map
             }));
-            setIngredientName(''); // Clear ingredient name input
-            setIngredientAmount(''); // Clear ingredient amount input
+            setIngredientName(''); 
+            setIngredientAmount(''); 
         }
     };
-
+    // function to clear form
     const clearForm = () => {
-        setRecipeName(''); // Clear recipe name
-        setRecipeIngredients({}); // Clear ingredients map
-        setRecipeInstructions(''); // Clear instructions
+        setRecipeName(''); 
+        setRecipeIngredients({}); 
+        setRecipeInstructions(''); 
     };
-
+    // function to create recipe
     const createRecipe = async () => {
-        console.log({ recipeName, recipeIngredients, recipeInstructions }); // Log state values for debugging
-        await handleCreateRecipe(recipeName, recipeIngredients, recipeInstructions, setStatusMessage, clearForm); // Submit recipe
+        console.log({ recipeName, recipeIngredients, recipeInstructions }); 
+        await handleCreateRecipe(recipeName, recipeIngredients, recipeInstructions, setStatusMessage, clearForm); 
     };
 
     return (
         <IonPage>
+            <IonHeader>
+                <IonItem>
+                    <IonLabel>Create Recipes</IonLabel>
+                </IonItem>
+            </IonHeader>
             <IonContent>
                 <IonItem>
                     <IonLabel position="stacked">Recipe Name</IonLabel>
-                    <IonInput placeholder="Recipe Name" value={recipeName} onIonChange={e => setRecipeName(e.detail.value!)} required />
+                    <IonInput placeholder="Enter Recipe Name" value={recipeName} onIonChange={e => setRecipeName(e.detail.value!)} required />
                 </IonItem>
                 <IonItem>
                     <IonLabel position="stacked">Ingredient Name</IonLabel>
-                    <IonInput placeholder="Ingredient Name" value={ingredientName} onIonChange={e => setIngredientName(e.detail.value!)} />
+                    <IonInput placeholder="Enter Ingredient Name" value={ingredientName} onIonChange={e => setIngredientName(e.detail.value!)} />
                 </IonItem>
                 <IonItem>
                     <IonLabel position="stacked">Ingredient Amount</IonLabel>
-                    <IonInput placeholder="Ingredient Amount" value={ingredientAmount} onIonChange={e => setIngredientAmount(e.detail.value!)} />
+                    <IonInput placeholder="Enter Ingredient Amount" value={ingredientAmount} onIonChange={e => setIngredientAmount(e.detail.value!)} />
                 </IonItem>
                 <IonButton onClick={addIngredient}>Add Ingredient</IonButton>
                 <IonList>
                     {Object.entries(recipeIngredients).map(([name, amount]) => (
                         <IonItem key={name}>
-                            {name}: {amount} {/* Display ingredient name and amount */}
+                            {name}: {amount} 
                         </IonItem>
                     ))}
                 </IonList>
                 <IonItem>
                     <IonLabel position="stacked">Instructions</IonLabel>
-                    <IonTextarea placeholder="Instructions" value={recipeInstructions} onIonChange={e => setRecipeInstructions(e.detail.value!)} required />
+                    <IonTextarea placeholder="Enter Instructions" value={recipeInstructions} onIonChange={e => setRecipeInstructions(e.detail.value!)} required />
                 </IonItem>
-                <IonButton onClick={createRecipe}>Create Recipe</IonButton>
+                <IonButton onClick={createRecipe}>Create New Recipe</IonButton>
                 <p>{statusMessage}</p>
             </IonContent>
         </IonPage>

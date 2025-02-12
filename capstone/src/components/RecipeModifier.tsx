@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonInput, IonModal, IonText, IonTextarea, IonIcon } from '@ionic/react';
+// added search bar to the imports so that the user can search for recipes by name and edit/delete them
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonButton, IonInput, IonModal, IonText, IonTextarea, IonIcon, IonSearchbar, IonSelect, IonSelectOption } from '@ionic/react';
 import { removeCircleOutline, addCircleOutline } from 'ionicons/icons'; // Import icons for add and remove buttons
 import '../styles/RecipeModifier.css';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleDeleteRecipe } from '../handles/handleDeleteRecipe';
-// Import handleEditRecipe function
 import { handleEditRecipe } from '../handles/handleEditRecipe';
 
 interface Recipe {
@@ -20,17 +20,21 @@ interface Recipe {
 
 const RecipeModifier: React.FC = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
-    // Add selectedRecipe state and open state for modal
     const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
+    const [message, setMessage] = useState<string>('');
+    const [searchText, setSearchText] = useState<string>(''); // Define searchText and setSearchText
 
     // Fetch recipes on component mount
     useEffect(() => {
         const fetchRecipes = async () => {
             try {
                 const recipesData = await handleFetchRecipes();
-                console.log('Fetched recipes:', recipesData); // Debugging log
-                setRecipes(recipesData || []);
+                // Sort recipes in alphabetical order
+                const sortedRecipes = (recipesData || []).sort((a, b) => a.name.localeCompare(b.name));
+                setRecipes(sortedRecipes);
+                setFilteredRecipes(sortedRecipes);
             } catch (error) {
                 console.error('Failed to fetch recipes:', error);
             }
@@ -43,6 +47,10 @@ const RecipeModifier: React.FC = () => {
         try {
             await handleDeleteRecipe(recipeId);
             setRecipes(recipes.filter(recipe => recipe.id !== recipeId));
+            setFilteredRecipes(filteredRecipes.filter(recipe => recipe.id !== recipeId));
+            setSelectedRecipe(null);
+            setMessage('Recipe deleted successfully!');
+            setTimeout(() => setMessage(''), 3000);
         } catch (error) {
             console.error('Failed to delete recipe:', error);
         }
@@ -60,6 +68,7 @@ const RecipeModifier: React.FC = () => {
             try {
                 await handleEditRecipe(selectedRecipe);
                 setRecipes(recipes.map(recipe => (recipe.id === selectedRecipe.id ? selectedRecipe : recipe)));
+                setFilteredRecipes(filteredRecipes.map(recipe => (recipe.id === selectedRecipe.id ? selectedRecipe : recipe)));
                 setIsModalOpen(false);
                 setSelectedRecipe(null);
             } catch (error) {
@@ -92,7 +101,6 @@ const RecipeModifier: React.FC = () => {
     };
 
     // Add handleIngredientNameChange function so that the ingredient name does not interfere with the amount
-
     const handleIngredientNameChange = (index: number, newName: string) => {
         if (selectedRecipe) {
             const newIngredients = { ...selectedRecipe.ingredients };
@@ -106,6 +114,7 @@ const RecipeModifier: React.FC = () => {
             });
         }
     };
+
     // Add handleIngredientAmountChange function to update the amount of an ingredient 
     const handleIngredientAmountChange = (key: string, newAmount: string) => {
         if (selectedRecipe) {
@@ -119,6 +128,18 @@ const RecipeModifier: React.FC = () => {
         }
     };
 
+    // Add handleSearch function to search for recipes by name
+    const handleSearch = (recipes: Recipe[], searchTerm: string): Recipe[] => {
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        return recipes.filter(recipe => recipe.name.toLowerCase().includes(lowerCaseSearchTerm));
+    };
+    // Add handleSearchInput function to handle search input
+    const handleSearchInput = (event: CustomEvent) => {
+        const query = event.detail.value;
+        setSearchText(query);
+        setFilteredRecipes(handleSearch(recipes, query));
+    };
+
     return (
         <IonPage>
             <IonHeader>
@@ -127,51 +148,61 @@ const RecipeModifier: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
+                <IonSearchbar value={searchText} onIonInput={handleSearchInput} placeholder="Search for recipes" />
                 <IonList>
-                    {recipes.length === 0 ? (
+                    {filteredRecipes.length === 0 ? (
                         <IonItem>
                             <IonLabel>No recipes found</IonLabel>
                         </IonItem>
                     ) : (
-                        recipes.map((recipe, index) => (
-                            <IonItem key={index}>
-                                <IonLabel>
-                                    <h2>{recipe.name}</h2>
-                                    <p>Ingredients:</p>
-                                    <ul>
-                                        {Object.entries(recipe.ingredients).map(([key, value]) => (
-                                            <li key={key}>{key}: {value}</li> 
-                                        ))}
-                                    </ul>
-                                    <p>Instructions: {recipe.instructions}</p>
-                                </IonLabel>
-                                <IonButton onClick={() => handleEdit(recipe)}>Edit</IonButton>
-                                <IonButton color="danger" onClick={() => handleDelete(recipe.id)}>Delete</IonButton>
+                        filteredRecipes.map((recipe) => (
+                            <IonItem key={recipe.id} button onClick={() => setSelectedRecipe(recipe)}>
+                                <IonLabel>{recipe.name}</IonLabel>
                             </IonItem>
                         ))
                     )}
                 </IonList>
 
-                {/* Modal for editing recipes */}
-                <IonModal isOpen={isModalOpen} onDidDismiss={() => setIsModalOpen(false)}>
-                    <IonHeader>
-                        <IonToolbar>
-                            <IonTitle>Edit Recipe</IonTitle>
-                        </IonToolbar>
-                    </IonHeader>
-                    <IonContent>
-                        {selectedRecipe && (
-                            <div>
-                                <h4>Recipe Name:</h4>
-                                <IonInput
+                {selectedRecipe && (
+                    <div>
+                    <h2>{selectedRecipe.name}</h2>
+                    <p>Ingredients:</p>
+                    <ul>
+                        {Object.entries(selectedRecipe.ingredients).map(([key, value]) => (
+                            <li key={key}>{key}: {value}</li>
+                        ))}
+                    </ul>
+                    <p>Instructions: {selectedRecipe.instructions}</p>
+                    <IonButton onClick={() => handleEdit(selectedRecipe!)}>Edit</IonButton>
+                    <IonButton color="danger" onClick={() => handleDelete(selectedRecipe.id)}>Delete</IonButton>
+                </div>
+            )}
+
+            {message && (
+                <div className="message">
+                    <p>{message}</p>
+                </div>
+            )}
+
+            <IonModal isOpen={isModalOpen} onDidDismiss={() => setIsModalOpen(false)}>
+                <IonHeader>
+                    <IonToolbar>
+                        <IonTitle>Edit Recipe</IonTitle>
+                    </IonToolbar>
+                </IonHeader>
+                <IonContent>
+                    {selectedRecipe && (
+                        <div>
+                            <h4>Recipe Name:</h4>
+                            <IonInput
                                     value={selectedRecipe.name}
-                                    placeholder="Recipe Name"
+                                    placeholder="Edit Recipe Name"
                                     onIonChange={e => setSelectedRecipe({ ...selectedRecipe, name: e.detail.value! })}
                                 />
                                 <h4>Instructions:</h4>
                                 <IonTextarea
                                     value={selectedRecipe.instructions}
-                                    placeholder="Instructions"
+                                    placeholder="Edit Instructions"
                                     onIonChange={e => setSelectedRecipe({ ...selectedRecipe, instructions: e.detail.value! })}
                                     autoGrow={true}
                                 />
