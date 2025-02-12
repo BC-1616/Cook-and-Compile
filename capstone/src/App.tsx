@@ -1,13 +1,14 @@
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import Menu from './components/Menu';
 import Push from './components/Push';
 import IngredientPage from './components/IngredientList';
 import Pull from './components/Pull';
 import BlankPage from './components/BlankPage'
-import CreateRecipes from './components/CreateRecipes'; // Update this import for CreateRecipes
-import RecipeModifier from './components/RecipeModifier'; // Update this import for RecipeModifier
+import CreateRecipes from './components/CreateRecipes';
+import RecipeModifier from './components/RecipeModifier'; 
+import Recipe from './components/Recipe';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -39,6 +40,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './Styles/variables.css';
 
+/* this was causing an issue with the pages not updating correctly when switching between them. adding the switch fixed it. */
 setupIonicReact();
 const App: React.FC = () => {
   return (
@@ -47,24 +49,29 @@ const App: React.FC = () => {
         <IonSplitPane contentId="main">
           <Menu />
           <IonRouterOutlet id="main">
-            <Route path="/" exact={true}>
-              <Redirect to="/folder/Push" />
-            </Route>
-            <Route path="/folder/Push" exact={true}>
-              <Push />
-            </Route>
+            <Switch>
+              <Route path="/" exact={true}>
+                <Redirect to="/folder/Push" />
+              </Route>
+              <Route path="/folder/Push" exact={true}>
+                <Push />
+              </Route>
 
-            <Route path="/folder/Pull" exact={true}>
-              <Pull />
-            </Route>
+              <Route path="/folder/Pull" exact={true}>
+                <Pull />
+              </Route>
 
-            <Route path="/folder/IngredientPage" exact={true}>
-              <IngredientPage />
-            </Route> 
-            
-            <Route path="/folder/Test" exact={true}>
-              <BlankPage />
-            </Route> 
+              <Route path="/folder/IngredientPage" exact={true}>
+                <IngredientPage />
+              </Route> 
+
+              <Route path="/folder/Recipe" exact={true}>
+                <Recipe />
+              </Route>
+
+              <Route path="/folder/Test" exact={true}>
+                <BlankPage />
+              </Route> 
             <Route path="/CreateRecipes" exact={true}>
               <CreateRecipes />
             </Route>
@@ -72,7 +79,7 @@ const App: React.FC = () => {
             <Route path="/RecipeModifier" exact={true}>
               <RecipeModifier />
             </Route>
-
+            </Switch>
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

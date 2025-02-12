@@ -41,6 +41,12 @@ const appPages: AppPage[] = [
     mdIcon: pizzaOutline
   },
   {
+    title: 'Recipes',
+    url: '/folder/Recipe',
+    iosIcon: archiveOutline,
+    mdIcon: archiveSharp
+  },
+  {
     title: 'Create Recipes', // New entry for Recipe Creation Page
     url: '/CreateRecipes',
     iosIcon: addCircleOutline, // Choose an appropriate icon
