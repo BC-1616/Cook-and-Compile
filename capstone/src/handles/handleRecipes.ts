@@ -12,7 +12,7 @@ export const handleRecipe = async () => {
       return {
         id: doc.id,
         name: data.name || "Unnamed Recipe",
-        ingredients: data.ingredients ? Object.values(data.ingredients) : [],
+        ingredients: data.ingredients || [],
         instructions: data.instructions || "No instructions provided",
       };
     });
