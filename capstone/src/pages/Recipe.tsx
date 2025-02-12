@@ -40,7 +40,7 @@ const Recipe: React.FC = () => {
                 <h3>Ingredients:</h3>
                 <ul>
                 {Object.entries(recipe.ingredients).map(([ingredientName, amount], index) => (
-                  <li key={index}>{ingredientName}: {amount}</li>
+                  <li key={index}>{ingredientName}: {amount as string}</li>
                 ))}
                 </ul>
                 <h3>Instructions:</h3>
