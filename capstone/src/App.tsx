@@ -66,7 +66,7 @@ const App: React.FC = () => {
                 <IngredientPage />
               </Route> 
 
-              <Route path="/folder/Recipe" exact={true}>
+              <Route path="/folder/Recipes" exact={true}>
                 <Recipe />
               </Route>
 

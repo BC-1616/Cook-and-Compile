@@ -42,7 +42,7 @@ const appPages: AppPage[] = [
   },
   {
     title: 'Recipes',
-    url: '/Recipes',
+    url: 'folder/Recipes',
     iosIcon: flaskOutline,
     mdIcon: flaskOutline 
   },
