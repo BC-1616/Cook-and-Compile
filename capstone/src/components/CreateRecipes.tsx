@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonButton, IonContent, IonInput, IonPage, IonItem, IonLabel, IonList, IonTextarea, IonHeader, IonMenuButton } from '@ionic/react';
+import { IonButton, IonContent, IonInput, IonPage, IonItem, IonLabel, IonList, IonTextarea, IonHeader, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
 import { handleCreateRecipe } from '../handles/handleCreateRecipe';
 
 const RecipePage: React.FC = () => {
@@ -37,13 +37,13 @@ const RecipePage: React.FC = () => {
     return (
         <IonPage>
             <IonHeader>
-                <IonItem>
+                <IonToolbar>
                 { /* Add IonMenuButton to open the side menu */ }
                     <IonButton slot="start">
                         <IonMenuButton />
                     </IonButton>
-                    <IonLabel>Create Recipes</IonLabel>
-                </IonItem>
+                    <IonTitle>Create Recipes</IonTitle>
+                </IonToolbar>
             </IonHeader>
             <IonContent>
                 <IonItem>

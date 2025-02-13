@@ -2,9 +2,12 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 import IngredientPage from './components/IngredientList';
+import Recipe from './components/Recipe';
+import {MemoryRouter} from 'react-router-dom';
+import populateList from './components/IngredientList';
 import CreateRecipes from './components/CreateRecipes';
 import RecipeModifier from './components/RecipeModifier';
-import { MemoryRouter } from 'react-router-dom';
+import '@testing-library/jest-dom';
 
 test('renders without crashing', () => {
   const { baseElement } = render(<App />);
@@ -43,4 +46,9 @@ test('renders Recipe Modifier page', () => {
   expect(screen.getByText('Recipe Modifier')).toBeInTheDocument();
   // expect search bar to be present
   expect(screen.getByPlaceholderText('Search for recipes')).toBeInTheDocument();
+});
+
+test('renders recipe page', () => {
+  const { baseElement } = render(<Recipe />);
+  expect(baseElement).toBeDefined();
 });
