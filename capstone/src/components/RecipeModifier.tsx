@@ -89,6 +89,17 @@ const RecipeModifier: React.FC = () => {
         }
     };
 
+    // Add custom user tags in the recipe modifier popup
+    const handleAddTag = () => {
+        if(selectedRecipe) {
+            const newTag = selectedRecipe.tags;
+            setSelectedRecipe({
+                ...selectedRecipe,
+                tags: newTag
+            });
+        }
+    };
+
     // Add handleDeleteIngredient function to remove an ingredient from the recipe 
     const handleDeleteIngredient = (key: string) => {
         if (selectedRecipe) {
@@ -169,7 +180,7 @@ const RecipeModifier: React.FC = () => {
                 </IonList>
 
                 {selectedRecipe && (
-                    <div>
+                  <div id="recipe_modifier_selection">
                     <h2>{selectedRecipe.name}</h2>
                     <p>Ingredients:</p>
                     <ul>
@@ -178,9 +189,10 @@ const RecipeModifier: React.FC = () => {
                         ))}
                     </ul>
                     <p>Instructions: {selectedRecipe.instructions}</p>
+                    <p>Tags: {selectedRecipe.tags}</p>
                     <IonButton onClick={() => handleEdit(selectedRecipe!)}>Edit</IonButton>
                     <IonButton color="danger" onClick={() => handleDelete(selectedRecipe.id)}>Delete</IonButton>
-                </div>
+                  </div>
             )}
 
             {message && (
@@ -197,46 +209,56 @@ const RecipeModifier: React.FC = () => {
                 </IonHeader>
                 <IonContent>
                     {selectedRecipe && (
-                        <div>
+                        <div id="recipe_modifier_popup">
                             <h4>Recipe Name:</h4>
                             <IonInput
-                                    value={selectedRecipe.name}
-                                    placeholder="Edit Recipe Name"
-                                    onIonChange={e => setSelectedRecipe({ ...selectedRecipe, name: e.detail.value! })}
-                                />
-                                <h4>Instructions:</h4>
-                                <IonTextarea
-                                    value={selectedRecipe.instructions}
-                                    placeholder="Edit Instructions"
-                                    onIonChange={e => setSelectedRecipe({ ...selectedRecipe, instructions: e.detail.value! })}
-                                    autoGrow={true}
-                                />
-                                <h4>Ingredients:</h4>
-                                {Object.entries(selectedRecipe.ingredients).map(([key, value], index) => (
-                                    <IonItem key={index} className="ingredient-item">
-                                        <IonInput
-                                            value={key}
-                                            placeholder="Ingredient Name"
-                                            onIonChange={e => handleIngredientNameChange(index, e.detail.value!)}
-                                        />
-                                        <IonLabel></IonLabel>
-                                        <IonInput
-                                            value={value}
-                                            placeholder={`Amount of ${key}`}
-                                            onIonChange={e => handleIngredientAmountChange(key, e.detail.value!)}
-                                        />
-                                        <IonButton color="danger" onClick={() => handleDeleteIngredient(key)}>
-                                            <IonIcon icon={removeCircleOutline} />
-                                        </IonButton>
-                                    </IonItem>
-                                ))}
-                                <IonButton onClick={handleAddIngredient}>
-                                    <IonIcon icon={addCircleOutline} />
-                                    Add Ingredient
-                                </IonButton>
-                                <IonButton onClick={handleSave}>Save</IonButton>
-                                <IonButton onClick={() => setIsModalOpen(false)}>Cancel</IonButton>
-                            </div>
+                                value={selectedRecipe.name}
+                                placeholder="Edit Recipe Name"
+                                onIonChange={e => setSelectedRecipe({ ...selectedRecipe, name: e.detail.value! })}
+                            />
+                            <h4>Instructions:</h4>
+                            <IonTextarea
+                                value={selectedRecipe.instructions}
+                                placeholder="Edit Instructions"
+                                onIonChange={e => setSelectedRecipe({ ...selectedRecipe, instructions: e.detail.value! })}
+                                autoGrow={true}
+                            />
+                            <h4>Ingredients:</h4>
+                            {Object.entries(selectedRecipe.ingredients).map(([key, value], index) => (
+                                <IonItem key={index} className="ingredient-item">
+                                    <IonInput
+                                        value={key}
+                                        placeholder="Ingredient Name"
+                                        onIonChange={e => handleIngredientNameChange(index, e.detail.value!)}
+                                    />
+                                    <IonLabel></IonLabel>
+                                    <IonInput
+                                        value={value}
+                                        placeholder={`Amount of ${key}`}
+                                        onIonChange={e => handleIngredientAmountChange(key, e.detail.value!)}
+                                    />
+                                    <IonButton color="danger" onClick={() => handleDeleteIngredient(key)}>
+                                        <IonIcon icon={removeCircleOutline} />
+                                    </IonButton>
+                                </IonItem>
+                            ))}
+                            <h4>Recipe Tags</h4>
+                            <IonTextarea 
+                                value={selectedRecipe.tags}
+                                placeholder="Recipe Tag"
+                                onIonChange={e => setSelectedRecipe({ ...selectedRecipe, tags: e.detail.value!})}
+                            />
+                            <IonButton onClick={handleAddIngredient}>
+                                <IonIcon icon={addCircleOutline} />
+                                Add Ingredient
+                            </IonButton>
+                            <IonButton onClick={handleAddTag}>
+                                <IonIcon icon={addCircleOutline} />
+                                Add Tag
+                            </IonButton>
+                            <IonButton onClick={handleSave}>Save</IonButton>
+                            <IonButton onClick={() => setIsModalOpen(false)}>Cancel</IonButton>
+                        </div>
                         )}
                     </IonContent>
                 </IonModal>

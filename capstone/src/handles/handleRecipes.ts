@@ -15,7 +15,7 @@ export const handleRecipe = async () => {
         ingredients: data.ingredients || [],
         instructions: data.instructions || "No instructions provided",
         // We will want the recipe tag beging returned here as well.
-        tags: data.tag || "No recipe tags",
+        tags: data.tags || "No recipe tags",
       };
     });
 

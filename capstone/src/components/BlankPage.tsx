@@ -20,10 +20,11 @@ const BlankPage: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">BlankPage</IonTitle>
+            <IonTitle size="large">Home</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <p>This page is a placeholder for other routes.</p>
+        <h1>Welcome to the Jandonshurell Recipe App!!!</h1>
+        <p>This page is a placeholder for other routes. User authentication coming soon</p>
       </IonContent>
     </IonPage>
   );

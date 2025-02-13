@@ -51,9 +51,12 @@ const App: React.FC = () => {
           <IonRouterOutlet id="main">
             <Switch>
               <Route path="/" exact={true}>
-                <Redirect to="/folder/Push" />
+                <Redirect to="/Home" />
               </Route>
- 
+              <Route path="/Home" exact={true}>
+                <BlankPage />
+              </Route> 
+              {/*
               <Route path="/folder/Push" exact={true}>
                 <Push />
               </Route>
@@ -61,25 +64,22 @@ const App: React.FC = () => {
               <Route path="/folder/Pull" exact={true}>
                 <Pull />
               </Route>
-
-              <Route path="/folder/IngredientPage" exact={true}>
+              */}
+              <Route path="/IngredientPage" exact={true}>
                 <IngredientPage />
               </Route> 
 
-              <Route path="/folder/Recipes" exact={true}>
+              <Route path="/Recipes" exact={true}>
                 <Recipe />
               </Route>
 
-              <Route path="/folder/Test" exact={true}>
-                <BlankPage />
-              </Route> 
-            <Route path="/CreateRecipes" exact={true}>
-              <CreateRecipes />
-            </Route>
-            
-            <Route path="/RecipeModifier" exact={true}>
-              <RecipeModifier />
-            </Route>
+              <Route path="/CreateRecipes" exact={true}>
+                <CreateRecipes />
+              </Route>
+                
+              <Route path="/RecipeModifier" exact={true}>
+                <RecipeModifier />
+              </Route>
             </Switch>
           </IonRouterOutlet>
         </IonSplitPane>

@@ -11,7 +11,7 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { pizzaOutline, pizzaSharp, flaskOutline, addCircleOutline, addCircleSharp, archiveOutline, archiveSharp, bookmarkOutline, cutOutline, cutSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { pizzaOutline, pizzaSharp, homeOutline,flaskOutline, addCircleOutline, addCircleSharp, archiveOutline, archiveSharp, bookmarkOutline, cutOutline, cutSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import '../Styles/Menu.css';
 
 interface AppPage {
@@ -23,26 +23,20 @@ interface AppPage {
 
 const appPages: AppPage[] = [
   {
-    title: 'Push',
-    url: '/folder/Push',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
-  },
-  {
-    title: 'Pull',
-    url: '/folder/Pull',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
+    title: 'Home',
+    url: '/Home',
+    iosIcon: homeOutline,
+    mdIcon: homeOutline
   },
   {
     title: 'Ingredients',
-    url: '/folder/IngredientPage',
+    url: '/IngredientPage',
     iosIcon: pizzaOutline,
     mdIcon: pizzaOutline
   },
   {
     title: 'Recipes',
-    url: 'folder/Recipes',
+    url: '/Recipes',
     iosIcon: flaskOutline,
     mdIcon: flaskOutline 
   },
