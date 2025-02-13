@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonList, IonItem, IonLabel} from '@ionic/react';
 import { useParams } from 'react-router';
 import { handleRecipe } from '../handles/handleRecipes'; 
-import './Recipe.css';
+import '../Styles/Recipe.css';
 
 const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);

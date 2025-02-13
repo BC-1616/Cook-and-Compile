@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
 import { useLocation } from 'react-router-dom';
 import { handleFetchIngredient } from '../handles/handleFetch'; 
-import './IngredientList.css';
+import '../Styles/IngredientList.css';
 
 
 //This function is used for taking a list and making it a list of Ionic components.

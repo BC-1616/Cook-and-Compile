@@ -14,8 +14,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    // need for unit tests with vitest and e2e tests with cypress
+    "types": ["node", "jest", "cypress"]
+
   },
-  "include": ["src"],
+  // must include src and cypress folders to run tests without errors in vscode
+  "include": ["src", "cypress"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

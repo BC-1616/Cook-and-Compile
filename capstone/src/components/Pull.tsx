@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
 import { useLocation } from 'react-router-dom';
 import { handleFetchMessage } from '../handles/handleFetch'; 
-import './Pull.css';
+import '../Styles/Pull.css';
 
 const Pull: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
