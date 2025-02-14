@@ -89,17 +89,6 @@ const RecipeModifier: React.FC = () => {
         }
     };
 
-    // Add custom user tags in the recipe modifier popup
-    const handleAddTag = () => {
-        if(selectedRecipe) {
-            const newTag = selectedRecipe.tags;
-            setSelectedRecipe({
-                ...selectedRecipe,
-                tags: newTag
-            });
-        }
-    };
-
     // Add handleDeleteIngredient function to remove an ingredient from the recipe 
     const handleDeleteIngredient = (key: string) => {
         if (selectedRecipe) {
@@ -251,10 +240,6 @@ const RecipeModifier: React.FC = () => {
                             <IonButton onClick={handleAddIngredient}>
                                 <IonIcon icon={addCircleOutline} />
                                 Add Ingredient
-                            </IonButton>
-                            <IonButton onClick={handleAddTag}>
-                                <IonIcon icon={addCircleOutline} />
-                                Add Tag
                             </IonButton>
                             <IonButton onClick={handleSave}>Save</IonButton>
                             <IonButton onClick={() => setIsModalOpen(false)}>Cancel</IonButton>
