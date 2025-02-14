@@ -36,15 +36,21 @@ const Recipe: React.FC = () => {
           ) : (
             recipes.map((recipe) => (
               <div key={recipe.id}>
-                <h2>{recipe.name}</h2>
-                <h3>Ingredients:</h3>
-                <ul>
-                {Object.entries(recipe.ingredients).map(([ingredientName, amount], index) => (
-                  <li key={index}>{ingredientName}: {amount as string}</li>
-                ))}
-                </ul>
-                <h3>Instructions:</h3>
-                <p>{recipe.instructions}</p>
+                <IonItem>
+                  <h2><strong>{recipe.name}</strong></h2>
+                </IonItem>
+                <div id="basic_recipe_info">
+                  <h3>Ingredients:</h3>
+                  <ul>
+                  {Object.entries(recipe.ingredients).map(([ingredientName, amount], index) => (
+                    <li key={index}>{ingredientName}: {amount as string}</li>
+                  ))}
+                  </ul>
+                  <h3>Instructions:</h3>
+                  <p>{recipe.instructions}</p>
+                  <h3>User Tags:</h3>
+                  <p>{recipe.tags}</p> {/*This will probably be a list */}
+                </div>
               </div>
             ))
           )}

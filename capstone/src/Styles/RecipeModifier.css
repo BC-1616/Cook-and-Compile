@@ -7,3 +7,7 @@
     border-radius: 4px;
     text-align: center;
 }
+#recipe_modifier_popup, #recipe_modifier_selection{
+    margin-left: .5em;
+    margin-right: .5em;
+}

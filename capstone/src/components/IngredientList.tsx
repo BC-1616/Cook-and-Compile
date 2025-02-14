@@ -5,23 +5,6 @@ import { handleFetchIngredient } from '../handles/handleFetch';
 import '../Styles/IngredientList.css';
 
 
-//This function is used for taking a list and making it a list of Ionic components.
-//I can move this to a file that could be imported to other files in the future.
-function populateList(ing: string[], size: number): React.ReactNode[] {
-  const ingredientList: React.ReactNode[] = [];
-  for(let i=0; i<size; i++){
-    ingredientList.push(
-      <React.Fragment>
-        <IonItem key={i}>
-          <IonLabel>{ing[i]}</IonLabel>
-        </IonItem>
-      </React.Fragment>
-    );
-  }
-  return ingredientList;
-}
-
-
 const IngredientPage: React.FC = () => {
   const [ingredients, setIngredients] = useState<any[]>([]); //'foodData' is stored in an array of any type here
   const [loading, setLoading] = useState<boolean>(true);
@@ -80,8 +63,10 @@ const IngredientPage: React.FC = () => {
             {ingredients.map((ingredient, index) => (
               <IonItem key={index}>
                 <IonLabel>
-                  <h2 style={{fontSize: '30px'}}>{ingredient.category || 'No text available'}</h2>
-                  <p>{populateList(ingredient.items, ingredient.items.length)}</p>
+                  <h2 id="ingredient_list_list">{ingredient.category || 'No text available'}</h2>
+                  {Object.entries(ingredient.items).map(([idx, ingredientName], index) => (
+                    <li id="ingredient_list_item" key={index}>{ingredientName as string}</li>
+                  ))}
                 </IonLabel>
               </IonItem>
             ))}

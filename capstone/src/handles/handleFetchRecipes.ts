@@ -6,6 +6,7 @@ interface Recipe {
     name: string;
     ingredients: { [key: string]: string };
     instructions: string;
+    tags: string; //again again, maybe make a list
 }
 
 export const handleFetchRecipes = async (): Promise<Recipe[]> => {
@@ -18,7 +19,8 @@ export const handleFetchRecipes = async (): Promise<Recipe[]> => {
                 id: doc.id,
                 name: data.name,
                 ingredients: data.ingredients,
-                instructions: data.instructions
+                instructions: data.instructions,
+                tags: data.tags
             };
         });
         return recipes;
