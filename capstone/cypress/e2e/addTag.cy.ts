@@ -9,6 +9,7 @@ describe('Create Custom Tag', () => {
   
       cy.contains('Add Ingredient').click();
       cy.contains('Create New Recipe').click();
+      cy.contains('Recipe sent successfully!').should('be.visible');
   
       //Now Cypress uses RecipeModifier to create a tag
       cy.visit('/RecipeModifier');
