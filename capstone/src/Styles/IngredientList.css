@@ -24,9 +24,15 @@
     font-weight: bold;
 }
 
+#allergy_list_item{
+    text-align: center;
+}
+#line_break{
+    font-size: 1px;
+}
 
 @media(max-width: 600px){
     #ingredient_content_parent{
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 }

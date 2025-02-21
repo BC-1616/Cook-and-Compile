@@ -7,7 +7,7 @@ export const handleAddAllergy = async (
     setInputText: React.Dispatch<React.SetStateAction<string>>
 ): Promise<void> => {
     try{
-        //When searching for the doc, it will look in the 'allergies' collection and references the 'allergies' array
+        //When searching for the doc, it will look in the 'allergies' collection and references the 'allergy_list' doc
         const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
         
         await updateDoc(allergyDocRef, {
@@ -20,6 +20,22 @@ export const handleAddAllergy = async (
     } catch(error){
         console.error('Error adding allergy to Firestore:', error);
         setStatusMessage('Failed to add Allergy.');
+    }
+};
+
+export const handleClearAllergy = async (
+    setStatusMessage: React.Dispatch<React.SetStateAction<string>>
+): Promise<void> => {
+    try{
+        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
+        //This can be modified to remove specific elements or just 'pop off' elements
+        await updateDoc(allergyDocRef, {
+            allergies: [],
+        });
+        setStatusMessage('Allergy list cleared');
+    } catch(error) {
+        setStatusMessage('Failed to clear allergy list');
+        throw new Error('Failed to clear allergy list');
     }
 };
 

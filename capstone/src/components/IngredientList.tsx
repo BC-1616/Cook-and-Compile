@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonButton, IonInput, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
 import { useLocation } from 'react-router-dom';
 import { handleFetchIngredient } from '../handles/handleFetch';
-import { handleAddAllergy, handleFetchAllergy } from '../handles/handleAllergy';  
+import { handleClearAllergy, handleAddAllergy, handleFetchAllergy } from '../handles/handleAllergy';  
 import '../Styles/IngredientList.css';
 
 
@@ -13,13 +13,19 @@ const IngredientPage: React.FC = () => {
   const [allergy, addAllergy] = useState('');
   const [allergyList, setAllergy] = useState<any[]>([]);
   const [statusMessage, setStatusMessage] = useState<string>('');
-  //const [inputText, setInputText] = useState<string>('');
 
   const location = useLocation();
 
   const updateAllergy = async () => {
     if (allergy.trim() !== '') {
       await handleAddAllergy(allergy, setStatusMessage, addAllergy);
+    }
+  };
+  const clearAllergyList = async () => {
+    try{
+      await handleClearAllergy(setStatusMessage);
+    } catch (error){
+      setError('Failed to clear allergies');
     }
   };
 
@@ -97,7 +103,9 @@ const IngredientPage: React.FC = () => {
             <h2>Allergy Input</h2>
             <IonInput placeholder="Enter Allergy" value={allergy} onIonChange={e => addAllergy(e.detail.value!)} required />
             <IonButton onClick={updateAllergy}>Add Allergy</IonButton>
-
+            {/*Allow user to delete allergies*/}
+            <p id="line_break"/*This should be a 'class' but that doesn't work with ionic*/></p>
+            <IonButton onClick={clearAllergyList}>Clear Allergy List</IonButton>
             {statusMessage && <IonText color="primary" style={{ display: 'block', marginTop: '10px' }}>{statusMessage}</IonText>}
             <h3>Your Allergies:</h3>
             {/*Impliment a list of user's allergies here*/}
@@ -106,13 +114,12 @@ const IngredientPage: React.FC = () => {
                 <IonItem key={index}>
                   <IonLabel>
                     {Object.entries(allergy.allergies).map(([idx, allergyName], index) => (
-                      <li key={index}>{allergyName as string}</li>
+                      <li id="allergy_list_item" key={index}>{allergyName as string}</li>
                     ))}
                   </IonLabel>
                 </IonItem>
               ))}
             </IonList>
-            {/*Allow user to delete allergies*/}
           </div>
         </div>
       </IonContent>
