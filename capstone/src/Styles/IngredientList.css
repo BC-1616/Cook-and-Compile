@@ -1,7 +1,32 @@
 #ingredient_list_list{
     font-size: 30px;
     font-weight: bold;
+    text-align: center;
 }
 #ingredient_list_item{
     padding: .2em;
+    text-align: center;
+}
+
+#ingredient_content_parent{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+#ingredient_content_top_label{
+    font-style: italic;
+}
+#right_ingredient_content{
+    text-align: center;
+}
+#right_ingredient_content h2{
+    font-weight: bold;
+}
+
+
+@media(max-width: 600px){
+    #ingredient_content_parent{
+        flex-direction: column;
+    }
 }
