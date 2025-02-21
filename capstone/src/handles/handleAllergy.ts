@@ -1,4 +1,4 @@
-import { collection, addDoc } from '@firebase/firestore';
+import { arrayUnion, getDocs, collection, addDoc, updateDoc, doc } from '@firebase/firestore';
 import { firestore } from '../firebase_setup/firebase';
 
 export const handleAddAllergy = async (
@@ -7,10 +7,11 @@ export const handleAddAllergy = async (
     setInputText: React.Dispatch<React.SetStateAction<string>>
 ): Promise<void> => {
     try{
-        const allergyCollectionRef = collection(firestore, 'allergies');
-
-        await addDoc(allergyCollectionRef, {
-            allergy: text,
+        //When searching for the doc, it will look in the 'allergies' collection and references the 'allergies' array
+        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
+        
+        await updateDoc(allergyDocRef, {
+           allergies: arrayUnion(text),
         });
         console.log('Allergy successfully added to Firestore!');
         setStatusMessage('Allergy added');
@@ -19,5 +20,21 @@ export const handleAddAllergy = async (
     } catch(error){
         console.error('Error adding allergy to Firestore:', error);
         setStatusMessage('Failed to add Allergy.');
+    }
+};
+
+export const handleFetchAllergy = async () => {
+    try{
+        const allergyCollectionRef = collection(firestore, 'allergies');
+        const allergyQuery = await getDocs(allergyCollectionRef);
+
+        const allergyData = allergyQuery.docs.map((doc) => {
+            const data = doc.data();
+            return { ...data};
+        });
+        return allergyData;
+    
+    } catch(error){
+        throw new Error('Failed to fetch allergies');
     }
 };

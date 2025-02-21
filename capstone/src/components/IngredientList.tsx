@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonButton, IonInput, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
 import { useLocation } from 'react-router-dom';
 import { handleFetchIngredient } from '../handles/handleFetch';
-import { handleAddAllergy } from '../handles/handleAllergy';  
+import { handleAddAllergy, handleFetchAllergy } from '../handles/handleAllergy';  
 import '../Styles/IngredientList.css';
 
 
@@ -10,15 +10,16 @@ const IngredientPage: React.FC = () => {
   const [ingredients, setIngredients] = useState<any[]>([]); //'foodData' is stored in an array of any type here
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [allergy, addAllergy] = useState(''); 
+  const [allergy, addAllergy] = useState('');
+  const [allergyList, setAllergy] = useState<any[]>([]);
   const [statusMessage, setStatusMessage] = useState<string>('');
-  const [inputText, setInputText] = useState<string>('');
+  //const [inputText, setInputText] = useState<string>('');
 
   const location = useLocation();
 
   const updateAllergy = async () => {
-    if (inputText.trim() !== '') {
-      await handleAddAllergy(inputText, setStatusMessage, setInputText);
+    if (allergy.trim() !== '') {
+      await handleAddAllergy(allergy, setStatusMessage, addAllergy);
     }
   };
 
@@ -35,8 +36,17 @@ const IngredientPage: React.FC = () => {
         setLoading(false);
       }
     };
+    const fetchAllergy = async () => {
+      try{
+        const allergyData = await handleFetchAllergy();
+        setAllergy(allergyData);
+      } catch(error){
+        setError('Failed to fetch Allergies');
+      }
+    };
 
     fetchIngredients();
+    fetchAllergy();
   }, [location.pathname]);
   var listBuffer = [];
    return (
@@ -91,6 +101,18 @@ const IngredientPage: React.FC = () => {
             {statusMessage && <IonText color="primary" style={{ display: 'block', marginTop: '10px' }}>{statusMessage}</IonText>}
             <h3>Your Allergies:</h3>
             {/*Impliment a list of user's allergies here*/}
+            <IonList>
+              {allergyList.map((allergy, index) => (
+                <IonItem key={index}>
+                  <IonLabel>
+                    {Object.entries(allergy.allergies).map(([idx, allergyName], index) => (
+                      <li key={index}>{allergyName as string}</li>
+                    ))}
+                  </IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
+            {/*Allow user to delete allergies*/}
           </div>
         </div>
       </IonContent>
