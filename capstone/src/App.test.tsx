@@ -52,3 +52,15 @@ test('renders recipe page', () => {
   const { baseElement } = render(<Recipe />);
   expect(baseElement).toBeDefined();
 });
+
+//Unit testing for allergy management
+test('displays allergy input', () => {
+  render(
+    <MemoryRouter initialEntries={['/IngredientPage']}>
+      <IngredientPage />
+    </MemoryRouter>
+  );
+  expect(screen.getByText('Allergy Input')).toBeInTheDocument();
+  expect(screen.getByText('Add Allergy')).toBeInTheDocument();
+
+});

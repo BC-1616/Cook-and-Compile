@@ -71,7 +71,6 @@ const IngredientPage: React.FC = () => {
             <IonTitle size="large">Ingredient List</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <p id="ingredient_content_top_label">A list of ingredients and allergen input</p>
         <div id="ingredient_content_parent">
           <div id="left_ingredient_content">
             {loading ? (
