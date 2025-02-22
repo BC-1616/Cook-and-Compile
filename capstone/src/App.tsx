@@ -2,10 +2,11 @@
 import React from 'react';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+// removed unneeded import
+import { Route, Redirect } from 'react-router-dom';
 import Navbar from './components/NavBar';
 import IngredientPage from './components/IngredientList';
-import Pull from './components/Pull';
+// Deleted unneeded pull page 
 import BlankPage from './components/BlankPage'
 import CreateRecipes from './components/CreateRecipes';
 import RecipeModifier from './components/RecipeModifier'; 
