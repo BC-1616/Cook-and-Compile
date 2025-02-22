@@ -68,8 +68,10 @@ const RecipePage: React.FC = () => {
                     <IonLabel position="stacked">Instructions</IonLabel>
                     <IonTextarea placeholder="Enter Instructions" value={recipeInstructions} onIonChange={e => setRecipeInstructions(e.detail.value!)} required />
                 </IonItem>
-                <IonButton onClick={createRecipe}>Create New Recipe</IonButton>
-                <p>{statusMessage}</p>
+                <div id="nav-padding">
+                    <IonButton onClick={createRecipe}>Create New Recipe</IonButton>
+                    <p>{statusMessage}</p>
+                </div>
             </IonContent>
         </IonPage>
     );

@@ -5,3 +5,7 @@
     width: 100%;
     height: 50px;
 }
+/* padding to fix navbar overlap issue */
+#nav-padding {
+    margin-bottom: 40px;
+}

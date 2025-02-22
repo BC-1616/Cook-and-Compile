@@ -59,7 +59,7 @@ const IngredientPage: React.FC = () => {
           </IonText>
         ) : (
         
-          <IonList style={{ marginTop: '20px', marginBottom: '10px'}}>
+          <IonList style={{ marginTop: '20px', marginBottom: '35px'}}> {/* Edited marginBottom padding to fix navbar overlapping issue */}
             {ingredients.map((ingredient, index) => (
               <IonItem key={index}>
                 <IonLabel>
