@@ -31,17 +31,11 @@ import './Styles/variables.css';
 setupIonicReact();
 
 const App: React.FC = () => {
-  const { user } = handleAuth(); // Use the useAuth hook to access the authenticated user
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (user !== null) {
-      setLoading(false); // Set loading to false once the user is authenticated
-    }
-  }, [user]);
-
+  const { user, loading } = handleAuth(); // Use the useAuth hook to access the authenticated user
+  
+  // While loading, show loading message, otherwise show the main content
   if (loading) {
-    return <div>Loading...</div>; // Display a loading indicator until user is authenticated
+    return <div>Loading...</div>;
   }
 
   return (
@@ -51,18 +45,21 @@ const App: React.FC = () => {
           {user && <Menu />} {/* Render Menu only if user is logged in */}
           <IonRouterOutlet id="main">
             <Switch>
+              {/* Always redirect to LandingPage first */}
               <Route path="/" exact={true}>
-                <Redirect to={user ? "/Home" : "/LandingPage"} />
+                <Redirect to="/LandingPage" />
               </Route>
 
               <Route path="/LandingPage" exact={true}>
                 <LandingPage />
               </Route>
 
+              {/* If the user is authenticated, allow access to /Home */}
               <Route path="/Home" exact={true}>
                 {user ? <BlankPage /> : <Redirect to="/LandingPage" />} {/* Redirect to LandingPage if not logged in */}
               </Route>
 
+              {/* Other routes */}
               <Route path="/IngredientPage" exact={true}>
                 <IngredientPage />
               </Route>
