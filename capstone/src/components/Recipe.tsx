@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonList, IonItem, IonLabel} from '@ionic/react';
-import { useParams } from 'react-router';
+// Removed unneeded imports
+import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem} from '@ionic/react';
 import { handleRecipe } from '../handles/handleRecipes'; 
 import '../Styles/Recipe.css';
 
@@ -24,10 +24,8 @@ const Recipe: React.FC = () => {
       <IonPage>
         <IonHeader>
           <IonToolbar>
-            <IonButtons slot="start">
-              <IonMenuButton />
-            </IonButtons>
-            <IonTitle>Recipes</IonTitle>
+            {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}
+            <IonTitle id="title">Recipes</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
