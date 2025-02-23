@@ -58,6 +58,11 @@ const appPages: AppPage[] = [
 const Menu: React.FC = () => {
   const location = useLocation();
 
+    // Don't render the menu on the LandingPage
+    if (location.pathname === '/LandingPage') {
+      return null;
+    }
+
   return (
     <IonMenu contentId="main" type="overlay">
       <IonContent>
