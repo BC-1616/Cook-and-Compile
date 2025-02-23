@@ -24,8 +24,8 @@ const Recipe: React.FC = () => {
       <IonPage>
         <IonHeader>
           <IonToolbar>
-            {/* Removed menu button as it is not needed with new nav bar */}
-            <IonTitle>Recipes</IonTitle>
+            {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}
+            <IonTitle id="title">Recipes</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>

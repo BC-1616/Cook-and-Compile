@@ -145,8 +145,8 @@ const RecipeModifier: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    { /* Removed IonMenuButton as it will not be needed with the new navbar */}
-                    <IonTitle>Recipe Modifier</IonTitle>
+                    {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}   
+                    <IonTitle id="title">Recipe Modifier</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>

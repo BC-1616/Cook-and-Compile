@@ -39,8 +39,8 @@ const RecipePage: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    { /* Removed menu button */ }
-                    <IonTitle>Create Recipes</IonTitle>
+                    { /* Removed menu button and added styling for navbar overlap on web*/ }
+                    <IonTitle id="title">Create Recipes</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>

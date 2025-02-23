@@ -34,10 +34,8 @@ const IngredientPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton />
-          </IonButtons>
-          <IonTitle>Ingredients</IonTitle>
+          {/* Added CSS to move page tile below Navbar */}
+          <IonTitle id="title">Ingredients</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>

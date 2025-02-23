@@ -3,3 +3,14 @@
     margin-right: 1em;
     margin-bottom: 3em; /* this is a quick fix for the navbar overlapping issue that I will likey have to come back to later -J */
 }
+/* Web Page Styles */
+@media (min-width: 769px) {
+    #title {
+    display: flex;
+    align-items: flex-end; 
+    height: 80px; 
+    padding: 10px;
+    }
+}
+/* Mobile Page Styles */
+@media (max-width: 768px) {}
