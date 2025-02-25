@@ -33,6 +33,10 @@ const appPages = [
 
 const CustomNavBar: React.FC = () => {
   const location = useLocation();
+    
+  if (location.pathname === '/LandingPage') {
+    return null;
+  }
 
   return (
     <div className="custom-navbar">

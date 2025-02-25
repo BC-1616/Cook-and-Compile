@@ -10,6 +10,7 @@ import RecipeModifier from './components/RecipeModifier';
 import Recipe from './components/Recipe';
 import LandingPage from './components/LandingPage';
 import handleAuth from './handles/handleAuth';  // Import the useAuth hook
+import NavBar from './components/NavBar';
 
 import React, { useEffect, useState } from 'react';
 
@@ -41,10 +42,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <IonApp>
+  <IonApp>
       <IonReactRouter>
         <IonSplitPane contentId="main">
-          {user && <Menu />} {/* Render Menu only if user is logged in */}
           <IonRouterOutlet id="main">
             <Switch>
               {/* Always redirect to LandingPage first */}
@@ -79,6 +79,7 @@ const App: React.FC = () => {
               </Route>
             </Switch>
           </IonRouterOutlet>
+          {user && <NavBar />} {/* Render Menu only if user is logged in */}
         </IonSplitPane>
       </IonReactRouter>
     </IonApp>
