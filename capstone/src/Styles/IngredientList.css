@@ -36,3 +36,12 @@
         flex-direction: column-reverse;
     }
 }
+
+@media (min-width: 769px) {
+    #title {
+    display: flex;
+    align-items: flex-end; 
+    height: 80px; 
+    padding: 10px;
+    }
+}

@@ -2,11 +2,14 @@ import React, {useEffect, useState} from 'react';
 // Removed unneeded imports
 import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem} from '@ionic/react';
 import { handleRecipe } from '../handles/handleRecipes'; 
+import { handleFetchAllergy } from '../handles/handleAllergy';
 import '../Styles/Recipe.css';
 
 const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
-  
+    const [allergies, setAllergies] = useState<any[]>([]);
+    const [allergyList, setAllergyList] = useState<String[]>([]);
+
     useEffect(() => {
       const fetchRecipes = async () => {
         try {
@@ -16,8 +19,32 @@ const Recipe: React.FC = () => {
           console.error("Error fetching recipes:", error);
         }
       };
-  
+      const fetchAllergy = async () => {
+        try{
+          const allergyData = await handleFetchAllergy();
+          setAllergies(allergyData);
+
+        } catch(error){
+          console.error("Error fetching allergies: ", error);
+        }
+      };
+      const populateAllergyList = async () => {
+        try{
+          //'allergy' is the single document we have in firebase
+          allergies.map((allergy) => (
+            //we want to iterate through the list in this 'allergy' document to populate allergyList
+            Object.entries(allergy.allergies).map((allergyName) => (
+              allergyList.push(allergyName) // Do this stuff in fetchAllergy
+            ))
+          ))
+          console.log("AllergyList: ", allergyList);
+        } catch(error){
+          console.error("Error populating list: ", error);
+        }
+      };
+      fetchAllergy();
       fetchRecipes();
+      populateAllergyList();
     }, []);
   
     return (
@@ -28,6 +55,20 @@ const Recipe: React.FC = () => {
             <IonTitle id="title">Recipes</IonTitle>
           </IonToolbar>
         </IonHeader>
+        {<h1 className="recipe_subheader">Allergy-Safe Recipes</h1>}
+        <IonContent>
+          {recipes.length === 0 ? (
+            <div>No recipes found</div>
+          ) : (
+            recipes.map((recipe) => (
+              //Find if 'recipe' is effected by allergy, if it is then skip
+              <div key={recipe.id}>
+
+              </div>
+            )) 
+          )}
+        </IonContent>
+        {<h1 className="recipe_subheader">All Recipes</h1>}
         <IonContent>
           {recipes.length === 0 ? (
             <div>No recipes found</div>
