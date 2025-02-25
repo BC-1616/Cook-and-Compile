@@ -1,10 +1,12 @@
-import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
+// Reorganized imports
+import React from 'react';
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import Menu from './components/Menu';
-import Push from './components/Push';
+// removed unneeded import
+import { Route, Redirect } from 'react-router-dom';
+import Navbar from './components/NavBar';
 import IngredientPage from './components/IngredientList';
-import Pull from './components/Pull';
+// Deleted unneeded pull page 
 import BlankPage from './components/BlankPage'
 import CreateRecipes from './components/CreateRecipes';
 import RecipeModifier from './components/RecipeModifier'; 
@@ -40,50 +42,25 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './Styles/variables.css';
 
-/* this was causing an issue with the pages not updating correctly when switching between them. adding the switch fixed it. */
 setupIonicReact();
+
 const App: React.FC = () => {
   return (
     <IonApp>
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <Menu />
-          <IonRouterOutlet id="main">
-            <Switch>
+        <IonReactRouter>
+            <IonRouterOutlet className="content-container">
               <Route path="/" exact={true}>
                 <Redirect to="/Home" />
               </Route>
-              <Route path="/Home" exact={true}>
-                <BlankPage />
-              </Route> 
-              {/*
-              <Route path="/folder/Push" exact={true}>
-                <Push />
-              </Route>
-
-              <Route path="/folder/Pull" exact={true}>
-                <Pull />
-              </Route>
-              */}
-              <Route path="/IngredientPage" exact={true}>
-                <IngredientPage />
-              </Route> 
-
-              <Route path="/Recipes" exact={true}>
-                <Recipe />
-              </Route>
-
-              <Route path="/CreateRecipes" exact={true}>
-                <CreateRecipes />
-              </Route>
-                
-              <Route path="/RecipeModifier" exact={true}>
-                <RecipeModifier />
-              </Route>
-            </Switch>
-          </IonRouterOutlet>
-        </IonSplitPane>
-      </IonReactRouter>
+              {/* Simplified Routes */}
+              <Route path="/Home" component={BlankPage} exact={true} />
+              <Route path="/IngredientPage" component={IngredientPage} exact={true} />
+              <Route path="/Recipes" component={Recipe} exact={true} />
+              <Route path="/CreateRecipes" component={CreateRecipes} exact={true} />
+              <Route path="/RecipeModifier" component={RecipeModifier} exact={true} />
+            </IonRouterOutlet>
+            <Navbar />
+        </IonReactRouter>
     </IonApp>
   );
 };
