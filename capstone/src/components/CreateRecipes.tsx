@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { IonButton, IonContent, IonInput, IonPage, IonItem, IonLabel, IonList, IonTextarea, IonHeader, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonInput, IonPage, IonItem, IonLabel, IonList, IonTextarea, IonHeader, IonTitle, IonToolbar } from '@ionic/react';
 import { handleCreateRecipe } from '../handles/handleCreateRecipe';
+import '../Styles/CreateRecipes.css';
 
 const RecipePage: React.FC = () => {
     // state variables for recipe name, ingredients, ingredient name, ingredient amount, instructions, and status message
@@ -38,11 +39,8 @@ const RecipePage: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                { /* Add IonMenuButton to open the side menu */ }
-                    <IonButton slot="start">
-                        <IonMenuButton />
-                    </IonButton>
-                    <IonTitle>Create Recipes</IonTitle>
+                    { /* Removed menu button and added styling for navbar overlap on web*/ }
+                    <IonTitle id="title">Create Recipes</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
@@ -70,8 +68,10 @@ const RecipePage: React.FC = () => {
                     <IonLabel position="stacked">Instructions</IonLabel>
                     <IonTextarea placeholder="Enter Instructions" value={recipeInstructions} onIonChange={e => setRecipeInstructions(e.detail.value!)} required />
                 </IonItem>
-                <IonButton onClick={createRecipe}>Create New Recipe</IonButton>
-                <p>{statusMessage}</p>
+                <div id="nav-padding">
+                    <IonButton onClick={createRecipe}>Create New Recipe</IonButton>
+                    <p>{statusMessage}</p>
+                </div>
             </IonContent>
         </IonPage>
     );

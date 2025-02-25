@@ -1,0 +1,23 @@
+/* consistent button styling */
+.button {
+    padding: 0.5em; 
+    font-size: 1em;
+    width: 100%;
+    height: 50px;
+}
+/* Web Page Styles */
+@media (min-width: 769px) {
+    #title {
+    display: flex;
+    align-items: flex-end; 
+    height: 80px; 
+    padding: 10px;
+    }
+}
+/* Mobile Page Styles */
+@media (max-width: 768px) {
+    /* padding to fix navbar overlap issue */
+    #nav-padding {
+        margin-bottom: 40px;
+    }
+}

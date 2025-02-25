@@ -1,4 +1,5 @@
-import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
+// Reorganized imports
+import { IonApp, IonRouterOutlet, setupIonicReact, IonSplitPane } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Menu from './components/Menu';
@@ -29,6 +30,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './Styles/variables.css';
 
 setupIonicReact();
+
 
 const App: React.FC = () => {
   const { user, loading } = handleAuth(); // Use the useAuth hook to access the authenticated user

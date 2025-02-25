@@ -145,11 +145,8 @@ const RecipeModifier: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                { /* Add IonMenuButton to open the side menu */ }
-                <IonButton slot="start">
-                    <IonMenuButton />
-                </IonButton>
-                    <IonTitle>Recipe Modifier</IonTitle>
+                    {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}   
+                    <IonTitle id="title">Recipe Modifier</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>

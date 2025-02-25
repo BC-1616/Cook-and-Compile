@@ -7,7 +7,34 @@
     border-radius: 4px;
     text-align: center;
 }
-#recipe_modifier_popup, #recipe_modifier_selection{
+#recipe_modifier_popup, #recipe_modifier_selection {
     margin-left: .5em;
     margin-right: .5em;
+}
+
+/* consistent button styling */
+.button {
+    padding: 0.5em; 
+    font-size: 1em;
+    width: 100%;
+    height: 50px;
+}
+
+.page-container {
+    padding: 0.5em;
+} 
+/* Web Page Styles */
+@media (min-width: 769px) {
+    #title {
+    display: flex;
+    align-items: flex-end; 
+    height: 80px; 
+    padding: 10px;
+    }
+}
+/* Mobile Page Styles */
+@media (max-width: 768px) {
+    #recipe_modifier_popup, #recipe_modifier_selection {
+        margin-bottom: 75px;
+    }
 }

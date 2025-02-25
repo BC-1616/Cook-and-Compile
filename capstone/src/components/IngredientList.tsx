@@ -34,10 +34,8 @@ const IngredientPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton />
-          </IonButtons>
-          <IonTitle>Ingredients</IonTitle>
+          {/* Added CSS to move page tile below Navbar */}
+          <IonTitle id="title">Ingredients</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -59,7 +57,7 @@ const IngredientPage: React.FC = () => {
           </IonText>
         ) : (
         
-          <IonList style={{ marginTop: '20px', marginBottom: '10px'}}>
+          <IonList style={{ marginTop: '20px', marginBottom: '35px'}}> {/* Edited marginBottom padding to fix navbar overlapping issue */}
             {ingredients.map((ingredient, index) => (
               <IonItem key={index}>
                 <IonLabel>
