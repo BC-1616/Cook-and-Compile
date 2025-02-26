@@ -10,6 +10,10 @@ const Recipe: React.FC = () => {
     const [allergies, setAllergies] = useState<any[]>([]);
     const [allergyList, setAllergyList] = useState<String[]>([]);
 
+    const checkIfAllergic = async (recipe_array: any[]) => {
+      
+    };
+
     useEffect(() => {
       const fetchRecipes = async () => {
         try {
@@ -64,7 +68,7 @@ const Recipe: React.FC = () => {
             <div>No allergies found</div>
           ) : (
             //Find if 'recipe' is effected by allergy, if it is then skip
-            <p>{allergyList[0]}</p>
+            <p></p>
           )}
         </IonContent>
         {<h1 className="recipe_subheader">All Recipes</h1>}
@@ -72,7 +76,7 @@ const Recipe: React.FC = () => {
           {recipes.length === 0 ? (
             <div>No recipes found</div>
           ) : (
-            recipes.map((recipe) => (
+            recipes.filter().map((recipe) => (
               <div key={recipe.id}>
                 <IonItem>
                   <h2><strong>{recipe.name}</strong></h2>
