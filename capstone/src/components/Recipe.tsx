@@ -22,13 +22,17 @@ const Recipe: React.FC = () => {
       const fetchAllergy = async () => {
         try{
           const allergyData = await handleFetchAllergy();
-          setAllergies(allergyData);
+          //Set the actual list of allergies into an array
+          allergyData.map((allergy) => {
+            setAllergyList(allergy.allergies);
+          })
 
+          setAllergies(allergyData);
         } catch(error){
           console.error("Error fetching allergies: ", error);
         }
       };
-      const populateAllergyList = async () => {
+/*      const populateAllergyList = async () => {
         try{
           //'allergy' is the single document we have in firebase
           allergies.map((allergy) => (
@@ -41,10 +45,9 @@ const Recipe: React.FC = () => {
         } catch(error){
           console.error("Error populating list: ", error);
         }
-      };
+      };*/
       fetchAllergy();
       fetchRecipes();
-      populateAllergyList();
     }, []);
   
     return (
@@ -57,15 +60,11 @@ const Recipe: React.FC = () => {
         </IonHeader>
         {<h1 className="recipe_subheader">Allergy-Safe Recipes</h1>}
         <IonContent>
-          {recipes.length === 0 ? (
-            <div>No recipes found</div>
+          {allergies.length === 0 ? (
+            <div>No allergies found</div>
           ) : (
-            recipes.map((recipe) => (
-              //Find if 'recipe' is effected by allergy, if it is then skip
-              <div key={recipe.id}>
-
-              </div>
-            )) 
+            //Find if 'recipe' is effected by allergy, if it is then skip
+            <p>{allergyList[0]}</p>
           )}
         </IonContent>
         {<h1 className="recipe_subheader">All Recipes</h1>}
