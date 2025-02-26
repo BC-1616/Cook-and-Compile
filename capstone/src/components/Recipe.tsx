@@ -9,15 +9,27 @@ const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
     const [allergies, setAllergies] = useState<any[]>([]);
     const [allergyList, setAllergyList] = useState<String[]>([]);
+    const [willYouDie, setDeathCheck] = useState('');
 
-    const checkIfAllergic = async (recipe_array: any[]) => {
-      
+    const checkIfAllergic = async (recipe_array: String[]) => {
+      for(let i=0; i<recipe_array.length; i++){
+        for(let j=0; j<allergyList.length; j++){
+          if(recipe_array[i].toLowerCase() === allergyList[j].toLowerCase()){
+            return true;
+          }
+        }
+      }
+      return false;
     };
 
     useEffect(() => {
       const fetchRecipes = async () => {
         try {
           const data = await handleRecipe();
+          data.map((recipe) => {
+            recipe.userAllergic = await checkIfAllergic(recipe.ingredients.keys());
+          })
+          
           setRecipes(data);
         } catch (error) {
           console.error("Error fetching recipes:", error);
@@ -76,7 +88,7 @@ const Recipe: React.FC = () => {
           {recipes.length === 0 ? (
             <div>No recipes found</div>
           ) : (
-            recipes.filter().map((recipe) => (
+            recipes.map((recipe) => (
               <div key={recipe.id}>
                 <IonItem>
                   <h2><strong>{recipe.name}</strong></h2>
