@@ -1,10 +1,13 @@
+import React from 'react';
 import { IonContent, IonPage, IonButton } from '@ionic/react';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../firebase_setup/firebase';
 import { useHistory } from 'react-router-dom'; // Using useHistory for React Router v5
+import { useUser } from './UserContext';  // Import the user context to set user data
 
 const LandingPage: React.FC = () => {
-  const history = useHistory();  // Initialize useHistory hook
+  const history = useHistory();
+  const { setUser } = useUser();  // Get the setUser function from context
 
   // Function to handle Google Sign-In
   const handleGoogleSignIn = async () => {
@@ -16,14 +19,11 @@ const LandingPage: React.FC = () => {
 
       console.log('User signed in:', user);  // Log the user object after sign-in
 
-      // Check if user is authenticated and then navigate to Home
-      if (user) {
-        console.log('Redirecting to /Home');  // Log before redirect
-        window.location.href = '/Home';  // Use window.location.href to change the URL and navigate
-        console.log('Successfully redirected');
-      } else {
-        console.log('User not authenticated');  // Log if user is not authenticated
-      }
+      // Save the user data in context
+      setUser(user);
+
+      // Redirect to BlankPage after sign-in
+      window.location.href = '/Home';  // Navigate to LandingPage
     } catch (error) {
       console.error('Error during sign-in:', error);  // Log the error if any
     }

@@ -10,7 +10,7 @@ import Recipe from './components/Recipe';
 import LandingPage from './components/LandingPage';
 import NavBar from './components/NavBar';
 import handleAuth from './handles/handleAuth';
-
+import { UserProvider } from './components/UserContext'; // Import UserProvider
 import React from 'react';
 
 /* Core CSS required for Ionic components to work properly */
@@ -42,51 +42,54 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
-      <>
-        {console.log('Rendering App component')}
-      </>
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <IonRouterOutlet id="main">
-            <Switch>
-              {/* Always redirect to LandingPage if no user is authenticated */}
-              <Route path="/" exact={true}>
-                <Redirect to={user ? "/Home" : "/LandingPage"} />
-              </Route>
+      {/* Wrap everything in UserProvider so that user data is accessible globally */}
+      <UserProvider>
+        <>
+          {console.log('Rendering App component')}
+        </>
+        <IonReactRouter>
+          <IonSplitPane contentId="main">
+            <IonRouterOutlet id="main">
+              <Switch>
+                {/* Always redirect to LandingPage if no user is authenticated */}
+                <Route path="/" exact={true}>
+                  <Redirect to={user ? "/Home" : "/LandingPage"} />
+                </Route>
 
-              {/* LandingPage route */}
-              <Route path="/LandingPage" exact={true}>
-                <LandingPage />
-              </Route>
+                {/* LandingPage route */}
+                <Route path="/LandingPage" exact={true}>
+                  <LandingPage />
+                </Route>
 
-              {/* Home route */}
-              <Route path="/Home" exact={true}>
-                <BlankPage /> {/* Render the BlankPage if user is authenticated */}
-              </Route>
+                {/* Home route */}
+                <Route path="/Home" exact={true}>
+                  <BlankPage /> {/* Render the BlankPage if user is authenticated */}
+                </Route>
 
-              {/* Other routes */}
-              <Route path="/IngredientPage" exact={true}>
-                <IngredientPage />
-              </Route>
+                {/* Other routes */}
+                <Route path="/IngredientPage" exact={true}>
+                  <IngredientPage />
+                </Route>
 
-              <Route path="/Recipes" exact={true}>
-                <Recipe />
-              </Route>
+                <Route path="/Recipes" exact={true}>
+                  <Recipe />
+                </Route>
 
-              <Route path="/CreateRecipes" exact={true}>
-                <CreateRecipes />
-              </Route>
+                <Route path="/CreateRecipes" exact={true}>
+                  <CreateRecipes />
+                </Route>
 
-              <Route path="/RecipeModifier" exact={true}>
-                <RecipeModifier />
-              </Route>
-            </Switch>
-          </IonRouterOutlet>
+                <Route path="/RecipeModifier" exact={true}>
+                  <RecipeModifier />
+                </Route>
+              </Switch>
+            </IonRouterOutlet>
 
-          {/* Render NavBar only if user is logged in */}
-          {user && <NavBar />}
-        </IonSplitPane>
-      </IonReactRouter>
+            {/* Render NavBar only if user is logged in */}
+            {user && <NavBar />}
+          </IonSplitPane>
+        </IonReactRouter>
+      </UserProvider>
     </IonApp>
   );
 };
