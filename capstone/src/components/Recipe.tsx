@@ -8,14 +8,11 @@ import '../Styles/Recipe.css';
 const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
     const [allergies, setAllergies] = useState<any[]>([]);
-    const [allergyList, setAllergyList] = useState<String[]>([]);
-    const [ingredientList, setIngredientList] = useState<String[]>([]);
 
-    const checkIfAllergic = async (recipe_array: String[]) => {
+    const checkIfAllergic = async (recipe_array: String[], allergy_array: String[]) => {
       for(let i=0; i<recipe_array.length; i++){
-        for(let j=0; j<allergyList.length; j++){
-          if(recipe_array[i].toLowerCase() === allergyList[j].toLowerCase()){
-            console.log("here");
+        for(let j=0; j<allergy_array.length; j++){
+          if(recipe_array[i].toLowerCase() === allergy_array[j].toLowerCase()){
             return true;
           }
         }
@@ -27,43 +24,21 @@ const Recipe: React.FC = () => {
       const fetchRecipes = async () => {
         try {
           const data = await handleRecipe();
+          //I need to get the allergyData here so I can use it in the parameter for checkIfAllergic
+          const allergyData = await handleFetchAllergy();
+          
           data.map(async (recipe) => {
             let arrayBuffer: String[] = Array.from(Object.keys(recipe.ingredients));
-            recipe.userAllergic = await checkIfAllergic(arrayBuffer);
+            recipe.userAllergic = await checkIfAllergic(arrayBuffer, allergyData[0].allergies);
             //console.log(recipe.userAllergic);
           })
           
+          setAllergies(allergyData);
           setRecipes(data);
         } catch (error) {
           console.error("Error fetching recipes:", error);
         }
       };
-      const fetchAllergy = async () => {
-        try{
-          //allergyData is just the document
-          const allergyData = await handleFetchAllergy();
-
-          setAllergyList(Object.keys(allergyData));
-          setAllergies(allergyData);
-        } catch(error){
-          console.error("Error fetching allergies: ", error);
-        }
-      };
-/*      const populateAllergyList = async () => {
-        try{
-          //'allergy' is the single document we have in firebase
-          allergies.map((allergy) => (
-            //we want to iterate through the list in this 'allergy' document to populate allergyList
-            Object.entries(allergy.allergies).map((allergyName) => (
-              allergyList.push(allergyName) // Do this stuff in fetchAllergy
-            ))
-          ))
-          console.log("AllergyList: ", allergyList);
-        } catch(error){
-          console.error("Error populating list: ", error);
-        }
-      };*/
-      fetchAllergy();
       fetchRecipes();
     }, []);
   
@@ -93,6 +68,7 @@ const Recipe: React.FC = () => {
               <div key={recipe.id}>
                 <IonItem>
                   <h2><strong>{recipe.name}</strong></h2>
+                  <p>{recipe.userAllergic.toString()}</p>
                 </IonItem>
                 <div id="basic_recipe_info">
                   <h3>Ingredients:</h3>
