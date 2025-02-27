@@ -9,12 +9,13 @@ const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
     const [allergies, setAllergies] = useState<any[]>([]);
     const [allergyList, setAllergyList] = useState<String[]>([]);
-    const [willYouDie, setDeathCheck] = useState('');
+    const [ingredientList, setIngredientList] = useState<String[]>([]);
 
     const checkIfAllergic = async (recipe_array: String[]) => {
       for(let i=0; i<recipe_array.length; i++){
         for(let j=0; j<allergyList.length; j++){
           if(recipe_array[i].toLowerCase() === allergyList[j].toLowerCase()){
+            console.log("here");
             return true;
           }
         }
@@ -26,8 +27,10 @@ const Recipe: React.FC = () => {
       const fetchRecipes = async () => {
         try {
           const data = await handleRecipe();
-          data.map((recipe) => {
-            recipe.userAllergic = await checkIfAllergic(recipe.ingredients.keys());
+          data.map(async (recipe) => {
+            let arrayBuffer: String[] = Array.from(Object.keys(recipe.ingredients));
+            recipe.userAllergic = await checkIfAllergic(arrayBuffer);
+            //console.log(recipe.userAllergic);
           })
           
           setRecipes(data);
@@ -37,12 +40,10 @@ const Recipe: React.FC = () => {
       };
       const fetchAllergy = async () => {
         try{
+          //allergyData is just the document
           const allergyData = await handleFetchAllergy();
-          //Set the actual list of allergies into an array
-          allergyData.map((allergy) => {
-            setAllergyList(allergy.allergies);
-          })
 
+          setAllergyList(Object.keys(allergyData));
           setAllergies(allergyData);
         } catch(error){
           console.error("Error fetching allergies: ", error);
@@ -74,7 +75,7 @@ const Recipe: React.FC = () => {
             <IonTitle id="title">Recipes</IonTitle>
           </IonToolbar>
         </IonHeader>
-        {<h1 className="recipe_subheader">Allergy-Safe Recipes</h1>}
+        {/*<h1 className="recipe_subheader">Allergy-Safe Recipes</h1>}
         <IonContent>
           {allergies.length === 0 ? (
             <div>No allergies found</div>
@@ -82,7 +83,7 @@ const Recipe: React.FC = () => {
             //Find if 'recipe' is effected by allergy, if it is then skip
             <p></p>
           )}
-        </IonContent>
+        </IonContent>*/}
         {<h1 className="recipe_subheader">All Recipes</h1>}
         <IonContent>
           {recipes.length === 0 ? (

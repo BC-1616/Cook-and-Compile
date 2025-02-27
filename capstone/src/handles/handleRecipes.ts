@@ -16,10 +16,11 @@ export const handleRecipe = async () => {
         instructions: data.instructions || "No instructions provided",
         // We will want the recipe tag beging returned here as well.
         tags: data.tags || "No recipe tags",
+        userAllergic: false,
       };
     });
 
-    console.log("Fetched recipe:", recipesData);
+    //console.log("Fetched recipe:", recipesData);
     return recipesData;
   } catch (error) {
     console.error("Failed to fetch recipes:", error);

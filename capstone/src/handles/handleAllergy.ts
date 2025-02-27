@@ -1,4 +1,4 @@
-import { arrayUnion, getDocs, collection, addDoc, updateDoc, doc } from '@firebase/firestore';
+import { arrayUnion, getDoc, getDocs, collection, addDoc, updateDoc, doc } from '@firebase/firestore';
 import { firestore } from '../firebase_setup/firebase';
 
 export const handleAddAllergy = async (
@@ -40,7 +40,12 @@ export const handleClearAllergy = async (
 };
 
 export const handleFetchAllergy = async () => {
-    try{
+    try{/*
+        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
+        const allergyDocSnap = await getDoc(allergyDocRef);
+
+        return allergyDocSnap.data();
+        */
         const allergyCollectionRef = collection(firestore, 'allergies');
         const allergyQuery = await getDocs(allergyCollectionRef);
 
@@ -49,7 +54,7 @@ export const handleFetchAllergy = async () => {
             return { ...data};
         });
         return allergyData;
-    
+        
     } catch(error){
         throw new Error('Failed to fetch allergies');
     }
