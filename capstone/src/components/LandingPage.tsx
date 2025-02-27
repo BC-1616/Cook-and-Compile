@@ -19,7 +19,8 @@ const LandingPage: React.FC = () => {
       // Check if user is authenticated and then navigate to Home
       if (user) {
         console.log('Redirecting to /Home');  // Log before redirect
-        history.push('/Home');  // Use history.push() for v5 routing
+        window.location.href = '/Home';  // Use window.location.href to change the URL and navigate
+        console.log('Successfully redirected');
       } else {
         console.log('User not authenticated');  // Log if user is not authenticated
       }

@@ -12,6 +12,7 @@ const handleAuth = () => {
   useEffect(() => {
     // Listen for the user's authentication status change
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log("Auth state changed", user);  // Log the user object after sign-in
       setUser(user); // Set user to the authenticated user
       if (user) {
         // Check if the user already has a Firestore document

@@ -1,4 +1,3 @@
-// Reorganized imports
 import { IonApp, IonRouterOutlet, setupIonicReact, IonSplitPane } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -9,10 +8,10 @@ import CreateRecipes from './components/CreateRecipes';
 import RecipeModifier from './components/RecipeModifier';
 import Recipe from './components/Recipe';
 import LandingPage from './components/LandingPage';
-import handleAuth from './handles/handleAuth';  // Import the useAuth hook
 import NavBar from './components/NavBar';
+import handleAuth from './handles/handleAuth';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -32,33 +31,37 @@ import './Styles/variables.css';
 
 setupIonicReact();
 
-
 const App: React.FC = () => {
-  const { user, loading } = handleAuth(); // Use the useAuth hook to access the authenticated user
-  
+  const { user, loading } = handleAuth(); // Assuming handleAuth properly sets user and loading states
+
   // While loading, show loading message, otherwise show the main content
   if (loading) {
-    return <div>Loading...</div>;
+    console.log("Loading...");
+    return <div>Loading...</div>; // Show loading screen during auth check
   }
 
   return (
-  <IonApp>
+    <IonApp>
+      <>
+        {console.log('Rendering App component')}
+      </>
       <IonReactRouter>
         <IonSplitPane contentId="main">
           <IonRouterOutlet id="main">
             <Switch>
-              {/* Always redirect to LandingPage first */}
+              {/* Always redirect to LandingPage if no user is authenticated */}
               <Route path="/" exact={true}>
-                <Redirect to="/LandingPage" />
+                <Redirect to={user ? "/Home" : "/LandingPage"} />
               </Route>
 
+              {/* LandingPage route */}
               <Route path="/LandingPage" exact={true}>
                 <LandingPage />
               </Route>
 
-              {/* If the user is authenticated, allow access to /Home */}
+              {/* Home route */}
               <Route path="/Home" exact={true}>
-                {user ? <BlankPage /> : <Redirect to="/LandingPage" />} {/* Redirect to LandingPage if not logged in */}
+                <BlankPage /> {/* Render the BlankPage if user is authenticated */}
               </Route>
 
               {/* Other routes */}
@@ -79,7 +82,9 @@ const App: React.FC = () => {
               </Route>
             </Switch>
           </IonRouterOutlet>
-          {user && <NavBar />} {/* Render Menu only if user is logged in */}
+
+          {/* Render NavBar only if user is logged in */}
+          {user && <NavBar />}
         </IonSplitPane>
       </IonReactRouter>
     </IonApp>
