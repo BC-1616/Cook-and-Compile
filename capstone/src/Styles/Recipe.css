@@ -14,3 +14,18 @@
 }
 /* Mobile Page Styles */
 @media (max-width: 768px) {}
+
+/* Allows us to customize the size of buttons for the recipes.
+   The standard options looked silly
+   Border radius can be adjusted to make buttons rounder
+*/
+.recipe_button {
+    width: 250px;
+    height: 200px;
+    border-radius: 60px; 
+    background-size: cover;
+    background-position: center;
+    font-size: 28px;
+    font-weight: bolder;
+    color: black;
+    }
