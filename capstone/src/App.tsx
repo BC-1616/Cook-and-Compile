@@ -1,42 +1,29 @@
-// Reorganized imports
-import React from 'react';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { IonApp, IonRouterOutlet, setupIonicReact, IonSplitPane } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-// removed unneeded import
-import { Route, Redirect } from 'react-router-dom';
-import Navbar from './components/NavBar';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import Menu from './components/Menu';
 import IngredientPage from './components/IngredientList';
-// Deleted unneeded pull page 
-import BlankPage from './components/BlankPage'
+import BlankPage from './components/BlankPage';
 import CreateRecipes from './components/CreateRecipes';
-import RecipeModifier from './components/RecipeModifier'; 
+import RecipeModifier from './components/RecipeModifier';
 import Recipe from './components/Recipe';
+import LandingPage from './components/LandingPage';
+import NavBar from './components/NavBar';
+import handleAuth from './handles/handleAuth';
+import { UserProvider } from './components/UserContext'; // Import UserProvider
+import React from 'react';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
-
-/* Basic CSS for apps built with Ionic */
 import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
-
-/* Optional CSS utils that can be commented out */
 import '@ionic/react/css/padding.css';
 import '@ionic/react/css/float-elements.css';
 import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
 import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
@@ -45,22 +32,64 @@ import './Styles/variables.css';
 setupIonicReact();
 
 const App: React.FC = () => {
+  const { user, loading } = handleAuth(); // Assuming handleAuth properly sets user and loading states
+
+  // While loading, show loading message, otherwise show the main content
+  if (loading) {
+    console.log("Loading...");
+    return <div>Loading...</div>; // Show loading screen during auth check
+  }
+
   return (
     <IonApp>
+      {/* Wrap everything in UserProvider so that user data is accessible globally */}
+      <UserProvider>
+        <>
+          {console.log('Rendering App component')}
+        </>
         <IonReactRouter>
-            <IonRouterOutlet className="content-container">
-              <Route path="/" exact={true}>
-                <Redirect to="/Home" />
-              </Route>
-              {/* Simplified Routes */}
-              <Route path="/Home" component={BlankPage} exact={true} />
-              <Route path="/IngredientPage" component={IngredientPage} exact={true} />
-              <Route path="/Recipes" component={Recipe} exact={true} />
-              <Route path="/CreateRecipes" component={CreateRecipes} exact={true} />
-              <Route path="/RecipeModifier" component={RecipeModifier} exact={true} />
+          <IonSplitPane contentId="main">
+            <IonRouterOutlet id="main">
+              <Switch>
+                {/* Always redirect to LandingPage if no user is authenticated */}
+                <Route path="/" exact={true}>
+                  <Redirect to={user ? "/Home" : "/LandingPage"} />
+                </Route>
+
+                {/* LandingPage route */}
+                <Route path="/LandingPage" exact={true}>
+                  <LandingPage />
+                </Route>
+
+                {/* Home route */}
+                <Route path="/Home" exact={true}>
+                  <BlankPage /> {/* Render the BlankPage if user is authenticated */}
+                </Route>
+
+                {/* Other routes */}
+                <Route path="/IngredientPage" exact={true}>
+                  <IngredientPage />
+                </Route>
+
+                <Route path="/Recipes" exact={true}>
+                  <Recipe />
+                </Route>
+
+                <Route path="/CreateRecipes" exact={true}>
+                  <CreateRecipes />
+                </Route>
+
+                <Route path="/RecipeModifier" exact={true}>
+                  <RecipeModifier />
+                </Route>
+              </Switch>
             </IonRouterOutlet>
-            <Navbar />
+
+            {/* Render NavBar only if user is logged in */}
+            {user && <NavBar />}
+          </IonSplitPane>
         </IonReactRouter>
+      </UserProvider>
     </IonApp>
   );
 };

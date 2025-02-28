@@ -1,13 +1,56 @@
 import React from 'react';
-import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, } from '@ionic/react';
-import { useParams } from 'react-router';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonButton } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
+import { signOut } from 'firebase/auth';  // Import signOut from Firebase
+import { auth } from '../firebase_setup/firebase';  // Import your Firebase auth instance
+import { useUser } from './UserContext';  // Assuming you are using context for global state management
+import handleAuth from '../handles/handleAuth'; // Import handleAuth hook
 import '../Styles/BlankPage.css';
 
 const BlankPage: React.FC = () => {
+  const { user, loading } = handleAuth();  // Use the handleAuth hook to get user data
+  const history = useHistory();
 
-    const { name } = useParams<{ name: string; }>();
+  // Handle sign out
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      console.log("User signed out successfully");
+      window.location.href = '/LandingPage';  // Navigate to LandingPage
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
 
-   return (
+  // Export user data as JSON
+  const exportToJson = () => {
+    if (!user) {
+      console.log("No user data available to export");
+      return;
+    }
+
+    const userData = {
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+    };
+
+    const jsonData = JSON.stringify(userData, null, 2);  // Convert user data to JSON string
+    const blob = new Blob([jsonData], { type: 'application/json' });  // Create a Blob with JSON data
+    const url = URL.createObjectURL(blob);  // Create an object URL for the Blob
+    const link = document.createElement('a');  // Create an anchor element
+    link.href = url;  // Set the download link
+    link.download = 'userData.json';  // Specify the filename for the downloaded JSON file
+    link.click();  // Simulate a click to trigger the download
+    URL.revokeObjectURL(url);  // Clean up the object URL to free memory
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;  // Show a loading message while checking authentication
+  }
+
+  return (
     <IonPage>
         <IonHeader>
           <IonToolbar>
@@ -26,6 +69,16 @@ const BlankPage: React.FC = () => {
         </IonHeader>
         <h1>Welcome to the Jandonshurell Recipe App!!!</h1>
         <p>This page is a placeholder for other routes. User authentication coming soon</p>
+        
+        {/* Sign Out Button */}
+        <IonButton expand="full" color="danger" onClick={handleSignOut}>
+          Sign Out
+        </IonButton>
+
+        {/* Export User Data Button */}
+        <IonButton expand="full" color="primary" onClick={exportToJson}>
+          Export User Data
+        </IonButton>
       </IonContent>
     </IonPage>
   );
