@@ -2,20 +2,33 @@ import React, {useEffect, useState} from 'react';
 // Removed unneeded imports
 import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton} from '@ionic/react';
 import { handleRecipe } from '../handles/handleRecipes'; 
+import { handleFetchAllergy , checkIfAllergic } from '../handles/handleAllergy';
 import '../Styles/Recipe.css';
 
 const Recipe: React.FC = () => {
-  const [recipes, setRecipes] = useState<any[]>([]);
-  const [setRecipe, showRecipe] = useState<any | null>(null);
+    const [recipes, setRecipes] = useState<any[]>([]);
+    const [allergies, setAllergies] = useState<any[]>([]);
+    const [setRecipe, showRecipe] = useState<any | null>(null);
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const data = await handleRecipe();
-        setRecipes(data);
-      } catch (error) {
-        console.error("Error fetching recipes:", error);
-      }
+
+    useEffect(() => {
+      const fetchRecipes = async () => {
+        try {
+          const data = await handleRecipe();
+          //I need to get the allergyData here so I can use it in the parameter for checkIfAllergic
+          const allergyData = await handleFetchAllergy();
+          
+          data.map(async (recipe) => {
+            let arrayBuffer: String[] = Array.from(Object.keys(recipe.ingredients));
+            recipe.userAllergic = await checkIfAllergic(arrayBuffer, allergyData[0].allergies);
+            //console.log(recipe.userAllergic);
+          })
+          
+          setAllergies(allergyData);
+          setRecipes(data);
+        } catch (error) {
+          console.error("Error fetching recipes:", error);
+        }
     };
 
     fetchRecipes();
@@ -40,7 +53,7 @@ const Recipe: React.FC = () => {
           <div>
             <IonButton onClick={() => showRecipe(null)}>Back</IonButton>           
             <IonItem>
-            <h2><strong>{setRecipe.name}</strong></h2>
+              <h2><strong>{setRecipe.name}</strong></h2>
             </IonItem>
             <div id="basic_recipe_info">
               <h3>Ingredients:</h3>
@@ -61,6 +74,11 @@ const Recipe: React.FC = () => {
         ) : (
           recipes.map((recipe) => (
             <div key={recipe.id}>
+              {recipe.userAllergic === true ? (
+                <IonItem>
+                  <p id="allergic_alert">You are allergic to this recipe</p>
+                </IonItem>
+              ) : (<p></p>) }
               <IonButton
                 //uses the css description for the button size and I think the round looks better but it can easily be changed
                 //the height and width can easily be changed, will have to come back to see what looks nicest
