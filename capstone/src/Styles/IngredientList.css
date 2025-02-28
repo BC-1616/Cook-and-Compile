@@ -1,11 +1,42 @@
 #ingredient_list_list{
     font-size: 30px;
     font-weight: bold;
+    text-align: center;
 }
 #ingredient_list_item{
     padding: .2em;
+    text-align: center;
 }
-/* Web Page Styles */
+
+#ingredient_content_parent{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+#ingredient_content_top_label{
+    font-style: italic;
+}
+#right_ingredient_content{
+    text-align: center;
+}
+#right_ingredient_content h2{
+    font-weight: bold;
+}
+
+#allergy_list_item{
+    text-align: center;
+}
+#line_break{
+    font-size: 1px;
+}
+
+@media(max-width: 600px){
+    #ingredient_content_parent{
+        flex-direction: column-reverse;
+    }
+}
+
 @media (min-width: 769px) {
     #title {
     display: flex;
@@ -14,5 +45,3 @@
     padding: 10px;
     }
 }
-/* Mobile Page Styles */
-@media (max-width: 768px) {}
