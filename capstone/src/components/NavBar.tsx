@@ -1,33 +1,38 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import '../Styles/NavBar.css';
+// import icons for navbar
+import home from '../ICONS/Home.png';
+import ingredients from '../ICONS/Ingredients.png';
+import recipes from '../ICONS/Recipes.png';
+import create from '../ICONS/Create.png';
+import modify from '../ICONS/Modify.png';
 
-// This page is similar to the original Menu but instead of there being an upper left menu button for mobile there is a Navigation bar at the bottom. This will be more user friendly for mobile users. 
 const appPages = [
   {
     title: 'Home',
     url: '/Home',
-    icon: 'home'
+    icon: home
   },
   {
     title: 'Ingredients',
     url: '/IngredientPage',
-    icon: 'list'
+    icon: ingredients
   },
   {
     title: 'Recipes',
     url: '/Recipes',
-    icon: 'restaurant'
+    icon: recipes
   },
   {
     title: 'Create',
     url: '/CreateRecipes',
-    icon: 'create'
+    icon: create
   },
   {
     title: 'Modify',
     url: '/RecipeModifier',
-    icon: 'construct'
+    icon: modify
   }
 ];
 
@@ -42,9 +47,9 @@ const CustomNavBar: React.FC = () => {
           className={`nav-button ${location.pathname === appPage.url ? 'selected' : ''}`}
           onClick={() => window.location.href = appPage.url}
         >
-          <i className={`icon-${appPage.icon}`}></i>
-          <span>{appPage.title}</span>
-        </div>
+          {/* added image tag for icons */}
+          <img src={appPage.icon} alt={appPage.title} className="nav-icon" />
+      </div>
       ))}
     </div>
   );

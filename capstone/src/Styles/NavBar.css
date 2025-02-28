@@ -1,37 +1,35 @@
 .custom-navbar {
-    display: flex;
-    align-items: center;
-    background-color: #333; 
-    color: #fff; 
-    padding: 10px 0;
+  display: flex;
+  align-items: center;
+  background-color: black;
+  padding: 10px 0;
+  position: fixed;
+  width: 100%;
+}
+
+.nav-button {
+  text-align: center;
+  flex: 1;
+}
+
+/* Size adjustments for nav icons */
+.nav-icon {
+  width: 35px; 
+  height: 35px;
+}
+
+
+/* Style adjustments for web and mobile views */
+@media (min-width: 769px) {
+  .custom-navbar {
     position: fixed;
-    width: 100%;
+    bottom: auto;
+    top: 0;
   }
-  
-  .nav-button {
-    text-align: center;
-    flex: 1;
-    font-size: 1em; 
+}
+
+@media (max-width: 768px) {
+  .custom-navbar {
+    bottom: 0;
   }
-  
-  .nav-button.selected {
-    font-weight: bold;
-    color: #ffeb3b; 
-  }
-  
-  /* Style adjustments for web and mobile views */
-  @media (min-width: 769px) {
-    .custom-navbar {
-      position: fixed;
-      bottom: auto;
-      top: 0;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .custom-navbar {
-      bottom: 0;
-    }
-  }
-  
-/* add icons and delete words on navbar later */
+}

@@ -7,3 +7,11 @@
     padding: 10px;
     }
 }
+
+/* Mobile Page Styles */
+@media (max-width: 768px) {
+    /* padding to fix navbar overlap issue (I will probably need this later) */
+    #nav-padding {
+        margin-bottom: 60px;
+    }
+}
