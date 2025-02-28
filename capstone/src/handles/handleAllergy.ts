@@ -59,3 +59,20 @@ export const handleFetchAllergy = async () => {
         throw new Error('Failed to fetch allergies');
     }
 };
+
+
+export const checkIfAllergic = async (recipe_array: String[], allergy_array: String[]) => {
+    //Conditional check for invalid array types
+    if(typeof recipe_array[0] != 'string' || typeof allergy_array[0] != 'string'){
+        return false;
+    }
+
+    for(let i=0; i<recipe_array.length; i++){
+        for(let j=0; j<allergy_array.length; j++){
+            if(recipe_array[i].toLowerCase() === allergy_array[j].toLowerCase()){
+                return true;
+            }
+        }
+    }
+    return false;
+};

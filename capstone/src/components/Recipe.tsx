@@ -2,23 +2,13 @@ import React, {useEffect, useState} from 'react';
 // Removed unneeded imports
 import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem} from '@ionic/react';
 import { handleRecipe } from '../handles/handleRecipes'; 
-import { handleFetchAllergy } from '../handles/handleAllergy';
+import { handleFetchAllergy , checkIfAllergic } from '../handles/handleAllergy';
 import '../Styles/Recipe.css';
 
 const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
     const [allergies, setAllergies] = useState<any[]>([]);
 
-    const checkIfAllergic = async (recipe_array: String[], allergy_array: String[]) => {
-      for(let i=0; i<recipe_array.length; i++){
-        for(let j=0; j<allergy_array.length; j++){
-          if(recipe_array[i].toLowerCase() === allergy_array[j].toLowerCase()){
-            return true;
-          }
-        }
-      }
-      return false;
-    };
 
     useEffect(() => {
       const fetchRecipes = async () => {
@@ -50,16 +40,6 @@ const Recipe: React.FC = () => {
             <IonTitle id="title">Recipes</IonTitle>
           </IonToolbar>
         </IonHeader>
-        {/*<h1 className="recipe_subheader">Allergy-Safe Recipes</h1>}
-        <IonContent>
-          {allergies.length === 0 ? (
-            <div>No allergies found</div>
-          ) : (
-            //Find if 'recipe' is effected by allergy, if it is then skip
-            <p></p>
-          )}
-        </IonContent>*/}
-        {<h1 className="recipe_subheader">All Recipes</h1>}
         <IonContent>
           {recipes.length === 0 ? (
             <div>No recipes found</div>
@@ -68,8 +48,12 @@ const Recipe: React.FC = () => {
               <div key={recipe.id}>
                 <IonItem>
                   <h2><strong>{recipe.name}</strong></h2>
-                  <p>{recipe.userAllergic.toString()}</p>
                 </IonItem>
+                {recipe.userAllergic === true ? (
+                  <IonItem>
+                    <p id="allergic_alert">You are allergic to this recipe</p>
+                  </IonItem>
+                ) : (<p></p>) }
                 <div id="basic_recipe_info">
                   <h3>Ingredients:</h3>
                   <ul>

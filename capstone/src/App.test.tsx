@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 import IngredientPage from './components/IngredientList';
 import Recipe from './components/Recipe';
+import { checkIfAllergic } from './handles/handleAllergy';
 import {MemoryRouter} from 'react-router-dom';
 import populateList from './components/IngredientList';
 import CreateRecipes from './components/CreateRecipes';
@@ -62,5 +63,20 @@ test('displays allergy input', () => {
   );
   expect(screen.getByText('Allergy Input')).toBeInTheDocument();
   expect(screen.getByText('Add Allergy')).toBeInTheDocument();
+
+});
+
+test('tests array comparison function', () => {
+  const arrOne = ['one', 'two', 'three'];
+  const arrTwo = ['One', 'four', 'five'];
+  const arrThree = ['six', 'seven', 'eight'];
+  
+  let boolBuffer = checkIfAllergic(arrOne, arrTwo);
+  let boolBuffer2 = checkIfAllergic(arrOne, arrThree);
+
+  expect(boolBuffer).resolves.toBe(true);
+  expect(boolBuffer2).resolves.toBe(false);
+
+
 
 });
