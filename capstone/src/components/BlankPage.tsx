@@ -52,14 +52,15 @@ const BlankPage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton />
-          </IonButtons>
-          <IonTitle id="title">Home</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonMenuButton />
+            </IonButtons>
+            {/* Added CSS to move page tile below Navbar */}
+            <IonTitle id="title">Home</IonTitle>
+          </IonToolbar>
+        </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>

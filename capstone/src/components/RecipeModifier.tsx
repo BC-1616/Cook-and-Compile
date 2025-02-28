@@ -13,6 +13,7 @@ interface Recipe {
     ingredients: { [key: string]: string };
     instructions: string;
     tags: string; //again, maybe make this a list
+    userAllergic: boolean;
 }
 
 // NOTE: There are other handle functions in this file and not in folder handles because they are important for the RecipeModifier component and are not used elsewhere in the app. If you want to use them in other components, you can move them to the handles folder.
@@ -157,8 +158,8 @@ const RecipeModifier: React.FC = () => {
                             <IonLabel>No recipes found</IonLabel>
                         </IonItem>
                     ) : (
-                        filteredRecipes.map((recipe) => (
-                            <IonItem key={recipe.id} button onClick={() => setSelectedRecipe(recipe)}>
+                        filteredRecipes.map((recipe, index) => (
+                            <IonItem key={recipe.id} button onClick={() => setSelectedRecipe(recipe)} id={index === filteredRecipes.length - 1 ? "last-recipe" : ""}> {/* fix so last recipe is not overlapped by the navbar */}
                                 <IonLabel>{recipe.name}</IonLabel>
                             </IonItem>
                         ))
