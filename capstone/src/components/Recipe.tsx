@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 // Removed unneeded imports
-import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem} from '@ionic/react';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton} from '@ionic/react';
 import { handleRecipe } from '../handles/handleRecipes'; 
 import { handleFetchAllergy , checkIfAllergic } from '../handles/handleAllergy';
 import '../Styles/Recipe.css';
@@ -8,6 +8,7 @@ import '../Styles/Recipe.css';
 const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
     const [allergies, setAllergies] = useState<any[]>([]);
+    const [setRecipe, showRecipe] = useState<any | null>(null);
 
 
     useEffect(() => {
@@ -28,50 +29,75 @@ const Recipe: React.FC = () => {
         } catch (error) {
           console.error("Error fetching recipes:", error);
         }
-      };
-      fetchRecipes();
-    }, []);
-  
-    return (
-      <IonPage>
-        <IonHeader>
-          <IonToolbar>
-            {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}
-            <IonTitle id="title">Recipes</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          {recipes.length === 0 ? (
-            <div>No recipes found</div>
-          ) : (
-            recipes.map((recipe) => (
-              <div key={recipe.id}>
-                <IonItem>
-                  <h2><strong>{recipe.name}</strong></h2>
-                </IonItem>
-                {recipe.userAllergic === true ? (
-                  <IonItem>
-                    <p id="allergic_alert">You are allergic to this recipe</p>
-                  </IonItem>
-                ) : (<p></p>) }
-                <div id="basic_recipe_info">
-                  <h3>Ingredients:</h3>
-                  <ul>
-                  {Object.entries(recipe.ingredients).map(([ingredientName, amount], index) => (
-                    <li key={index}>{ingredientName}: {amount as string}</li>
-                  ))}
-                  </ul>
-                  <h3>Instructions:</h3>
-                  <p>{recipe.instructions}</p>
-                  <h3>User Tags:</h3>
-                  <p>{recipe.tags}</p> {/*This will probably be a list */}
-                </div>
-              </div>
-            ))
-          )}
-        </IonContent>
-      </IonPage>
-      );
     };
+
+    fetchRecipes();
+  }, []);
+  //updates page to selected recipe
+  const click = (recipe: any) => {
+    showRecipe(recipe);
+  };
+  
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}
+          <IonTitle id="title">Recipes</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        {setRecipe ? (
+          /*Button is for when the recipe intructions are displayed so they can return to button page*/
+          /*Added the recipe title to the information once button is clicked*/
+          <div>
+            <IonButton onClick={() => showRecipe(null)}>Back</IonButton>           
+            <IonItem>
+              <h2><strong>{setRecipe.name}</strong></h2>
+            </IonItem>
+            <div id="basic_recipe_info">
+              <h3>Ingredients:</h3>
+              <ul>
+              {Object.entries(setRecipe.ingredients).map(([ingredientName, amount], index) => (
+                <li key={index}>{ingredientName}: {amount as string}</li>
+              ))}
+              </ul>
+              <h3>Instructions:</h3>
+              <p>{setRecipe.instructions}</p>
+              <h3>User Tags:</h3>
+              <p>{setRecipe.tags}</p> {/*This will probably be a list */}
+            </div>
+          </div>
+      ) : (
+        recipes.length === 0 ? (
+          <div>No recipes found</div>
+        ) : (
+          recipes.map((recipe) => (
+            <div key={recipe.id}>
+              {recipe.userAllergic === true ? (
+                <IonItem>
+                  <p id="allergic_alert">You are allergic to this recipe</p>
+                </IonItem>
+              ) : (<p></p>) }
+              <IonButton
+                //uses the css description for the button size and I think the round looks better but it can easily be changed
+                //the height and width can easily be changed, will have to come back to see what looks nicest
+                className='recipe_button'
+                shape="round"
+                fill='clear'
+                onClick={() => click(recipe)}
+                //right now this makes them all the same image. Eventually going to find a way to add them to the database so each picture can be different
+                style={{ backgroundImage: `url(https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg)` }}
+                //style={{ backgroundImage: `url(${recipe.image})` }}
+                >
+                {recipe.name}
+              </IonButton>
+            </div>
+          )))
+      )}
+    </IonContent>
+  </IonPage>
+);
+};
 
 export default Recipe;
