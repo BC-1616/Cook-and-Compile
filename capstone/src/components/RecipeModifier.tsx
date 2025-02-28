@@ -158,8 +158,8 @@ const RecipeModifier: React.FC = () => {
                             <IonLabel>No recipes found</IonLabel>
                         </IonItem>
                     ) : (
-                        filteredRecipes.map((recipe) => (
-                            <IonItem key={recipe.id} button onClick={() => setSelectedRecipe(recipe)}>
+                        filteredRecipes.map((recipe, index) => (
+                            <IonItem key={recipe.id} button onClick={() => setSelectedRecipe(recipe)} id={index === filteredRecipes.length - 1 ? "last-recipe" : ""}> {/* fix so last recipe is not overlapped by the navbar */}
                                 <IonLabel>{recipe.name}</IonLabel>
                             </IonItem>
                         ))

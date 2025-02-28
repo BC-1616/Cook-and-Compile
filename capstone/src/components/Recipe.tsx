@@ -72,8 +72,8 @@ const Recipe: React.FC = () => {
         recipes.length === 0 ? (
           <div>No recipes found</div>
         ) : (
-          recipes.map((recipe) => (
-            <div key={recipe.id}>
+          recipes.map((recipe, index) => (
+            <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
               {recipe.userAllergic === true ? (
                 <IonItem>
                   <p id="allergic_alert">You are allergic to this recipe</p>

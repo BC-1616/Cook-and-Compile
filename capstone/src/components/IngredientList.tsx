@@ -82,7 +82,7 @@ const IngredientPage: React.FC = () => {
                 No ingredients available.
               </IonText>
             ) : (
-              <IonList style={{ marginTop: '20px', marginBottom: '10px'}}>
+              <IonList style={{ marginTop: '20px', marginBottom: '50px'}}> {/* Changed bottom margin to fix nav overlap on mobile */}
                 {ingredients.map((ingredient, index) => (
                   <IonItem key={index}>
                     <IonLabel>

@@ -12,12 +12,14 @@
     align-items: flex-end; 
     height: 80px; 
     padding: 10px;
+    /* margin adjustment to fix navbar overlap issue */
+    margin-top: 20px;
     }
 }
 /* Mobile Page Styles */
 @media (max-width: 768px) {
     /* padding to fix navbar overlap issue */
     #nav-padding {
-        margin-bottom: 40px;
+        margin-bottom: 60px;
     }
 }
