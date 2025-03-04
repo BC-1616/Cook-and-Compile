@@ -72,12 +72,12 @@ const Recipe: React.FC = () => {
         recipes.length === 0 ? (
           <div>No recipes found</div>
         ) : (
-          recipes.map((recipe, index) => (
+          recipes.map((recipe, index) => ( //Could do some flexbox things with this div for better display
             <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
               {recipe.userAllergic === true ? (
-                <IonItem>
+                //<IonItem>
                   <p id="allergic_alert">You are allergic to this recipe</p>
-                </IonItem>
+                //</IonItem>
               ) : (<p></p>) }
               <IonButton
                 //uses the css description for the button size and I think the round looks better but it can easily be changed

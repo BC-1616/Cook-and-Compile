@@ -40,12 +40,7 @@ export const handleClearAllergy = async (
 };
 
 export const handleFetchAllergy = async () => {
-    try{/*
-        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
-        const allergyDocSnap = await getDoc(allergyDocRef);
-
-        return allergyDocSnap.data();
-        */
+    try{
         const allergyCollectionRef = collection(firestore, 'allergies');
         const allergyQuery = await getDocs(allergyCollectionRef);
 
@@ -69,7 +64,8 @@ export const checkIfAllergic = async (recipe_array: String[], allergy_array: Str
 
     for(let i=0; i<recipe_array.length; i++){
         for(let j=0; j<allergy_array.length; j++){
-            if(recipe_array[i].toLowerCase() === allergy_array[j].toLowerCase()){
+            if(recipe_array[i].toLowerCase().indexOf(allergy_array[j].toLowerCase()) != -1){
+                //This is a needle in the haystack search
                 return true;
             }
         }
