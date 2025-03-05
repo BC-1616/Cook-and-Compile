@@ -8,6 +8,7 @@ import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleCreateRecipe } from '../handles/handleCreateRecipe';
 import { handleDeleteRecipe } from '../handles/handleDeleteRecipe';
 import { handleEditRecipe } from '../handles/handleEditRecipe';
+import { set } from 'cypress/types/lodash';
 
 interface Recipe {
     id: string;
@@ -73,12 +74,35 @@ const RecipeModifier: React.FC = () => {
         setRecipeIngredients({}); 
         setRecipeInstructions(''); 
     };
+
+    // function to  close modal
+    const closeModal = () => {
+        setIsCreateModalOpen(false);
+        console.log("Modal closed");
+    };
+
+    //function to reload recipes
+    const reload = async () => {
+        const recipesData = await handleFetchRecipes();
+        const sortedRecipes = (recipesData || []).sort((a, b) => a.name.localeCompare(b.name));
+        setRecipes(sortedRecipes);
+        setFilteredRecipes(sortedRecipes);
+        console.log("Recipes reloaded");
+    };
+
     // function to create recipe
     const createRecipe = async () => {
-        console.log({ recipeName, recipeIngredients, recipeInstructions }); 
-        await handleCreateRecipe(recipeName, recipeIngredients, recipeInstructions, setStatusMessage, clearForm); 
-        setIsCreateModalOpen(false);
-        setShowCreateModal(false);
+        try {
+            console.log({ recipeName, recipeIngredients, recipeInstructions }); 
+            await handleCreateRecipe(recipeName, recipeIngredients, recipeInstructions, setStatusMessage, clearForm); 
+            setIsCreateModalOpen(false);
+            closeModal();
+            reload();
+            setStatusMessage("Recipe created successfully!");
+            setTimeout(() => setStatusMessage(''), 3000);
+        } catch (error) {
+            console.error('Failed to create recipe:', error);
+        }
     };
 
     // Add handleDelete function to delete a recipe in the firestore database
@@ -179,14 +203,6 @@ const RecipeModifier: React.FC = () => {
         setSearchText(query);
         setFilteredRecipes(handleSearch(recipes, query));
     };
-
-    function setShowCreateModal(arg0: boolean) {
-        throw new Error('Function not implemented.');
-    }
-
-    function closemodal() {
-        throw new Error('Function not implemented.');
-    }
 
     return (
         <IonPage>
@@ -325,7 +341,7 @@ const RecipeModifier: React.FC = () => {
                             <IonButton color="danger" onClick={() => {
                                 clearForm();
                                 setIsCreateModalOpen(false);
-                            }}>Cancel</IonButton>
+                            }}>Close</IonButton>
                             <p>{statusMessage}</p>
                         </div>
                     </IonContent>
