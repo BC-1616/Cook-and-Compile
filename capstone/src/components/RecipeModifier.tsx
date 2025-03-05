@@ -199,6 +199,7 @@ const RecipeModifier: React.FC = () => {
             <IonContent>
                 <IonSearchbar value={searchText} onIonInput={handleSearchInput} placeholder="Search for recipes" />
                 <IonButton onClick={() => setIsCreateModalOpen(true)}>Create Recipe</IonButton>
+                <p>To edit or delete a recipe, please select a recipe first</p>
                 <IonList>
                     {filteredRecipes.length === 0 ? (
                         <IonItem>
