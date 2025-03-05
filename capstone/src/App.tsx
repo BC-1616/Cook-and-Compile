@@ -35,10 +35,7 @@ const App: React.FC = () => {
   const { user, loading } = handleAuth(); // Assuming handleAuth properly sets user and loading states
 
   // While loading, show loading message, otherwise show the main content
-  if (loading) {
-    console.log("Loading...");
-    return <div>Loading...</div>; // Show loading screen during auth check
-  }
+
 
   return (
     <IonApp>
