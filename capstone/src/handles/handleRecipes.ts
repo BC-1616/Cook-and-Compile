@@ -14,6 +14,7 @@ export const handleRecipe = async () => {
         name: data.name || "Unnamed Recipe",
         ingredients: data.ingredients || [],
         instructions: data.instructions || "No instructions provided",
+        image: data.image || "No Imgae provided",
         // We will want the recipe tag beging returned here as well.
         tags: data.tags || "No recipe tags",
         userAllergic: false,

@@ -37,7 +37,7 @@ const Recipe: React.FC = () => {
   const click = (recipe: any) => {
     showRecipe(recipe);
   };
-  
+
   return (
     <IonPage>
       <IonHeader>
@@ -86,9 +86,8 @@ const Recipe: React.FC = () => {
                 shape="round"
                 fill='clear'
                 onClick={() => click(recipe)}
-                //right now this makes them all the same image. Eventually going to find a way to add them to the database so each picture can be different
-                style={{ backgroundImage: `url(https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg)` }}
-                //style={{ backgroundImage: `url(${recipe.image})` }}
+                //Will display the image if there is one otherwise will fallback to pan
+                style={{ backgroundImage: `url(${recipe.image || 'https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg'})` }}
                 >
                 {recipe.name}
               </IonButton>
