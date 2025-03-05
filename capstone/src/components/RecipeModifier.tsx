@@ -204,6 +204,14 @@ const RecipeModifier: React.FC = () => {
         setFilteredRecipes(handleSearch(recipes, query));
     };
 
+    // This is for the dropdown to show expanded recipe details and buttons
+    const [expandedRecipe, setExpandedRecipe] = useState<string | null>(null);
+
+    // This function toggles the dropdown for a recipe
+    const toggleDropdown = (recipeId: string) => {
+        setExpandedRecipe(expandedRecipe === recipeId ? null : recipeId);
+    };
+
     return (
         <IonPage>
             <IonHeader>
@@ -223,9 +231,26 @@ const RecipeModifier: React.FC = () => {
                         </IonItem>
                     ) : (
                         filteredRecipes.map((recipe, index) => (
-                            <IonItem key={recipe.id} button onClick={() => setSelectedRecipe(recipe)} id={index === filteredRecipes.length - 1 ? "last-recipe" : ""}> {/* fix so last recipe is not overlapped by the navbar */}
-                                <IonLabel>{recipe.name}</IonLabel>
-                            </IonItem>
+                            // added a dropdown so that the user can see the ingredients and instructions directly below the recipe they clicked on instead of at the very end of the list
+                            <div key={recipe.id}>
+                                <IonItem button onClick={() => toggleDropdown(recipe.id)} id={index === filteredRecipes.length - 1 ? 'last-item' : ''}>
+                                    <IonLabel>{recipe.name}</IonLabel>
+                                </IonItem>
+                                {expandedRecipe === recipe.id && (
+                                    <div className="recipe-dropdown">
+                                        <p>Ingredients:</p> 
+                                        <ul>
+                                            {Object.entries(recipe.ingredients).map(([key, value]) => (
+                                                <li key={key}>{key}: {value}</li>
+                                            ))}
+                                        </ul>
+                                        <p>Instructions: {recipe.instructions}</p>
+                                        <p>Tags: {recipe.tags}</p>
+                                        <IonButton color="warning" onClick={() => handleEdit(recipe)}>Edit</IonButton>
+                                        <IonButton color="danger" onClick={() => handleDelete(recipe.id)}>Delete</IonButton>
+                                    </div>
+                                )}
+                            </div>
                         ))
                     )}
                 </IonList>
@@ -241,8 +266,6 @@ const RecipeModifier: React.FC = () => {
                     </ul>
                     <p>Instructions: {selectedRecipe.instructions}</p>
                     <p>Tags: {selectedRecipe.tags}</p>
-                    <IonButton onClick={() => handleEdit(selectedRecipe!)}>Edit</IonButton>
-                    <IonButton color="danger" onClick={() => handleDelete(selectedRecipe.id)}>Delete</IonButton>
                   </div>
             )}
 
