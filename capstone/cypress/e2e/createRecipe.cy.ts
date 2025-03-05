@@ -8,6 +8,8 @@ describe('Create Recipe', () => {
       
       cy.contains('Create Recipe').click();
 
+      cy.wait(1000); //wait 1 seconds for popup to load   
+
       cy.get('input[placeholder="Enter Recipe Name"]').type('Test Recipe');
       cy.get('input[placeholder="Enter Ingredient Name"]').type('Test Ingredient');
       cy.get('input[placeholder="Enter Ingredient Amount"]').type('1 cup');

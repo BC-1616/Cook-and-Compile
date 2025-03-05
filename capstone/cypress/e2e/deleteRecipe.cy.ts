@@ -7,6 +7,8 @@ describe('Delete Recipe', () => {
 
       cy.contains('Create Recipe').click();
 
+      cy.wait(1000); //wait 1 seconds for popup to load   
+
       cy.get('input[placeholder="Enter Recipe Name"]').type('DEL Recipe');
       cy.get('input[placeholder="Enter Ingredient Name"]').type('DEL Ingredient');
       cy.get('input[placeholder="Enter Ingredient Amount"]').type('1 cup');

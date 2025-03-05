@@ -8,6 +8,8 @@ describe('Edit Recipe', () => {
       cy.visit('/ModifyRecipes');
 
       cy.contains('Create Recipe').click();
+
+      cy.wait(1000); //wait 1 seconds for popup to load   
   
       cy.get('input[placeholder="Enter Recipe Name"]').type('Test Recipe');
       cy.get('input[placeholder="Enter Ingredient Name"]').type('Test Ingredient');
@@ -19,6 +21,8 @@ describe('Edit Recipe', () => {
       
       cy.contains('Test Recipe').click();
       cy.contains('Edit').click();
+
+      cy.wait(1000); //wait 1 seconds for popup to load   
 
       cy.get('input[placeholder="Edit Recipe Name"]').clear().type('Edited Recipe');
       cy.get('textarea[placeholder="Edit Instructions"]').clear().type('Edited ingredients');
