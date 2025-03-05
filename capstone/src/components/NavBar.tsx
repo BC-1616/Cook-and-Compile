@@ -5,7 +5,6 @@ import '../Styles/NavBar.css';
 import home from '../ICONS/Home.png';
 import ingredients from '../ICONS/Ingredients.png';
 import recipes from '../ICONS/Recipes.png';
-import create from '../ICONS/Create.png';
 import modify from '../ICONS/Modify.png';
 
 const appPages = [
@@ -25,13 +24,8 @@ const appPages = [
     icon: recipes
   },
   {
-    title: 'Create',
-    url: '/CreateRecipes',
-    icon: create
-  },
-  {
     title: 'Modify',
-    url: '/RecipeModifier',
+    url: '/ModifyRecipes',
     icon: modify
   }
 ];
