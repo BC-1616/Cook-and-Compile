@@ -1,7 +1,6 @@
 import { IonApp, IonRouterOutlet, setupIonicReact, IonSplitPane } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import Menu from './components/Menu';
 import IngredientPage from './components/IngredientList';
 import BlankPage from './components/BlankPage';
 import CreateRecipes from './components/CreateRecipes';
@@ -32,9 +31,7 @@ import './Styles/variables.css';
 setupIonicReact();
 
 const App: React.FC = () => {
-  const { user, loading } = handleAuth(); // Assuming handleAuth properly sets user and loading states
-
-  // While loading, show loading message, otherwise show the main content
+  const { user } = handleAuth(); // Assuming handleAuth properly sets user and loading states
 
 
   return (
@@ -82,8 +79,7 @@ const App: React.FC = () => {
               </Switch>
             </IonRouterOutlet>
 
-            {/* Render NavBar only if user is logged in */}
-            {user && <NavBar />}
+            {<NavBar />}
           </IonSplitPane>
         </IonReactRouter>
       </UserProvider>

@@ -5,7 +5,6 @@ import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';  // Fire
 
 const handleAuth = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false); // Loading state to show while checking auth
 
   const db = getFirestore(); // Initialize Firestore
 
@@ -44,15 +43,13 @@ const handleAuth = () => {
         // If no user is authenticated, reset the state to null
         setUser(null);
       }
-
-      setLoading(false); // Stop loading spinner once user is authenticated
     });
 
     // Cleanup the listener when the component unmounts
     return () => unsubscribe();
   }, [db]);
 
-  return { user, loading };
+  return { user };
 };
 
 export default handleAuth;

@@ -5,7 +5,7 @@ import { initializeAuth, indexedDBLocalPersistence, getAuth } from 'firebase/aut
 import { isPlatform } from '@ionic/react'; // Import isPlatform to check the platform type
 
 import { setLogLevel } from "firebase/app";
-setLogLevel('debug');  // This enables debug logs for Firebase SDKs
+//setLogLevel('debug');  // This enables debug logs for Firebase SDKs
 
 const firebaseConfig = {
   apiKey: "AIzaSyB3q1QRcplwt1CyytWKjB9WdodThS_BA-g",
