@@ -233,7 +233,7 @@ const RecipeModifier: React.FC = () => {
                         filteredRecipes.map((recipe, index) => (
                             // added a dropdown so that the user can see the ingredients and instructions directly below the recipe they clicked on instead of at the very end of the list
                             <div key={recipe.id}>
-                                <IonItem button onClick={() => toggleDropdown(recipe.id)} id={index === filteredRecipes.length - 1 ? 'last-item' : ''}>
+                                <IonItem button onClick={() => toggleDropdown(recipe.id)}>
                                     <IonLabel>{recipe.name}</IonLabel>
                                 </IonItem>
                                 {expandedRecipe === recipe.id && (
@@ -251,8 +251,9 @@ const RecipeModifier: React.FC = () => {
                                     </div>
                                 )}
                             </div>
-                        ))
-                    )}
+                        )))}
+                        {/* added a spacer to fix navbar overlap on mobile*/}
+                        <div className="spacer"></div>
                 </IonList>
 
                 {selectedRecipe && (
