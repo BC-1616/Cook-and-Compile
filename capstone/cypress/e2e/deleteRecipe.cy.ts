@@ -3,7 +3,11 @@
 describe('Delete Recipe', () => {
     it('should delete an existing recipe', () => {
       // must create a new recipe to be deleted during testing each time so that the test will pass without trying to run the test when the recipe does not exist.
-      cy.visit('/CreateRecipes');
+      cy.visit('/ModifyRecipes');
+
+      cy.contains('Create Recipe').click();
+
+      cy.wait(1000); //wait 1 seconds for popup to load   
 
       cy.get('input[placeholder="Enter Recipe Name"]').type('DEL Recipe');
       cy.get('input[placeholder="Enter Ingredient Name"]').type('DEL Ingredient');
@@ -12,11 +16,7 @@ describe('Delete Recipe', () => {
 
       cy.contains('Add Ingredient').click();
       cy.contains('Create New Recipe').click();
-      cy.contains('Recipe sent successfully!').should('be.visible');
-      /*------------------------------------------------------------*/
-      
-      cy.visit('/RecipeModifier');
-  
+
       cy.contains('DEL Recipe').click();
       cy.contains('Delete').click();
   

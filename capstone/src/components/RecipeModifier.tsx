@@ -4,8 +4,11 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem,
 import { removeCircleOutline, addCircleOutline } from 'ionicons/icons'; // Import icons for add and remove buttons
 import '../Styles/RecipeModifier.css';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
+// added handle for creating a new recipe
+import { handleCreateRecipe } from '../handles/handleCreateRecipe';
 import { handleDeleteRecipe } from '../handles/handleDeleteRecipe';
 import { handleEditRecipe } from '../handles/handleEditRecipe';
+import { set } from 'cypress/types/lodash';
 
 interface Recipe {
     id: string;
@@ -23,10 +26,18 @@ interface Recipe {
 const RecipeModifier: React.FC = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
     const [message, setMessage] = useState<string>('');
     const [searchText, setSearchText] = useState<string>(''); // Define searchText and setSearchText
+    const [IsCreateModalOpen, setIsCreateModalOpen] = useState(false); // Define IsCreateModalOpen and setIsCreateModalOpen
+    const [IsEditModalOpen, setIsEditModalOpen] = useState(false); // Define IsEditModalOpen and setIsEditModalOpen
+    // state variables for recipe name, ingredients, ingredient name, ingredient amount, instructions, and status message
+    const [recipeName, setRecipeName] = useState(''); 
+    const [recipeIngredients, setRecipeIngredients] = useState<{ [key: string]: string }>({}); 
+    const [ingredientName, setIngredientName] = useState(''); 
+    const [ingredientAmount, setIngredientAmount] = useState(''); 
+    const [recipeInstructions, setRecipeInstructions] = useState(''); 
+    const [statusMessage, setStatusMessage] = useState('');
 
     // Fetch recipes on component mount
     useEffect(() => {
@@ -43,6 +54,56 @@ const RecipeModifier: React.FC = () => {
         };
         fetchRecipes();
     }, []);
+
+    // function to add ingredient
+    const addIngredient = () => {
+        if (ingredientName && ingredientAmount) {
+            setRecipeIngredients(prevIngredients => ({
+                ...prevIngredients,
+                [ingredientName]: ingredientAmount // Add ingredient to ingredients map
+            }));
+            setIngredientName(''); 
+            setIngredientAmount(''); 
+        }
+    };
+
+
+    // function to clear form
+    const clearForm = () => {
+        setRecipeName(''); 
+        setRecipeIngredients({}); 
+        setRecipeInstructions(''); 
+    };
+
+    // function to  close modal
+    const closeModal = () => {
+        setIsCreateModalOpen(false);
+        console.log("Modal closed");
+    };
+
+    //function to reload recipes
+    const reload = async () => {
+        const recipesData = await handleFetchRecipes();
+        const sortedRecipes = (recipesData || []).sort((a, b) => a.name.localeCompare(b.name));
+        setRecipes(sortedRecipes);
+        setFilteredRecipes(sortedRecipes);
+        console.log("Recipes reloaded");
+    };
+
+    // function to create recipe
+    const createRecipe = async () => {
+        try {
+            console.log({ recipeName, recipeIngredients, recipeInstructions }); 
+            await handleCreateRecipe(recipeName, recipeIngredients, recipeInstructions, setStatusMessage, clearForm); 
+            setIsCreateModalOpen(false);
+            closeModal();
+            reload();
+            setStatusMessage("Recipe created successfully!");
+            setTimeout(() => setStatusMessage(''), 3000);
+        } catch (error) {
+            console.error('Failed to create recipe:', error);
+        }
+    };
 
     // Add handleDelete function to delete a recipe in the firestore database
     const handleDelete = async (recipeId: string) => {
@@ -61,7 +122,8 @@ const RecipeModifier: React.FC = () => {
     // Add handleEdit function to open the modal for editing a recipe
     const handleEdit = (recipe: Recipe) => {
         setSelectedRecipe(recipe);
-        setIsModalOpen(true);
+        setIsCreateModalOpen(false);
+        setIsEditModalOpen(true);
     };
 
     // Add handleSave function to save the edited recipe to the firestore database
@@ -71,7 +133,7 @@ const RecipeModifier: React.FC = () => {
                 await handleEditRecipe(selectedRecipe);
                 setRecipes(recipes.map(recipe => (recipe.id === selectedRecipe.id ? selectedRecipe : recipe)));
                 setFilteredRecipes(filteredRecipes.map(recipe => (recipe.id === selectedRecipe.id ? selectedRecipe : recipe)));
-                setIsModalOpen(false);
+                setIsEditModalOpen(false);
                 setSelectedRecipe(null);
             } catch (error) {
                 console.error('Failed to update recipe:', error);
@@ -142,16 +204,26 @@ const RecipeModifier: React.FC = () => {
         setFilteredRecipes(handleSearch(recipes, query));
     };
 
+    // This is for the dropdown to show expanded recipe details and buttons
+    const [expandedRecipe, setExpandedRecipe] = useState<string | null>(null);
+
+    // This function toggles the dropdown for a recipe
+    const toggleDropdown = (recipeId: string) => {
+        setExpandedRecipe(expandedRecipe === recipeId ? null : recipeId);
+    };
+
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}   
-                    <IonTitle id="title">Recipe Modifier</IonTitle>
+                    {/* changed title to something that makes more sense */}
+                    <IonTitle id="title">Modify Recipes</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
                 <IonSearchbar value={searchText} onIonInput={handleSearchInput} placeholder="Search for recipes" />
+                <IonButton onClick={() => setIsCreateModalOpen(true)}>Create Recipe</IonButton>
+                <p>To edit or delete a recipe, please select a recipe first</p>
                 <IonList>
                     {filteredRecipes.length === 0 ? (
                         <IonItem>
@@ -159,11 +231,29 @@ const RecipeModifier: React.FC = () => {
                         </IonItem>
                     ) : (
                         filteredRecipes.map((recipe, index) => (
-                            <IonItem key={recipe.id} button onClick={() => setSelectedRecipe(recipe)} id={index === filteredRecipes.length - 1 ? "last-recipe" : ""}> {/* fix so last recipe is not overlapped by the navbar */}
-                                <IonLabel>{recipe.name}</IonLabel>
-                            </IonItem>
-                        ))
-                    )}
+                            // added a dropdown so that the user can see the ingredients and instructions directly below the recipe they clicked on instead of at the very end of the list
+                            <div key={recipe.id}>
+                                <IonItem button onClick={() => toggleDropdown(recipe.id)}>
+                                    <IonLabel>{recipe.name}</IonLabel>
+                                </IonItem>
+                                {expandedRecipe === recipe.id && (
+                                    <div className="recipe-dropdown">
+                                        <p>Ingredients:</p> 
+                                        <ul>
+                                            {Object.entries(recipe.ingredients).map(([key, value]) => (
+                                                <li key={key}>{key}: {value}</li>
+                                            ))}
+                                        </ul>
+                                        <p>Instructions: {recipe.instructions}</p>
+                                        <p>Tags: {recipe.tags}</p>
+                                        <IonButton color="warning" onClick={() => handleEdit(recipe)}>Edit</IonButton>
+                                        <IonButton color="danger" onClick={() => handleDelete(recipe.id)}>Delete</IonButton>
+                                    </div>
+                                )}
+                            </div>
+                        )))}
+                        {/* added a spacer to fix navbar overlap on mobile*/}
+                        <div className="spacer"></div>
                 </IonList>
 
                 {selectedRecipe && (
@@ -177,8 +267,6 @@ const RecipeModifier: React.FC = () => {
                     </ul>
                     <p>Instructions: {selectedRecipe.instructions}</p>
                     <p>Tags: {selectedRecipe.tags}</p>
-                    <IonButton onClick={() => handleEdit(selectedRecipe!)}>Edit</IonButton>
-                    <IonButton color="danger" onClick={() => handleDelete(selectedRecipe.id)}>Delete</IonButton>
                   </div>
             )}
 
@@ -188,7 +276,7 @@ const RecipeModifier: React.FC = () => {
                 </div>
             )}
 
-            <IonModal isOpen={isModalOpen} onDidDismiss={() => setIsModalOpen(false)}>
+            <IonModal isOpen={IsEditModalOpen} onDidDismiss={() => setIsEditModalOpen(false)}>
                 <IonHeader>
                     <IonToolbar>
                         <IonTitle>Edit Recipe</IonTitle>
@@ -240,9 +328,46 @@ const RecipeModifier: React.FC = () => {
                                 Add Ingredient
                             </IonButton>
                             <IonButton onClick={handleSave}>Save</IonButton>
-                            <IonButton onClick={() => setIsModalOpen(false)}>Cancel</IonButton>
+                            <IonButton color="danger" onClick={() => setIsEditModalOpen(false)}>Cancel</IonButton>
                         </div>
                         )}
+                    </IonContent>
+                </IonModal>
+
+                <IonModal isOpen={IsCreateModalOpen} onDidDismiss={() => setIsCreateModalOpen(false)}>
+                    <IonContent>
+                        <IonItem>
+                            <IonLabel position="stacked">Recipe Name</IonLabel>
+                            <IonInput placeholder="Enter Recipe Name" value={recipeName} onIonChange={e => setRecipeName(e.detail.value!)} required />
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel position="stacked">Ingredient Name</IonLabel>
+                            <IonInput placeholder="Enter Ingredient Name" value={ingredientName} onIonChange={e => setIngredientName(e.detail.value!)} />
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel position="stacked">Ingredient Amount</IonLabel>
+                            <IonInput placeholder="Enter Ingredient Amount" value={ingredientAmount} onIonChange={e => setIngredientAmount(e.detail.value!)} />
+                        </IonItem>
+                        <IonButton onClick={addIngredient}>Add Ingredient</IonButton>
+                        <IonList>
+                            {Object.entries(recipeIngredients).map(([name, amount]) => (
+                                <IonItem key={name}>
+                                    {name}: {amount} 
+                                </IonItem>
+                            ))}
+                        </IonList>
+                        <IonItem>
+                            <IonLabel position="stacked">Instructions</IonLabel>
+                            <IonTextarea placeholder="Enter Instructions" value={recipeInstructions} onIonChange={e => setRecipeInstructions(e.detail.value!)} required />
+                        </IonItem>
+                        <div id="nav-padding">
+                            <IonButton onClick={createRecipe}>Create New Recipe</IonButton>
+                            <IonButton color="danger" onClick={() => {
+                                clearForm();
+                                setIsCreateModalOpen(false);
+                            }}>Close</IonButton>
+                            <p>{statusMessage}</p>
+                        </div>
                     </IonContent>
                 </IonModal>
             </IonContent>
