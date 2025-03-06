@@ -4,7 +4,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import IngredientPage from './components/IngredientList';
 import BlankPage from './components/BlankPage';
 import CreateRecipes from './components/CreateRecipes';
-import RecipeModifier from './components/RecipeModifier';
+import ModifyRecipes from './components/RecipeModifier';
 import Recipe from './components/Recipe';
 import LandingPage from './components/LandingPage';
 import NavBar from './components/NavBar';
@@ -69,12 +69,8 @@ const App: React.FC = () => {
                   <Recipe />
                 </Route>
 
-                <Route path="/CreateRecipes" exact={true}>
-                  <CreateRecipes />
-                </Route>
-
-                <Route path="/RecipeModifier" exact={true}>
-                  <RecipeModifier />
+                <Route path="/ModifyRecipes" exact={true}>
+                  <ModifyRecipes />
                 </Route>
               </Switch>
             </IonRouterOutlet>
