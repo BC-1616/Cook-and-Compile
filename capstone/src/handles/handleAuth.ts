@@ -1,12 +1,39 @@
 import { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged, User, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Import the auth instance from firebase.ts
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';  // Firestore imports
+import { getFirestore, doc, setDoc, getDoc, collection } from 'firebase/firestore';  // Firestore imports
 
 const handleAuth = () => {
   const [user, setUser] = useState<User | null>(null);
 
   const db = getFirestore(); // Initialize Firestore
+
+  // Function to create a new user in Firestore when they sign up with their own recipe and allergy collections
+  const handleNewUser = async (userId: string, email: string) => {
+    const userDocRef = doc(db, 'users', userId); // Reference to the user's document
+    await setDoc(userDocRef, {
+      email: email,
+      createdAt: new Date(), // Timestamp when the user is created
+    });
+    console.log('User document created in Firestore!');
+    
+    //create a new recipes collection for the user
+    const recipesCollectionRef = doc(collection(db, 'users', userId, 'recipes'));
+    await setDoc(recipesCollectionRef, {
+      "image": "",
+      "name": "",
+      "ingredients": {},
+      "instructions": ""
+    });
+
+    //create a new allergies collection for the user
+    const allergiesCollectionRef = doc(collection(db, 'users', userId, 'allergies'), 'allergy_list');
+    await setDoc(allergiesCollectionRef, {
+      "allergies": []
+    });
+
+    console.log('User collections created in Firestore!');
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
@@ -24,11 +51,8 @@ const handleAuth = () => {
           if (!userDocSnap.exists()) {
             // If user does not exist in Firestore, create a new document
             try {
-              await setDoc(userDocRef, {
-                email: authUser.email,
-                createdAt: new Date(), // Timestamp when the user is created
-              });
-              console.log('User collection created in Firestore!');
+              await handleNewUser(authUser.uid, authUser.email!); 
+              
             } catch (error : any) {
               console.error('Error creating user collection:', error.message);
             }
