@@ -1,7 +1,7 @@
 describe('Add allergy to the allergy list', () => {
     it('Types in an allergy and submits it to the database', () => {
         cy.visit('/IngredientPage');
-        cy.get('input[placeholder="Enter Allergy"]').type('Allergy Test');
+        cy.get('input[placeholder="Enter Allergy"]').type('Allergy Add Test');
 
         //This is doubled for an interesting reason:
         //When you type in the text box, a keyboard will pop up, and for some reason, on the first click, the button won't activate
@@ -11,8 +11,9 @@ describe('Add allergy to the allergy list', () => {
         cy.contains('Allergy added').should('be.visible');
 
         cy.reload();
+        cy.wait(500);
 
-        cy.contains('Allergy Test').should('be.visible');
+        cy.contains('Allergy Add Test').should('be.visible');
         //I won't test deletion since that will clear the whole list
     });
 });

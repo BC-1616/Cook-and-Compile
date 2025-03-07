@@ -1,4 +1,4 @@
-import { arrayUnion, getDoc, getDocs, collection, addDoc, updateDoc, doc } from '@firebase/firestore';
+import { arrayUnion, arrayRemove, getDoc, getDocs, collection, addDoc, updateDoc, doc } from '@firebase/firestore';
 import { firestore } from '../firebase_setup/firebase';
 
 export const handleAddAllergy = async (
@@ -36,6 +36,23 @@ export const handleClearAllergy = async (
     } catch(error) {
         setStatusMessage('Failed to clear allergy list');
         throw new Error('Failed to clear allergy list');
+    }
+};
+
+export const handleEraseAllergy = async (
+    setStatusMessage: React.Dispatch<React.SetStateAction<string>>,
+    allergyItem: string
+): Promise<void> => {
+    try{
+        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
+        
+        await updateDoc(allergyDocRef, {
+            allergies: arrayRemove(allergyItem)
+        });
+        setStatusMessage('Allergy item Erased');
+    } catch(error) {
+        setStatusMessage('Failed to clear allergy');
+        throw new Error('Failed to clear allergy');
     }
 };
 

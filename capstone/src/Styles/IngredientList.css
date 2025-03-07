@@ -24,6 +24,13 @@
     font-weight: bold;
 }
 
+#allergy_list_list{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
 #allergy_list_item{
     text-align: center;
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonButton, IonInput, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
+import { IonContent, IonIcon, IonButton, IonInput, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
+import { removeCircleOutline } from 'ionicons/icons'
 import { useLocation } from 'react-router-dom';
 import { handleFetchIngredient } from '../handles/handleFetch';
-import { handleClearAllergy, handleAddAllergy, handleFetchAllergy } from '../handles/handleAllergy';  
+import { handleClearAllergy, handleAddAllergy, handleFetchAllergy, handleEraseAllergy } from '../handles/handleAllergy';  
 import '../Styles/IngredientList.css';
 
 
@@ -16,16 +17,41 @@ const IngredientPage: React.FC = () => {
 
   const location = useLocation();
 
+  // Refresh the allergy list
+  const fetchAllergy = async () => {
+    try{
+      const allergyData = await handleFetchAllergy();
+      setAllergy(allergyData);
+    } catch(error){
+      setError('Failed to fetch Allergies');
+    }
+  };
+
+  // Add allergies to the list
   const updateAllergy = async () => {
     if (allergy.trim() !== '') {
       await handleAddAllergy(allergy, setStatusMessage, addAllergy);
+      await fetchAllergy();
     }
   };
+
+  // Erase allergy list: TODO modify this
   const clearAllergyList = async () => {
     try{
       await handleClearAllergy(setStatusMessage);
+      await fetchAllergy();
     } catch (error){
       setError('Failed to clear allergies');
+    }
+  };
+
+  // Erase specific allergy
+  const eraseAllergy = async(item: string) => {
+    try{
+      await handleEraseAllergy(setStatusMessage, item);
+      await fetchAllergy();
+    }catch (error){
+      setError('Failed to erase allergy item');
     }
   };
 
@@ -40,14 +66,6 @@ const IngredientPage: React.FC = () => {
       } catch (error) {
         setError('Failed to fetch ingredients');
         setLoading(false);
-      }
-    };
-    const fetchAllergy = async () => {
-      try{
-        const allergyData = await handleFetchAllergy();
-        setAllergy(allergyData);
-      } catch(error){
-        setError('Failed to fetch Allergies');
       }
     };
 
@@ -111,7 +129,14 @@ const IngredientPage: React.FC = () => {
                 <IonItem key={index}>
                   <IonLabel>
                     {Object.entries(allergy.allergies).map(([idx, allergyName], index) => (
-                      <li id="allergy_list_item" key={index}>{allergyName as string}</li>
+                      <IonItem key={index}>
+                        <div id="allergy_list_list">
+                          <li id="allergy_list_item">{allergyName as string}</li>
+                          <IonButton color='danger' onClick={(e: any) => eraseAllergy(allergyName as string)} style={{ width: '30%' }}>
+                            <IonIcon icon={removeCircleOutline} />
+                          </IonButton>
+                        </div>
+                      </IonItem>
                     ))}
                   </IonLabel>
                 </IonItem>
