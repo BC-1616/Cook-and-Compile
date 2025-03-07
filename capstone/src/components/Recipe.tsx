@@ -118,7 +118,7 @@ const Recipe: React.FC = () => {
                   />
                   {/* Placeholder button for sumbiting urls does not look pretty but just a
                   basic implementation for now */}
-                  <IonButton onClick={() => urlSubmit(recipe.id)}></IonButton>
+                  <IonButton onClick={() => urlSubmit(recipe.id)}>Submit</IonButton>
                 </IonItem>
             </div>
           )))
