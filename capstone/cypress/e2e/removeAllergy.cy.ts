@@ -11,8 +11,7 @@ describe('Remove individual allergy from the list', () => {
         cy.contains('Allergy added').should('be.visible');
         cy.wait(1000);
 
-        // Click on the button 40 px from the right of the name
-        cy.get('Allergy Test').click({force:true});
+        cy.get('.delete_allergy_button').first().click({force:true});
 
     });
 });

@@ -128,7 +128,8 @@ const IngredientPage: React.FC = () => {
               {allergyList.map((allergy, index) => (
                 <IonItem key={index}>
                   <IonLabel>
-                    {Object.entries(allergy.allergies).map(([idx, allergyName], index) => (
+                    <div id="allergy_list_list_list">
+                    {Object.entries(allergy.allergies).reverse().map(([idx, allergyName], index) => (
                       <IonItem key={index}>
                         <div id="allergy_list_list">
                           <li id="allergy_list_item">{allergyName as string}</li>
@@ -138,6 +139,7 @@ const IngredientPage: React.FC = () => {
                         </div>
                       </IonItem>
                     ))}
+                    </div>
                   </IonLabel>
                 </IonItem>
               ))}
