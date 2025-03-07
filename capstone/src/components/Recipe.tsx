@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 // Removed unneeded imports
-import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton} from '@ionic/react';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton, IonInput} from '@ionic/react';
 import { handleRecipe } from '../handles/handleRecipes'; 
 import { handleFetchAllergy , checkIfAllergic } from '../handles/handleAllergy';
+import { saveURL } from '../handles/handleImages';
 import '../Styles/Recipe.css';
 
 const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
     const [allergies, setAllergies] = useState<any[]>([]);
     const [setRecipe, showRecipe] = useState<any | null>(null);
-
+    const [imageURLs, setImageURLs] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
       const fetchRecipes = async () => {
@@ -36,6 +37,21 @@ const Recipe: React.FC = () => {
   //updates page to selected recipe
   const click = (recipe: any) => {
     showRecipe(recipe);
+  };
+  const urlChange = (recipeId: string, url: string) => {
+    setImageURLs((prev) => ({ ...prev, [recipeId]: url }));
+  };
+  // saves the new URL to Firebase database and updates it
+  const urlSubmit = async (recipeId: string) => {
+    const url = imageURLs[recipeId];
+    if (url) {
+      await saveURL(recipeId, url);
+      setRecipes((prev) =>
+        prev.map((recipe) =>
+          recipe.id === recipeId ? { ...recipe, image: url } : recipe
+        )
+      );
+    }
   };
 
   return (
@@ -91,6 +107,19 @@ const Recipe: React.FC = () => {
                 >
                 {recipe.name}
               </IonButton>
+              <IonItem>
+                  {/* Input for image URL will accept anything causing image to be blank if bad url is submitted
+                  will need to add some constraints later but for now,
+                  if the user just hits sumbit it reuploadeds the url so no changes will be made for blank text */}
+                  <IonInput
+                    placeholder="Enter image URL"
+                    value={imageURLs[recipe.id] || ''}
+                    onIonChange={(event) => urlChange(recipe.id, event.detail.value)}
+                  />
+                  {/* Placeholder button for sumbiting urls does not look pretty but just a
+                  basic implementation for now */}
+                  <IonButton onClick={() => urlSubmit(recipe.id)}></IonButton>
+                </IonItem>
             </div>
           )))
       )}
