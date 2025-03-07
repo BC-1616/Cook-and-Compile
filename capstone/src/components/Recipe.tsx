@@ -21,7 +21,6 @@ const Recipe: React.FC = () => {
           data.map(async (recipe) => {
             let arrayBuffer: String[] = Array.from(Object.keys(recipe.ingredients));
             recipe.userAllergic = await checkIfAllergic(arrayBuffer, allergyData[0].allergies);
-            //console.log(recipe.userAllergic);
           })
           
           setAllergies(allergyData);
@@ -52,6 +51,11 @@ const Recipe: React.FC = () => {
           /*Added the recipe title to the information once button is clicked*/
           <div>
             <IonButton onClick={() => showRecipe(null)}>Back</IonButton>           
+            {setRecipe.userAllergic === true ? (
+              <p style={{color: 'red'}}>You are <strong>ALLERGIC</strong> to this recipe</p>
+            ) : (
+              <p></p>
+            )}
             <IonItem>
               <h2><strong>{setRecipe.name}</strong></h2>
             </IonItem>
@@ -75,10 +79,18 @@ const Recipe: React.FC = () => {
           recipes.map((recipe, index) => ( //Could do some flexbox things with this div for better display
             <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
               {recipe.userAllergic === true ? (
-                //<IonItem>
-                  <p id="allergic_alert">You are allergic to this recipe</p>
-                //</IonItem>
-              ) : (<p></p>) }
+              <IonButton
+                className='recipe_button_allergic' //For the bad recipes!!
+                shape="round"
+                fill='clear'
+                onClick={() => click(recipe)}
+                style={{ backgroundImage: `url(https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg)`}}
+              >
+                {recipe.name}
+              </IonButton>
+              
+              ) : (
+
               <IonButton
                 //uses the css description for the button size and I think the round looks better but it can easily be changed
                 //the height and width can easily be changed, will have to come back to see what looks nicest
@@ -92,6 +104,7 @@ const Recipe: React.FC = () => {
                 >
                 {recipe.name}
               </IonButton>
+              ) }
             </div>
           )))
       )}

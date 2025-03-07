@@ -32,6 +32,17 @@
    The standard options looked silly
    Border radius can be adjusted to make buttons rounder
 */
+.recipe_button_allergic {
+    width: 250px;
+    height: 200px;
+    border-radius: 60px;
+    box-shadow: 0 5px 5px 5px red;
+    background-size: cover;
+    background-position: center;
+    font-size: 28px;
+    font-weight: bolder;
+    color: black;
+}
 .recipe_button {
     width: 250px;
     height: 200px;
@@ -41,4 +52,4 @@
     font-size: 28px;
     font-weight: bolder;
     color: black;
-    }
+}

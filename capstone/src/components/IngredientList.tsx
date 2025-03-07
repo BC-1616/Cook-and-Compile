@@ -89,30 +89,34 @@ const IngredientPage: React.FC = () => {
         </IonHeader>
         <div id="ingredient_content_parent">
           <div id="left_ingredient_content">
-            {loading ? (
-              <IonSpinner name="dots" style={{ display: 'block', margin: 'auto', marginTop: '50px' }} />
-            ) : error ? (
-              <IonText color="danger" style={{ display: 'block', textAlign: 'center', marginTop: '20px' }}>
-                {error}
-              </IonText>
-            ) : ingredients.length === 0 ? (
-              <IonText style={{ display: 'block', textAlign: 'center', marginTop: '20px' }}>
-                No ingredients available.
-              </IonText>
-            ) : (
-              <IonList style={{ marginTop: '20px', marginBottom: '50px'}}> {/* Changed bottom margin to fix nav overlap on mobile */}
-                {ingredients.map((ingredient, index) => (
-                  <IonItem key={index}>
-                    <IonLabel>
-                      <h2 id="ingredient_list_list">{ingredient.category || 'No text available'}</h2>
-                      {Object.entries(ingredient.items).map(([idx, ingredientName], index) => (
-                        <li id="ingredient_list_item" key={index}>{ingredientName as string}</li>
-                      ))}
-                    </IonLabel>
-                  </IonItem>
-                ))}
-              </IonList>
-            )}
+            <h2>Ingredients to Avoid</h2>
+            <IonInput placeholder="Enter Ingredient to Avoid" value={allergy} onIonChange={e => addAllergy(e.detail.value!)} required />
+            <IonButton onClick={updateAllergy}>Add Ingredient</IonButton>{/*CHANGE*/}
+            <p id="line_break"/*This should be a 'class' but that doesn't work with ionic*/></p>
+            <IonButton onClick={clearAllergyList}>Clear List</IonButton>{/*CHANGE*/}
+            {statusMessage && <IonText color="primary" style={{ display: 'block', marginTop: '10px' }}>{statusMessage}</IonText>}
+            <h3>Things to Avoid:</h3>
+            <IonList>
+              {allergyList.map((allergy, index) => (
+                <IonItem key={index}>
+                  <IonLabel>
+                    <div id="allergy_list_list_list">
+                    {/*Will need to add handle functions and a list for intolerances*/}
+                    {Object.entries(allergy.allergies).reverse().map(([idx, allergyName], index) => (
+                      <IonItem key={index}>
+                        <div id="allergy_list_list">
+                          <li id="allergy_list_item">{allergyName as string}</li>
+                          <IonButton color='danger' onClick={(e: any) => eraseAllergy(allergyName as string)} style={{ width: '30%' }} className="delete_allergy_button">
+                            <IonIcon icon={removeCircleOutline} />
+                          </IonButton>
+                        </div>
+                      </IonItem>
+                    ))}
+                    </div>
+                  </IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
           </div>
           <div id="right_ingredient_content">
             <h2>Allergy Input</h2>

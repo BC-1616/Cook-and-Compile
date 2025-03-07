@@ -23,6 +23,12 @@
 #right_ingredient_content h2{
     font-weight: bold;
 }
+#left_ingredient_content{
+    text-align: center;
+}
+#left_ingredient_content h2{
+    font-weight: bold;
+}
 
 #allergy_list_list{
     display: flex;
