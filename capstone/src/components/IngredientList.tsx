@@ -133,7 +133,7 @@ const IngredientPage: React.FC = () => {
                       <IonItem key={index}>
                         <div id="allergy_list_list">
                           <li id="allergy_list_item">{allergyName as string}</li>
-                          <IonButton color='danger' onClick={(e: any) => eraseAllergy(allergyName as string)} style={{ width: '30%' }}>
+                          <IonButton color='danger' onClick={(e: any) => eraseAllergy(allergyName as string)} style={{ width: '30%' }} className="delete_allergy_button">
                             <IonIcon icon={removeCircleOutline} />
                           </IonButton>
                         </div>
