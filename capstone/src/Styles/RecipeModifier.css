@@ -40,10 +40,14 @@
     #recipe_modifier_popup, #recipe_modifier_selection {
         margin-bottom: 75px;
     }
-    #last-recipe {
-        margin-bottom: 10px; 
-    }
     .message {
         margin-bottom: 70px;
+    }
+    .recipe-dropdown {
+        margin-bottom: 50px;
+    }
+    /* spacer for mobile so that the navbar does not overlap content*/
+    .spacer {
+        height: 50px;
     }
 }
