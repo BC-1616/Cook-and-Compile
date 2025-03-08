@@ -12,6 +12,7 @@ const Recipe: React.FC = () => {
   const [currentRecipe, setCurrentRecipe] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [statusMessage, setStatusMessage] = useState<string>('');
 
   // Fetch recipes only after authentication is complete
   useEffect(() => {
@@ -20,15 +21,17 @@ const Recipe: React.FC = () => {
         setUser(user); // Store user when authenticated
         try {
           const data = await handleFetchRecipes();
-          const allergyData = await handleFetchAllergy();
+          const allergyData = await handleFetchAllergy(setStatusMessage);
 
           // Update the allergies state
-          setAllergies(allergyData);
+          if (allergyData) {
+            setAllergies(allergyData);
+          }
 
           // Wait for all recipes to have allergy check applied
           const updatedRecipes = await Promise.all(data.map(async (recipe) => {
             let arrayBuffer: string[] = Array.from(Object.keys(recipe.ingredients));
-            recipe.userAllergic = await checkIfAllergic(arrayBuffer, allergyData[0].allergies);
+            recipe.userAllergic = allergyData ? await checkIfAllergic(arrayBuffer, allergyData[0].allergies) : false;
             return recipe;
           }));
 

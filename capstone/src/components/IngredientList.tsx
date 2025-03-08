@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { handleFetchIngredient } from '../handles/handleFetch';
 import { handleClearAllergy, handleAddAllergy, handleFetchAllergy } from '../handles/handleAllergy';  
 import '../Styles/IngredientList.css';
+import { auth } from '../firebase_setup/firebase';
 
 
 const IngredientPage: React.FC = () => {
@@ -15,6 +16,8 @@ const IngredientPage: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState<string>('');
 
   const location = useLocation();
+
+  const [user, setUser] = useState<any>(null); 
 
   const updateAllergy = async () => {
     if (allergy.trim() !== '') {
@@ -42,17 +45,31 @@ const IngredientPage: React.FC = () => {
         setLoading(false);
       }
     };
-    const fetchAllergy = async () => {
-      try{
-        const allergyData = await handleFetchAllergy();
-        setAllergy(allergyData);
-      } catch(error){
-        setError('Failed to fetch Allergies');
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        // fetch user's allergies after user authentication
+        const fetchAllergy = async () => {
+          try {
+            const allergyData = await handleFetchAllergy(setStatusMessage);
+            if (allergyData) {
+              setAllergy(allergyData); // Set the fetched allergies in state if they exist
+            }
+            setStatusMessage('Allergies fetched successfully!');
+          } catch(error){
+            setError('Failed to fetch Allergies');
+          }
+        };
+        fetchIngredients();
+        fetchAllergy();
+      } else {
+        setUser(null);
+        setError('No user is authenticated.');
+        setAllergy([]);
       }
-    };
-
-    fetchIngredients();
-    fetchAllergy();
+      // // Cleanup the subscription when the component unmounts
+      return () => unsubscribe();
+    });
   }, [location.pathname]);
   var listBuffer = [];
    return (
