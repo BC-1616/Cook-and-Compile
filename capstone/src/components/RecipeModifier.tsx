@@ -7,6 +7,7 @@ import { handleCreateRecipe } from '../handles/handleCreateRecipe';
 import { handleDeleteRecipe } from '../handles/handleDeleteRecipe';
 import { handleEditRecipe } from '../handles/handleEditRecipe';
 import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
+import { set } from 'cypress/types/lodash';
 
 
 interface Recipe {
@@ -125,11 +126,12 @@ const RecipeModifier: React.FC = () => {
   const handleSave = async () => {
     if (selectedRecipe) {
       try {
-        await handleEditRecipe(selectedRecipe);
+        await handleEditRecipe(selectedRecipe, setStatusMessage);
         setRecipes(recipes.map(recipe => (recipe.id === selectedRecipe.id ? selectedRecipe : recipe)));
         setFilteredRecipes(filteredRecipes.map(recipe => (recipe.id === selectedRecipe.id ? selectedRecipe : recipe)));
         setIsEditModalOpen(false);
         setSelectedRecipe(null);
+        setStatusMessage('Recipe updated successfully!');
       } catch (error) {
         console.error('Failed to update recipe:', error);
       }
