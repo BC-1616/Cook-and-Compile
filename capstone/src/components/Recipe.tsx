@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton } from '@ionic/react';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleFetchAllergy, checkIfAllergic } from '../handles/handleAllergy';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
 import '../Styles/Recipe.css';
 

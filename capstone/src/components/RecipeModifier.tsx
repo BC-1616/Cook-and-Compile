@@ -6,7 +6,6 @@ import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleCreateRecipe } from '../handles/handleCreateRecipe';
 import { handleDeleteRecipe } from '../handles/handleDeleteRecipe';
 import { handleEditRecipe } from '../handles/handleEditRecipe';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
 
 
@@ -106,11 +105,11 @@ const RecipeModifier: React.FC = () => {
 
   const handleDelete = async (recipeId: string) => {
     try {
-      await handleDeleteRecipe(recipeId);
+      await handleDeleteRecipe(recipeId, setStatusMessage);
       setRecipes(recipes.filter(recipe => recipe.id !== recipeId));
       setFilteredRecipes(filteredRecipes.filter(recipe => recipe.id !== recipeId));
       setSelectedRecipe(null);
-      setMessage('Recipe deleted successfully!');
+      setStatusMessage('Recipe deleted successfully!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       console.error('Failed to delete recipe:', error);
