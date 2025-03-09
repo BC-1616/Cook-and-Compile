@@ -7,7 +7,8 @@ interface Recipe {
     ingredients: { [key: string]: string };
     instructions: string;
     tags: string; //again again, maybe make a list
-    userAllergic: boolean;
+    userAllergic: boolean,
+    userPref: boolean
 }
 
 export const handleFetchRecipes = async (): Promise<Recipe[]> => {
@@ -22,7 +23,8 @@ export const handleFetchRecipes = async (): Promise<Recipe[]> => {
                 ingredients: data.ingredients,
                 instructions: data.instructions,
                 tags: data.tags,
-                userAllergic: false
+                userAllergic: false,
+                userPref: false // don't assume they like it
             };
         });
         return recipes;

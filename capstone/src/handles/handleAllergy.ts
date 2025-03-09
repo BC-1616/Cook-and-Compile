@@ -23,22 +23,6 @@ export const handleAddAllergy = async (
     }
 };
 
-export const handleClearAllergy = async (
-    setStatusMessage: React.Dispatch<React.SetStateAction<string>>
-): Promise<void> => {
-    try{
-        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
-        //This can be modified to remove specific elements or just 'pop off' elements
-        await updateDoc(allergyDocRef, {
-            allergies: [],
-        });
-        setStatusMessage('Allergy list cleared');
-    } catch(error) {
-        setStatusMessage('Failed to clear allergy list');
-        throw new Error('Failed to clear allergy list');
-    }
-};
-
 export const handleEraseAllergy = async (
     setStatusMessage: React.Dispatch<React.SetStateAction<string>>,
     allergyItem: string
@@ -72,7 +56,7 @@ export const handleFetchAllergy = async () => {
     }
 };
 
-
+// This will also be used for string checking in other lists
 export const checkIfAllergic = async (recipe_array: String[], allergy_array: String[]) => {
     //Conditional check for invalid array types
     if(typeof recipe_array[0] != 'string' || typeof allergy_array[0] != 'string'){

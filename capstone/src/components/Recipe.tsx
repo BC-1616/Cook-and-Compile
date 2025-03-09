@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-// Removed unneeded imports
 import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton} from '@ionic/react';
 import { handleRecipe } from '../handles/handleRecipes'; 
 import { handleFetchAllergy , checkIfAllergic } from '../handles/handleAllergy';
@@ -7,10 +6,12 @@ import '../Styles/Recipe.css';
 
 const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
-    const [allergies, setAllergies] = useState<any[]>([]);
+    // Use these two for tracking which ingredient they are allergic to?
+    const [allergies, setAllergies] = useState<any>([]);
+    const [preferences, setPref] = useState<any>([])
     const [setRecipe, showRecipe] = useState<any | null>(null);
-
-
+    //const [icon_class_name, setClassName] = useState<string>('');
+    var icon_class_name = 'recipe_button';
     useEffect(() => {
       const fetchRecipes = async () => {
         try {
@@ -21,9 +22,11 @@ const Recipe: React.FC = () => {
           data.map(async (recipe) => {
             let arrayBuffer: String[] = Array.from(Object.keys(recipe.ingredients));
             recipe.userAllergic = await checkIfAllergic(arrayBuffer, allergyData[0].allergies);
+            recipe.userPref = await checkIfAllergic(arrayBuffer, allergyData[1].preference);
           })
           
-          setAllergies(allergyData);
+          setAllergies(allergyData[0]);
+          setPref(allergyData[1]);
           setRecipes(data);
         } catch (error) {
           console.error("Error fetching recipes:", error);
@@ -76,35 +79,25 @@ const Recipe: React.FC = () => {
         recipes.length === 0 ? (
           <div>No recipes found</div>
         ) : (
-          recipes.map((recipe, index) => ( //Could do some flexbox things with this div for better display
-            <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
-              {recipe.userAllergic === true ? (
-              <IonButton
-                className='recipe_button_allergic' //For the bad recipes!!
-                shape="round"
-                fill='clear'
-                onClick={() => click(recipe)}
-                style={{ backgroundImage: `url(https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg)`}}
-              >
-                {recipe.name}
-              </IonButton>
-              
-              ) : (
-
-              <IonButton
-                //uses the css description for the button size and I think the round looks better but it can easily be changed
-                //the height and width can easily be changed, will have to come back to see what looks nicest
-                className='recipe_button'
-                shape="round"
-                fill='clear'
-                onClick={() => click(recipe)}
-                //right now this makes them all the same image. Eventually going to find a way to add them to the database so each picture can be different
-                style={{ backgroundImage: `url(https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg)` }}
-                //style={{ backgroundImage: `url(${recipe.image})` }}
-                >
-                {recipe.name}
-              </IonButton>
-              ) }
+          recipes.map((recipe, index) => ( //Could do some flexbox things with this div for better display            
+            <div 
+              key={recipe.id} 
+              id={index === recipes.length - 1 ? "last-recipe" : ""}>
+              <div>
+                <IonButton color={recipe.userPref === true ? 'success' : 'dark'}
+                  //uses the css description for the button size and I think the round looks better but it can easily be changed
+                  //the height and width can easily be changed, will have to come back to see what looks nicest
+                  className={recipe.userAllergic === true ? "recipe_button_allergic" : "recipe_button"}
+                  shape="round"
+                  fill='clear'
+                  onClick={() => click(recipe)}
+                  //right now this makes them all the same image. Eventually going to find a way to add them to the database so each picture can be different
+                  style={{ backgroundImage: `url(https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg)` }}
+                  //style={{ backgroundImage: `url(${recipe.image})` }}
+                  >
+                  {recipe.name}
+                </IonButton>
+              </div>
             </div>
           )))
       )}

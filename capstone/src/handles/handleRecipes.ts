@@ -17,6 +17,7 @@ export const handleRecipe = async () => {
         // We will want the recipe tag beging returned here as well.
         tags: data.tags || "No recipe tags",
         userAllergic: false,
+        userPref: false
       };
     });
 

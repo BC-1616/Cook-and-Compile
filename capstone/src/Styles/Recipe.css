@@ -53,3 +53,7 @@
     font-weight: bolder;
     color: black;
 }
+
+.recipe_button, .recipe_button_allergic{
+    margin-top: 2em;
+}

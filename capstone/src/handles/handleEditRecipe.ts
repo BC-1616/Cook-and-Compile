@@ -8,6 +8,7 @@ interface Recipe {
     instructions: string;
     tags: string; // maybe make this a list
     userAllergic: boolean;
+    userPref : boolean; // true if they like it
 }
 
 export const handleEditRecipe = async (recipe: Recipe): Promise<void> => {

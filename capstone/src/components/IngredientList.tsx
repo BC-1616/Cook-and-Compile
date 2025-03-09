@@ -2,26 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonIcon, IonButton, IonInput, IonHeader, IonPage, IonText, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSpinner, IonButtons, IonMenuButton } from '@ionic/react';
 import { removeCircleOutline } from 'ionicons/icons'
 import { useLocation } from 'react-router-dom';
-import { handleFetchIngredient } from '../handles/handleFetch';
-import { handleClearAllergy, handleAddAllergy, handleFetchAllergy, handleEraseAllergy } from '../handles/handleAllergy';  
+import { handleAddAllergy, handleFetchAllergy, handleEraseAllergy } from '../handles/handleAllergy';  
+import { handleAddPref, handleErasePref } from '../handles/handlePreference';
 import '../Styles/IngredientList.css';
 
 
 const IngredientPage: React.FC = () => {
-  const [ingredients, setIngredients] = useState<any[]>([]); //'foodData' is stored in an array of any type here
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [allergy, addAllergy] = useState('');
-  const [allergyList, setAllergy] = useState<any[]>([]);
+  const [preference, addPref] = useState('');
+  const [allergyList, setAllergy] = useState<any>([]);
+  const [prefList, setPref] = useState<any>([]);
   const [statusMessage, setStatusMessage] = useState<string>('');
 
   const location = useLocation();
 
   // Refresh the allergy list
-  const fetchAllergy = async () => {
+  const fetchAllergy = async () => { // This function takes care of both allergies and preferences
     try{
       const allergyData = await handleFetchAllergy();
-      setAllergy(allergyData);
+      setAllergy(allergyData[0]);
+      setPref(allergyData[1]);
     } catch(error){
       setError('Failed to fetch Allergies');
     }
@@ -35,13 +37,11 @@ const IngredientPage: React.FC = () => {
     }
   };
 
-  // Erase allergy list: TODO modify this
-  const clearAllergyList = async () => {
-    try{
-      await handleClearAllergy(setStatusMessage);
+  // Add preference to the list
+  const updatePref = async () => {
+    if(preference.trim() !== ''){
+      await handleAddPref(preference, setStatusMessage, addPref);
       await fetchAllergy();
-    } catch (error){
-      setError('Failed to clear allergies');
     }
   };
 
@@ -54,23 +54,19 @@ const IngredientPage: React.FC = () => {
       setError('Failed to erase allergy item');
     }
   };
+  
+  // Erase specific preference
+  const erasePref = async(item: string) => {
+    try{
+      await handleErasePref(setStatusMessage, item);
+      await fetchAllergy();
+    }catch (error){
+      setError('Failed to erase allergy item');
+    }
+  };
 
   useEffect(() => {
-    const fetchIngredients = async () => {
-      setLoading(true);
-      try {
-        const foodData = await handleFetchIngredient(); //Fetch ingredients through this function in 'handleFetch'
-
-        setIngredients(foodData);
-        setLoading(false);
-      } catch (error) {
-        setError('Failed to fetch ingredients');
-        setLoading(false);
-      }
-    };
-
-    fetchIngredients();
-    fetchAllergy();
+    fetchAllergy(); // This is the only thing we need to do on startup
   }, [location.pathname]);
   var listBuffer = [];
    return (
@@ -89,33 +85,27 @@ const IngredientPage: React.FC = () => {
         </IonHeader>
         <div id="ingredient_content_parent">
           <div id="left_ingredient_content">
-            <h2>Ingredients to Avoid</h2>
-            <IonInput placeholder="Enter Ingredient to Avoid" value={allergy} onIonChange={e => addAllergy(e.detail.value!)} required />
-            <IonButton onClick={updateAllergy}>Add Ingredient</IonButton>{/*CHANGE*/}
+            <h2>Your Favorite Ingredients</h2>
+            <IonInput placeholder="Enter Ingredient" value={allergy} onIonChange={e => addPref(e.detail.value!)} required />
+            <IonButton onClick={updatePref}>Add Ingredient</IonButton>
             <p id="line_break"/*This should be a 'class' but that doesn't work with ionic*/></p>
-            <IonButton onClick={clearAllergyList}>Clear List</IonButton>{/*CHANGE*/}
             {statusMessage && <IonText color="primary" style={{ display: 'block', marginTop: '10px' }}>{statusMessage}</IonText>}
-            <h3>Things to Avoid:</h3>
+            <h3>Items you like:</h3>
             <IonList>
-              {allergyList.map((allergy, index) => (
-                <IonItem key={index}>
-                  <IonLabel>
-                    <div id="allergy_list_list_list">
-                    {/*Will need to add handle functions and a list for intolerances*/}
-                    {Object.entries(allergy.allergies).reverse().map(([idx, allergyName], index) => (
-                      <IonItem key={index}>
-                        <div id="allergy_list_list">
-                          <li id="allergy_list_item">{allergyName as string}</li>
-                          <IonButton color='danger' onClick={(e: any) => eraseAllergy(allergyName as string)} style={{ width: '30%' }} className="delete_allergy_button">
-                            <IonIcon icon={removeCircleOutline} />
-                          </IonButton>
-                        </div>
-                      </IonItem>
-                    ))}
+              <div id="allergy_list_list_list">
+                {/*This section handles intolerances / preferences*/}
+                {prefList.preference == null || prefList.preference == undefined ? <p></p> :
+                Object.entries(prefList.preference).reverse().map(([idx, prefName], index) => (
+                  <IonItem key={index}>
+                    <div id="allergy_list_list">
+                      <li id="allergy_list_item">{prefName as string}</li>
+                      <IonButton color='danger' onClick={(e: any) => erasePref(prefName as string)} style={{ width: '30%' }} className="delete_allergy_button">
+                        <IonIcon icon={removeCircleOutline} />
+                      </IonButton>
                     </div>
-                  </IonLabel>
-                </IonItem>
-              ))}
+                  </IonItem>
+                ))}
+              </div>
             </IonList>
           </div>
           <div id="right_ingredient_content">
@@ -124,29 +114,23 @@ const IngredientPage: React.FC = () => {
             <IonButton onClick={updateAllergy}>Add Allergy</IonButton>
             {/*Allow user to delete allergies*/}
             <p id="line_break"/*This should be a 'class' but that doesn't work with ionic*/></p>
-            <IonButton onClick={clearAllergyList}>Clear Allergy List</IonButton>
             {statusMessage && <IonText color="primary" style={{ display: 'block', marginTop: '10px' }}>{statusMessage}</IonText>}
             <h3>Your Allergies:</h3>
             {/*Impliment a list of user's allergies here*/}
             <IonList>
-              {allergyList.map((allergy, index) => (
-                <IonItem key={index}>
-                  <IonLabel>
-                    <div id="allergy_list_list_list">
-                    {Object.entries(allergy.allergies).reverse().map(([idx, allergyName], index) => (
-                      <IonItem key={index}>
-                        <div id="allergy_list_list">
-                          <li id="allergy_list_item">{allergyName as string}</li>
-                          <IonButton color='danger' onClick={(e: any) => eraseAllergy(allergyName as string)} style={{ width: '30%' }} className="delete_allergy_button">
-                            <IonIcon icon={removeCircleOutline} />
-                          </IonButton>
-                        </div>
-                      </IonItem>
-                    ))}
+              <div id="allergy_list_list_list">
+                {allergyList.allergies == null || allergyList.allergies == undefined ? <p></p> :
+                Object.entries(allergyList.allergies).reverse().map(([idx, allergyName], index) => (
+                  <IonItem key={index}>
+                    <div id="allergy_list_list">
+                      <li id="allergy_list_item">{allergyName as string}</li>
+                      <IonButton color='danger' onClick={(e: any) => eraseAllergy(allergyName as string)} style={{ width: '30%' }} className="delete_allergy_button">
+                        <IonIcon icon={removeCircleOutline} />
+                      </IonButton>
                     </div>
-                  </IonLabel>
-                </IonItem>
-              ))}
+                  </IonItem>
+                ))}
+              </div>
             </IonList>
           </div>
         </div>
