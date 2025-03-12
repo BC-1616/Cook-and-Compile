@@ -95,19 +95,7 @@ const Recipe: React.FC = () => {
                   <p id="allergic_alert">You are allergic to this recipe</p>
                 </IonItem>
               ) : (<p></p>) }
-              <IonButton
-                //uses the css description for the button size and I think the round looks better but it can easily be changed
-                //the height and width can easily be changed, will have to come back to see what looks nicest
-                className='recipe_button'
-                shape="round"
-                fill='clear'
-                onClick={() => click(recipe)}
-                //Will display the image if there is one otherwise will fallback to pan
-                style={{ backgroundImage: `url(${recipe.image || 'https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg'})` }}
-                >
-                {recipe.name}
-              </IonButton>
-              <IonItem>
+                <IonItem>
                   {/* Input for image URL will accept anything causing image to be blank if bad url is submitted
                   will need to add some constraints later but for now,
                   if the user just hits sumbit it reuploadeds the url so no changes will be made for blank text */}
@@ -120,6 +108,18 @@ const Recipe: React.FC = () => {
                   basic implementation for now */}
                   <IonButton onClick={() => urlSubmit(recipe.id)}>Submit</IonButton>
                 </IonItem>
+              <IonButton
+                //uses the css description for the button size and I think the round looks better but it can easily be changed
+                //the height and width can easily be changed, will have to come back to see what looks nicest
+                className='recipe_button'
+                shape="round"
+                fill='clear'
+                onClick={() => click(recipe)}
+                //Will display the image if there is one otherwise will fallback to pan
+                style={{ backgroundImage: `url(${recipe.image || 'https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg'})` }}
+                >
+                {recipe.name}
+              </IonButton>
             </div>
           )))
       )}
