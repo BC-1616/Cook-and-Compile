@@ -24,31 +24,85 @@ test('renders ingredient page', () => {
   expect(screen.getByText('Ingredients')).toBeInTheDocument();
 });
 
-// unit testing for the Create Recipes page to isolate the component and test if it is working as expected
-test('renders Create Recipes page', () => {
-  render(
-    <MemoryRouter initialEntries={['/CreateRecipes']}>
-      <CreateRecipes />
-    </MemoryRouter>
-  );
-  expect(screen.getByPlaceholderText('Enter Recipe Name')).toBeInTheDocument();
-  expect(screen.getByPlaceholderText('Enter Ingredient Name')).toBeInTheDocument();
-  expect(screen.getByPlaceholderText('Enter Ingredient Amount')).toBeInTheDocument();
-  expect(screen.getByPlaceholderText('Enter Instructions')).toBeInTheDocument();
-});
+// unit tests for modify recipes page
+describe('Modify Recipes Unit Tests', () => {
+  test('renders Modify Recipes page', () => {
+    render(
+      <MemoryRouter initialEntries={['/RecipeModifier']}>
+        <RecipeModifier />
+      </MemoryRouter>
+    );
+    expect(screen.getByText('Modify Recipes')).toBeInTheDocument();
+    // expect search bar to be present
+    expect(screen.getByPlaceholderText('Search for recipes')).toBeInTheDocument();
+  });
 
-// unit testing for the Recipe Modifier page to isolate the component and test if it is working as expected
-test('renders Recipe Modifier page', () => {
-  render(
-    <MemoryRouter initialEntries={['/RecipeModifier']}>
-      <RecipeModifier />
-    </MemoryRouter>
-  );
-  expect(screen.getByText('Recipe Modifier')).toBeInTheDocument();
-  // expect search bar to be present
-  expect(screen.getByPlaceholderText('Search for recipes')).toBeInTheDocument();
-});
+  // test for create popup
+  test('renders popup for creating a new recipe', async () => {
+    render(
+      <MemoryRouter initialEntries={['/RecipeModifier']}>
+        <RecipeModifier />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getByText('Create Recipe'));
 
+    await waitFor(() => {
+      expect(screen.getByText('Recipe Name')).toBeInTheDocument();
+      expect(screen.getByText('Ingredient Name')).toBeInTheDocument();
+      expect(screen.getByText('Ingredient Amount')).toBeInTheDocument();  
+      expect(screen.getByText('Instructions')).toBeInTheDocument();
+    });
+  });
+
+  // test for create recipe button
+  test('renders "Create Recipe" button', () => {
+    render(
+      <MemoryRouter initialEntries={['/RecipeModifier']}>
+        <RecipeModifier />
+      </MemoryRouter>
+    );
+    expect(screen.getByText('Create Recipe')).toBeInTheDocument();
+  });
+
+  // test for cancel button
+  test('renders "Cancel" button', async () => {
+    render(
+      <MemoryRouter initialEntries={['/RecipeModifier']}>
+        <RecipeModifier />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getByText('Create Recipe'));
+    await waitFor(() => {
+      expect(screen.getByText('Close')).toBeInTheDocument();
+    });
+  });
+
+  // test for create new recipe button
+  test('renders "Create New Recipe" button', async () => {
+    render(
+      <MemoryRouter initialEntries={['/RecipeModifier']}>
+        <RecipeModifier />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getByText('Create Recipe'));
+    await waitFor(() => {
+      expect(screen.getByText('Create New Recipe')).toBeInTheDocument();
+    });
+  });
+
+  // test for add ingredient button
+  test('renders "Add Ingredient" button', async () => {
+    render(
+      <MemoryRouter initialEntries={['/RecipeModifier']}>
+        <RecipeModifier />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getByText('Create Recipe'));
+    await waitFor(() => {
+      expect(screen.getByText('Add Ingredient')).toBeInTheDocument();
+    });
+  });
+});
 test('renders recipe page', () => {
   const { baseElement } = render(<Recipe />);
   expect(baseElement).toBeDefined();
@@ -76,7 +130,4 @@ test('tests array comparison function', () => {
 
   expect(boolBuffer).resolves.toBe(true);
   expect(boolBuffer2).resolves.toBe(false);
-
-
-
 });
