@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 import IngredientPage from './components/IngredientList';
 import Recipe from './components/Recipe';
-import { checkIfAllergic } from './handles/handleAllergy';
+import { checkIfAllergic, includesAnyArrayToString } from './handles/handleAllergy';
 import {MemoryRouter} from 'react-router-dom';
 import populateList from './components/IngredientList';
 import CreateRecipes from './components/CreateRecipes';
@@ -130,4 +130,15 @@ test('tests array comparison function', () => {
 
   expect(boolBuffer).resolves.toBe(true);
   expect(boolBuffer2).resolves.toBe(false);
+});
+
+test('test measures effectiveness of finding string in any type array', () => {
+  const arr: any[] = ["thing", "new thing", "string", "another thing"];
+
+  expect(includesAnyArrayToString(arr, "string")).toBe(true);
+  expect(includesAnyArrayToString(arr, "String")).toBe(true);
+  expect(includesAnyArrayToString(arr, "false thing")).toBe(false);
+  expect(includesAnyArrayToString(arr, "")).toBe(false);
+
+
 });

@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton} from '@ionic/react';
 import { handleRecipe } from '../handles/handleRecipes'; 
-import { handleFetchAllergy , checkIfAllergic } from '../handles/handleAllergy';
+import { handleFetchAllergy , checkIfAllergic, includesAnyArrayToString} from '../handles/handleAllergy';
 import '../Styles/Recipe.css';
+import { includes } from 'cypress/types/lodash';
 
 const Recipe: React.FC = () => {
     const [recipes, setRecipes] = useState<any[]>([]);
@@ -10,7 +11,7 @@ const Recipe: React.FC = () => {
     const [allergies, setAllergies] = useState<any>([]);
     const [preferences, setPref] = useState<any>([])
     const [setRecipe, showRecipe] = useState<any | null>(null);
-    //const [icon_class_name, setClassName] = useState<string>('');
+    
     var icon_class_name = 'recipe_button';
     useEffect(() => {
       const fetchRecipes = async () => {
@@ -66,8 +67,13 @@ const Recipe: React.FC = () => {
               <h3>Ingredients:</h3>
               <ul>
               {Object.entries(setRecipe.ingredients).map(([ingredientName, amount], index) => (
-                <li key={index}>{ingredientName}: {amount as string}</li>
+                includesAnyArrayToString(allergies, ingredientName) ? (
+                  <li key={index}>{ingredientName}: {amount as string}</li>
+                ) : (
+                  <li key={index}>{ingredientName}: {amount as string}</li>
+                )
               ))}
+              
               </ul>
               <h3>Instructions:</h3>
               <p>{setRecipe.instructions}</p>
