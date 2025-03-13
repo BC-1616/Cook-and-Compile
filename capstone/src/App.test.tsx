@@ -9,6 +9,7 @@ import RecipeModifier from './components/RecipeModifier';
 import '@testing-library/jest-dom';
 import LandingPage from './components/LandingPage';
 import BlankPage from './components/BlankPage';
+import { UserProvider } from './components/UserContext';
 
 test('renders without crashing', () => {
   const { baseElement } = render(<App />);
@@ -18,10 +19,12 @@ test('renders without crashing', () => {
 test('renders "Sign Up / Sign In" button', () => {
   render (
     <MemoryRouter initialEntries={['/LandingPage']}>
-      <LandingPage />
+      <UserProvider> {/* Wrap the component in UserProvider */}
+        <LandingPage />
+      </UserProvider>
     </MemoryRouter>
   );
-  expect(screen.getByText('Sign In / Sign Up')).toBeInTheDocument();
+  expect(screen.getByText('Sign Up / Sign In')).toBeInTheDocument();
 });
 
 test('renders "Sign Out" button', () => {
