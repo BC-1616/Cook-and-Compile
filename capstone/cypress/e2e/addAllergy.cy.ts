@@ -1,5 +1,15 @@
 describe('Add allergy to the allergy list', () => {
     it('Types in an allergy and submits it to the database', () => {
+        cy.visit('/LandingPage');
+
+        cy.get('input[placeholder="Email"]').type('testuser@gmail.com');
+        cy.get('input[placeholder="Password"]').type('TEST!!!');
+
+        cy.contains('Sign Up / Sign In').click();
+
+        cy.wait(1000);
+
+        cy.contains('Export User Data')
         cy.visit('/IngredientPage');
         cy.get('input[placeholder="Enter Allergy"]').type('Allergy Test');
 

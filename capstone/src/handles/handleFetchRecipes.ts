@@ -38,7 +38,7 @@ export const handleFetchRecipes = async () => {
                 name: data.name,
                 ingredients: data.ingredients,
                 instructions: data.instructions,
-                tags: data.tags || '', // Add default if no tags are available
+                tags: data.tags || "", // Add default if no tags are available
                 userAllergic: false // This can be dynamic based on allergies, if needed
             };
         });

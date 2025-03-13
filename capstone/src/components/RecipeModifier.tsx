@@ -302,6 +302,12 @@ const handleAddIngredient = () => {
                     </IonButton>
                   </IonItem>
                 ))}
+                <h4>Recipe Tags</h4>
+                <IonTextarea 
+                    value={selectedRecipe.tags}
+                    placeholder="Recipe Tag"
+                    onIonChange={e => setSelectedRecipe({ ...selectedRecipe, tags: e.detail.value!})}
+                />
                 <IonButton onClick={handleAddIngredient}>
                   <IonIcon icon={addCircleOutline} />
                   Add Ingredient
