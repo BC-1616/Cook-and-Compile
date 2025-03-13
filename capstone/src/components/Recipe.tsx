@@ -5,16 +5,18 @@ import { handleFetchAllergy, checkIfAllergic, includesAnyArrayToString } from '.
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
 import '../Styles/Recipe.css';
-import { includes } from 'cypress/types/lodash';
 
 const Recipe: React.FC = () => {
   const [recipes, setRecipes] = useState<any[]>([]);
-  const [allergies, setAllergies] = useState<any[]>([]);
+  const [allergies, setAllergies] = useState<any>([]);
+  const [preferences, setPref] = useState<any>([])
   const [currentRecipe, setCurrentRecipe] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [statusMessage, setStatusMessage] = useState<string>('');
 
+    
+  var icon_class_name = 'recipe_button';
   // Fetch recipes only after authentication is complete
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -24,19 +26,17 @@ const Recipe: React.FC = () => {
           const data = await handleFetchRecipes();
           const allergyData = await handleFetchAllergy(setStatusMessage);
 
-          // Update the allergies state
-          if (allergyData) {
-            setAllergies(allergyData);
-          }
-
           // Wait for all recipes to have allergy check applied
           const updatedRecipes = await Promise.all(data.map(async (recipe) => {
             let arrayBuffer: string[] = Array.from(Object.keys(recipe.ingredients));
             recipe.userAllergic = allergyData ? await checkIfAllergic(arrayBuffer, allergyData[0].allergies) : false;
+            recipe.userPref = allergyData ? await checkIfAllergic(arrayBuffer, allergyData[1].pref_list) : false;
             return recipe;
           }));
 
-          // Set the recipes state with the updated recipes
+          // If undefined, they will be set with empty lists
+          allergyData ? setAllergies(allergyData[0]): setAllergies([""]);
+          allergyData ? setPref(allergyData[1]): setAllergies([""]);
           setRecipes(updatedRecipes);
         } catch (error) {
           console.error("Error fetching recipes:", error);
@@ -61,19 +61,21 @@ const Recipe: React.FC = () => {
   if (loading) {
     return <div>Loading...</div>; // Show loading state
   }
-
+  
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}
           <IonTitle id="title">Recipes</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         {currentRecipe ? (
-          // Display selected recipe details
+          /*Button is for when the recipe intructions are displayed so they can return to button page*/
+          /*Added the recipe title to the information once button is clicked*/
           <div>
-            <IonButton onClick={() => setCurrentRecipe(null)}>Back</IonButton>
+            <IonButton onClick={() => setCurrentRecipe(null)}>Back</IonButton>           
             {currentRecipe.userAllergic === true ? (
               <p style={{color: 'red'}}>You are <strong>ALLERGIC</strong> to this recipe</p>
             ) : (
@@ -85,19 +87,19 @@ const Recipe: React.FC = () => {
             <div id="basic_recipe_info">
               <h3>Ingredients:</h3>
               <ul>
-                {Object.entries(currentRecipe.ingredients).map(([ingredientName, amount], index) => (
-                  includesAnyArrayToString(allergies, ingredientName) ? (
-                  <li key={index}>{ingredientName}: {amount as string}</li>
+              {Object.entries(currentRecipe.ingredients).map(([ingredientName, amount], index) => (
+                includesAnyArrayToString(allergies, ingredientName) ? (
+                  <li key={index}>{ingredientName}ALLERGIC: {amount as string}</li>
                 ) : (
                   <li key={index}>{ingredientName}: {amount as string}</li>
-                  )
+                )
               ))}
               
               </ul>
               <h3>Instructions:</h3>
               <p>{currentRecipe.instructions}</p>
               <h3>User Tags:</h3>
-              <p>{currentRecipe.tags}</p> {/* This will probably be a list */}
+              <p>{currentRecipe.tags}</p> 
             </div>
           </div>
       ) : (

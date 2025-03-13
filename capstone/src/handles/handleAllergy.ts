@@ -19,6 +19,7 @@ export const handleAddAllergy = async (
         
         const allergyDocRef = doc(firestore, 'users', user.uid, 'allergies', 'allergy_list');
         
+        
         await updateDoc(allergyDocRef, {
            allergies: arrayUnion(text),
         });
@@ -60,12 +61,7 @@ export const handleEraseAllergy = async (
 export const handleFetchAllergy = async (
     setStatusMessage: React.Dispatch<React.SetStateAction<string>>
 ) => {
-    try{/*
-        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
-        const allergyDocSnap = await getDoc(allergyDocRef);
-
-        return allergyDocSnap.data();
-        */
+    try{
         const user = getAuth().currentUser;
 
         if(!user){
@@ -83,15 +79,14 @@ export const handleFetchAllergy = async (
         });
         return allergyData;
         
-    } catch(error){
+    } catch(error){ 
         throw new Error('Failed to fetch allergies');
     }
 };
 
 // This will also be used for string checking in other lists
 export const checkIfAllergic = async (recipe_array: String[], allergy_array: String[]) => {
-    //Conditional check for invalid array types
-    if(typeof recipe_array[0] != 'string' || typeof allergy_array[0] != 'string'){
+    if(allergy_array === undefined){
         return false;
     }
 

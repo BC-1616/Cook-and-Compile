@@ -46,8 +46,12 @@ const handleAuth = () => {
 
           //create a new allergies collection for the user
           const allergiesCollectionRef = doc(collection(db, 'users', userId, 'allergies'), 'allergy_list');
+          const allergiesCollectionPrefRef = doc(collection(db, 'users', userId, 'allergies'), 'preference_list');
           transaction.set(allergiesCollectionRef, {
             "allergies": []
+          });
+          transaction.set(allergiesCollectionPrefRef, {
+            "pref_list": []
           });
 
           console.log('User collections created in Firestore!');

@@ -25,9 +25,9 @@ const IngredientPage: React.FC = () => {
   // Refresh the allergy list
   const fetchAllergy = async () => { // This function takes care of both allergies and preferences
     try{
-      const allergyData = await handleFetchAllergy();
-      setAllergy(allergyData[0]);
-      setPref(allergyData[1]);
+      const allergyData = await handleFetchAllergy(setStatusMessage);
+      allergyData ? setAllergy(allergyData[0]): [''];
+      allergyData ? setPref(allergyData[1]): [''];
     } catch(error){
       setError('Failed to fetch Allergies');
     }
@@ -70,7 +70,16 @@ const IngredientPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchAllergy(); // This is the only thing we need to do on startup
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        fetchAllergy();
+      } else {
+        setUser(null);
+        setError('No user is authenticated.');
+      }
+      return () => unsubscribe();
+    })
   }, [location.pathname]);
   var listBuffer = [];
    return (
@@ -98,8 +107,8 @@ const IngredientPage: React.FC = () => {
             <IonList>
               <div id="allergy_list_list_list">
                 {/*This section handles intolerances / preferences*/}
-                {prefList.preference == null || prefList.preference == undefined ? <p></p> :
-                Object.entries(prefList.preference).reverse().map(([idx, prefName], index) => (
+                {prefList.pref_list == null || prefList.pref_list == undefined ? <p></p> :
+                Object.entries(prefList.pref_list).reverse().map(([idx, prefName], index) => (
                   <IonItem key={index}>
                     <div id="allergy_list_list">
                       <li id="allergy_list_item">{prefName as string}</li>
