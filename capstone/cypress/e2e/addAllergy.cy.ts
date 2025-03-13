@@ -11,6 +11,7 @@ describe('Add allergy to the allergy list', () => {
 
         cy.contains('Export User Data')
         cy.visit('/IngredientPage');
+        cy.wait(2000);
         cy.get('input[placeholder="Enter Allergy"]').type('Allergy Add Test');
 
         //This is doubled for an interesting reason:
