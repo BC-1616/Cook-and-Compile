@@ -1,84 +1,103 @@
-import React, {useEffect, useState} from 'react';
-import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton} from '@ionic/react';
-import { handleRecipe } from '../handles/handleRecipes'; 
-import { handleFetchAllergy , checkIfAllergic, includesAnyArrayToString} from '../handles/handleAllergy';
+import React, { useEffect, useState } from 'react';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton } from '@ionic/react';
+import { handleFetchRecipes } from '../handles/handleFetchRecipes';
+import { handleFetchAllergy, checkIfAllergic, includesAnyArrayToString } from '../handles/handleAllergy';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
 import '../Styles/Recipe.css';
 import { includes } from 'cypress/types/lodash';
 
 const Recipe: React.FC = () => {
-    const [recipes, setRecipes] = useState<any[]>([]);
-    // Use these two for tracking which ingredient they are allergic to?
-    const [allergies, setAllergies] = useState<any>([]);
-    const [preferences, setPref] = useState<any>([])
-    const [setRecipe, showRecipe] = useState<any | null>(null);
-    
-    var icon_class_name = 'recipe_button';
-    useEffect(() => {
-      const fetchRecipes = async () => {
+  const [recipes, setRecipes] = useState<any[]>([]);
+  const [allergies, setAllergies] = useState<any[]>([]);
+  const [currentRecipe, setCurrentRecipe] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [statusMessage, setStatusMessage] = useState<string>('');
+
+  // Fetch recipes only after authentication is complete
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(user); // Store user when authenticated
         try {
-          const data = await handleRecipe();
-          //I need to get the allergyData here so I can use it in the parameter for checkIfAllergic
-          const allergyData = await handleFetchAllergy();
-          
-          data.map(async (recipe) => {
-            let arrayBuffer: String[] = Array.from(Object.keys(recipe.ingredients));
-            recipe.userAllergic = await checkIfAllergic(arrayBuffer, allergyData[0].allergies);
-            recipe.userPref = await checkIfAllergic(arrayBuffer, allergyData[1].preference);
-          })
-          
-          setAllergies(allergyData[0]);
-          setPref(allergyData[1]);
-          setRecipes(data);
+          const data = await handleFetchRecipes();
+          const allergyData = await handleFetchAllergy(setStatusMessage);
+
+          // Update the allergies state
+          if (allergyData) {
+            setAllergies(allergyData);
+          }
+
+          // Wait for all recipes to have allergy check applied
+          const updatedRecipes = await Promise.all(data.map(async (recipe) => {
+            let arrayBuffer: string[] = Array.from(Object.keys(recipe.ingredients));
+            recipe.userAllergic = allergyData ? await checkIfAllergic(arrayBuffer, allergyData[0].allergies) : false;
+            return recipe;
+          }));
+
+          // Set the recipes state with the updated recipes
+          setRecipes(updatedRecipes);
         } catch (error) {
           console.error("Error fetching recipes:", error);
+        } finally {
+          setLoading(false); // Stop loading when fetching is complete
         }
-    };
+      } else {
+        console.log('No authenticated user');
+        setLoading(false); // Stop loading if no user is authenticated
+      }
+    });
 
-    fetchRecipes();
-  }, []);
-  //updates page to selected recipe
+    // Cleanup the listener when the component unmounts
+    return () => unsubscribe();
+  }, []); // Only run once when component mounts
+
+  // Updates page to the selected recipe
   const click = (recipe: any) => {
-    showRecipe(recipe);
+    setCurrentRecipe(recipe);
   };
-  
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state
+  }
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}
           <IonTitle id="title">Recipes</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        {setRecipe ? (
-          /*Button is for when the recipe intructions are displayed so they can return to button page*/
-          /*Added the recipe title to the information once button is clicked*/
+        {currentRecipe ? (
+          // Display selected recipe details
           <div>
-            <IonButton onClick={() => showRecipe(null)}>Back</IonButton>           
-            {setRecipe.userAllergic === true ? (
+            <IonButton onClick={() => setCurrentRecipe(null)}>Back</IonButton>
+            {currentRecipe.userAllergic === true ? (
               <p style={{color: 'red'}}>You are <strong>ALLERGIC</strong> to this recipe</p>
             ) : (
               <p></p>
             )}
             <IonItem>
-              <h2><strong>{setRecipe.name}</strong></h2>
+              <h2><strong>{currentRecipe.name}</strong></h2>
             </IonItem>
             <div id="basic_recipe_info">
               <h3>Ingredients:</h3>
               <ul>
-              {Object.entries(setRecipe.ingredients).map(([ingredientName, amount], index) => (
-                includesAnyArrayToString(allergies, ingredientName) ? (
+                {Object.entries(currentRecipe.ingredients).map(([ingredientName, amount], index) => (
+                  includesAnyArrayToString(allergies, ingredientName) ? (
                   <li key={index}>{ingredientName}: {amount as string}</li>
                 ) : (
                   <li key={index}>{ingredientName}: {amount as string}</li>
-                )
+                  )
               ))}
               
               </ul>
               <h3>Instructions:</h3>
-              <p>{setRecipe.instructions}</p>
+              <p>{currentRecipe.instructions}</p>
               <h3>User Tags:</h3>
-              <p>{setRecipe.tags}</p> {/*This will probably be a list */}
+              <p>{currentRecipe.tags}</p> {/* This will probably be a list */}
             </div>
           </div>
       ) : (

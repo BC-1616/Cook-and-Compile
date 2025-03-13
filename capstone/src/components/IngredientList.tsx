@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { handleAddAllergy, handleFetchAllergy, handleEraseAllergy } from '../handles/handleAllergy';  
 import { handleAddPref, handleErasePref } from '../handles/handlePreference';
 import '../Styles/IngredientList.css';
+import { auth } from '../firebase_setup/firebase';
 
 
 const IngredientPage: React.FC = () => {
@@ -17,6 +18,9 @@ const IngredientPage: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState<string>('');
 
   const location = useLocation();
+
+  const [user, setUser] = useState<any>(null); 
+
 
   // Refresh the allergy list
   const fetchAllergy = async () => { // This function takes care of both allergies and preferences

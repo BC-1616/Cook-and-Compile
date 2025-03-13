@@ -5,14 +5,44 @@ import IngredientPage from './components/IngredientList';
 import Recipe from './components/Recipe';
 import { checkIfAllergic, includesAnyArrayToString } from './handles/handleAllergy';
 import {MemoryRouter} from 'react-router-dom';
-import populateList from './components/IngredientList';
-import CreateRecipes from './components/CreateRecipes';
 import RecipeModifier from './components/RecipeModifier';
 import '@testing-library/jest-dom';
+import LandingPage from './components/LandingPage';
+import BlankPage from './components/BlankPage';
+import { UserProvider } from './components/UserContext';
 
 test('renders without crashing', () => {
   const { baseElement } = render(<App />);
   expect(baseElement).toBeDefined();
+});
+// This unit test fails with Error: useUser must be used within a UserProvider
+test('renders "Sign Up / Sign In" button', () => {
+  render (
+    <MemoryRouter initialEntries={['/LandingPage']}>
+      <UserProvider> {/* Wrap the component in UserProvider */}
+        <LandingPage />
+      </UserProvider>
+    </MemoryRouter>
+  );
+  expect(screen.getByText('Sign Up / Sign In')).toBeInTheDocument();
+});
+
+test('renders "Sign Out" button', () => {
+  render (
+    <MemoryRouter initialEntries={['/Home']}>
+      <BlankPage />
+    </MemoryRouter>
+  );
+  expect(screen.getByText('Sign Out')).toBeInTheDocument();
+});
+
+test('renders "Export User Data" button', () => {
+  render (
+    <MemoryRouter initialEntries={['/Home']}>
+      <BlankPage />
+    </MemoryRouter>
+  );
+  expect(screen.getByText('Export User Data')).toBeInTheDocument();
 });
 
 test('renders ingredient page', () => {

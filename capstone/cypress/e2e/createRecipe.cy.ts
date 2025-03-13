@@ -4,11 +4,21 @@ the page is working as expected by creating a new recipe */
 
 describe('Create Recipe', () => {
     it('should create a new recipe', () => {
+      cy.visit('/LandingPage');
+
+      cy.get('input[placeholder="Email"]').type('testuser@gmail.com');
+      cy.get('input[placeholder="Password"]').type('TEST!!!');
+
+      cy.contains('Sign Up / Sign In').click();
+
+      cy.wait(1000);
+
+      cy.contains('Export User Data')
       cy.visit('/ModifyRecipes');
       
       cy.contains('Create Recipe').click();
 
-      cy.wait(1000); //wait 1 seconds for popup to load   
+      cy.wait(2000); //wait 2 seconds for popup to load // 1 Second seems too short for all the rendering to take place.  
 
       cy.get('input[placeholder="Enter Recipe Name"]').type('Test Recipe');
       cy.get('input[placeholder="Enter Ingredient Name"]').type('Test Ingredient');

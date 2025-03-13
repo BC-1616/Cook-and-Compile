@@ -1,5 +1,6 @@
 import { arrayUnion, arrayRemove, getDoc, getDocs, collection, addDoc, updateDoc, doc } from '@firebase/firestore';
 import { firestore } from '../firebase_setup/firebase';
+import { getAuth } from 'firebase/auth';
 
 export const handleAddAllergy = async (
     text: string,
@@ -8,7 +9,15 @@ export const handleAddAllergy = async (
 ): Promise<void> => {
     try{
         //When searching for the doc, it will look in the 'allergies' collection and references the 'allergy_list' doc
-        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
+        const user = getAuth().currentUser;
+
+        if(!user){
+            console.error('No user is authenticated.');
+            setStatusMessage('Please log in to add an allergy.');
+            return;
+        } // If no user is logged in, return and don't proceed
+        
+        const allergyDocRef = doc(firestore, 'users', user.uid, 'allergies', 'allergy_list');
         
         await updateDoc(allergyDocRef, {
            allergies: arrayUnion(text),
@@ -28,8 +37,16 @@ export const handleEraseAllergy = async (
     allergyItem: string
 ): Promise<void> => {
     try{
-        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
-        
+        const user = getAuth().currentUser;
+
+        if(!user){
+            console.error('No user is authenticated.');
+            setStatusMessage('Please log in to clear allergies.');
+            return;
+        } // If no user is logged in, return and don't proceed
+
+        const allergyDocRef = doc(firestore, 'users', user.uid, 'allergies', 'allergy_list');
+        //This can be modified to remove specific elements or just 'pop off' elements
         await updateDoc(allergyDocRef, {
             allergies: arrayRemove(allergyItem)
         });
@@ -40,9 +57,24 @@ export const handleEraseAllergy = async (
     }
 };
 
-export const handleFetchAllergy = async () => {
-    try{
-        const allergyCollectionRef = collection(firestore, 'allergies');
+export const handleFetchAllergy = async (
+    setStatusMessage: React.Dispatch<React.SetStateAction<string>>
+) => {
+    try{/*
+        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
+        const allergyDocSnap = await getDoc(allergyDocRef);
+
+        return allergyDocSnap.data();
+        */
+        const user = getAuth().currentUser;
+
+        if(!user){
+            console.error('No user is authenticated.');
+            setStatusMessage('Please log in to fetch allergies.');
+            return;
+        } // If no user is logged in, return and don't proceed
+         
+        const allergyCollectionRef = collection(firestore, 'users', user.uid, 'allergies');
         const allergyQuery = await getDocs(allergyCollectionRef);
 
         const allergyData = allergyQuery.docs.map((doc) => {

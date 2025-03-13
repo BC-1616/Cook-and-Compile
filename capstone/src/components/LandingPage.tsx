@@ -1,31 +1,64 @@
-import React from 'react';
-import { IonContent, IonPage, IonButton } from '@ionic/react';
-import { signInWithPopup } from 'firebase/auth';
-import { auth, provider } from '../firebase_setup/firebase';
-import { useHistory } from 'react-router-dom'; // Using useHistory for React Router v5
-import { useUser } from './UserContext';  // Import the user context to set user data
+import React, { useState } from 'react';
+import { IonContent, IonPage, IonButton, IonInput } from '@ionic/react';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { useUser } from './UserContext'; // Assuming you have a context for user data
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'; // Firestore imports
 
 const LandingPage: React.FC = () => {
-  const history = useHistory();
-  const { setUser } = useUser();  // Get the setUser function from context
+  const { setUser } = useUser();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Function to handle Google Sign-In
-  const handleGoogleSignIn = async () => {
+  const auth = getAuth(); // Firebase authentication instance
+  const db = getFirestore(); // Firestore instance
+
+  // Function to create or fetch user document in Firestore
+  const handleUserCreation = async (user: any) => {
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      try {
+        await setDoc(userDocRef, {
+          email: user.email,
+          name: user.displayName || 'Unnamed User',
+          createdAt: new Date(),
+        });
+        console.log('User document created in Firestore');
+      } catch (error) {
+        console.error('Error creating user document:', error);
+      }
+    }
+  };
+
+  // Handle Sign-Up or Sign-In
+  const handleSignUpOrSignIn = async () => {
     try {
-      console.log('Starting Google Sign-In...');  // Log start of sign-in process
-
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      console.log('User signed in:', user);  // Log the user object after sign-in
-
-      // Save the user data in context
-      setUser(user);
-
-      // Redirect to BlankPage after sign-in
-      window.location.href = '/Home';  // Navigate to LandingPage
-    } catch (error) {
-      console.error('Error during sign-in:', error);  // Log the error if any
+      setLoading(true);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User signed up:", userCredential.user);
+      setUser(userCredential.user);  // Set user state if successful
+      await handleUserCreation(userCredential.user);  // If Firestore data creation is required
+      window.location.href = '/Home';  // Redirect user to Home page
+  
+    } catch (error : any) {
+      if (error.code === 'auth/email-already-in-use') {
+        console.log("Email already in use, signing in...");
+        try {
+          // If email is already in use, sign in the user
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          console.log("User signed in:", userCredential.user);
+          setUser(userCredential.user);  // Set user state if sign-in is successful
+          window.location.href = '/Home';  // Redirect user to Home page
+        } catch (signInError : any) {
+          console.error("Error during sign-in:", signInError.message);
+        }
+      } else {
+        console.error("Error during sign-up:", error.message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -33,12 +66,34 @@ const LandingPage: React.FC = () => {
     <IonPage>
       <IonContent fullscreen>
         <h1>Welcome to the Jandonshurell Recipe App!!!</h1>
-        <p>This page is a placeholder for other routes. User authentication coming soon</p>
 
-        {/* Google Sign-In Button */}
-        <IonButton onClick={handleGoogleSignIn} expand="block" color="primary">
-          Sign In with Google
-        </IonButton>
+        <form onSubmit={(e) => e.preventDefault()}>
+          <IonInput
+            value={email}
+            onIonInput={(e: any) => setEmail(e.detail.value!)} // Use onIonInput to capture changes immediately
+            placeholder="Email"
+            type="email"
+            required
+          />
+
+          <IonInput
+            value={password}
+            onIonInput={(e: any) => setPassword(e.detail.value!)} // Use onIonInput to capture changes immediately
+            placeholder="Password"
+            type="password"
+            required
+          />
+
+          <IonButton 
+            type="button" 
+            expand="block" 
+            color="primary" 
+            disabled={loading} 
+            onClick={handleSignUpOrSignIn}
+          >
+            {loading ? 'Processing...' : 'Sign Up / Sign In'}
+          </IonButton>
+        </form>
       </IonContent>
     </IonPage>
   );
