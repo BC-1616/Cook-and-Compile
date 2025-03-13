@@ -8,7 +8,7 @@ import handleAuth from '../handles/handleAuth'; // Import handleAuth hook
 import '../Styles/BlankPage.css';
 
 const BlankPage: React.FC = () => {
-  const { user, loading } = handleAuth();  // Use the handleAuth hook to get user data
+  const { user } = handleAuth();  // Use the handleAuth hook to get user data
   const history = useHistory();
 
   // Handle sign out
@@ -46,9 +46,6 @@ const BlankPage: React.FC = () => {
     URL.revokeObjectURL(url);  // Clean up the object URL to free memory
   };
 
-  if (loading) {
-    return <div>Loading...</div>;  // Show a loading message while checking authentication
-  }
 
   return (
     <IonPage>

@@ -1,17 +1,28 @@
 import { collection, addDoc } from '@firebase/firestore';
 import { firestore } from '../firebase_setup/firebase';
+import { getAuth } from 'firebase/auth';
 
 export const handleCreateRecipe = async (
-    recipeName: string, 
-    recipeIngredients: { [key: string]: string }, 
+    recipeName: string,
+    recipeIngredients: { [key: string]: string },
     recipeInstructions: string,
     setStatusMessage: React.Dispatch<React.SetStateAction<string>>,
-    clearForm: () => void 
+    clearForm: () => void
 ): Promise<void> => {
     try {
-        // Reference to the 'recipes' collection
-        const recipesCollectionRef = collection(firestore, 'recipes');
-        // Add a new document with a generated id.
+        // Get the current authenticated user
+        const user = getAuth().currentUser;
+        
+        if (!user) {
+            console.error('No user is authenticated.');
+            setStatusMessage('Please log in to add a recipe.');
+            return; // If no user is logged in, return and don't proceed
+        }
+
+        // Reference to the 'recipes' collection for the authenticated user
+        const recipesCollectionRef = collection(firestore, 'users', user.uid, 'recipes');
+
+        // Add a new document to Firestore
         await addDoc(recipesCollectionRef, {
             name: recipeName,
             ingredients: recipeIngredients,
@@ -20,8 +31,9 @@ export const handleCreateRecipe = async (
 
         console.log('Recipe successfully added to Firestore!');
         setStatusMessage('Recipe sent successfully!');
-        clearForm(); // Clear the input after sending
-    }   catch (error) {
+        clearForm(); // Clear the form after sending the recipe
+
+    } catch (error) {
         console.error('Error adding recipe to Firestore:', error);
         setStatusMessage('Failed to send recipe.');
     }

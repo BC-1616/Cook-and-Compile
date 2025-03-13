@@ -1,103 +1,123 @@
-import React, {useEffect, useState} from 'react';
-// Removed unneeded imports
-import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton} from '@ionic/react';
-import { handleRecipe } from '../handles/handleRecipes'; 
-import { handleFetchAllergy , checkIfAllergic } from '../handles/handleAllergy';
+import React, { useEffect, useState } from 'react';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton } from '@ionic/react';
+import { handleFetchRecipes } from '../handles/handleFetchRecipes';
+import { handleFetchAllergy, checkIfAllergic } from '../handles/handleAllergy';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
 import '../Styles/Recipe.css';
 
 const Recipe: React.FC = () => {
-    const [recipes, setRecipes] = useState<any[]>([]);
-    const [allergies, setAllergies] = useState<any[]>([]);
-    const [setRecipe, showRecipe] = useState<any | null>(null);
+  const [recipes, setRecipes] = useState<any[]>([]);
+  const [allergies, setAllergies] = useState<any[]>([]);
+  const [currentRecipe, setCurrentRecipe] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [statusMessage, setStatusMessage] = useState<string>('');
 
-
-    useEffect(() => {
-      const fetchRecipes = async () => {
+  // Fetch recipes only after authentication is complete
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(user); // Store user when authenticated
         try {
-          const data = await handleRecipe();
-          //I need to get the allergyData here so I can use it in the parameter for checkIfAllergic
-          const allergyData = await handleFetchAllergy();
-          
-          data.map(async (recipe) => {
-            let arrayBuffer: String[] = Array.from(Object.keys(recipe.ingredients));
-            recipe.userAllergic = await checkIfAllergic(arrayBuffer, allergyData[0].allergies);
-            //console.log(recipe.userAllergic);
-          })
-          
-          setAllergies(allergyData);
-          setRecipes(data);
+          const data = await handleFetchRecipes();
+          const allergyData = await handleFetchAllergy(setStatusMessage);
+
+          // Update the allergies state
+          if (allergyData) {
+            setAllergies(allergyData);
+          }
+
+          // Wait for all recipes to have allergy check applied
+          const updatedRecipes = await Promise.all(data.map(async (recipe) => {
+            let arrayBuffer: string[] = Array.from(Object.keys(recipe.ingredients));
+            recipe.userAllergic = allergyData ? await checkIfAllergic(arrayBuffer, allergyData[0].allergies) : false;
+            return recipe;
+          }));
+
+          // Set the recipes state with the updated recipes
+          setRecipes(updatedRecipes);
         } catch (error) {
           console.error("Error fetching recipes:", error);
+        } finally {
+          setLoading(false); // Stop loading when fetching is complete
         }
-    };
+      } else {
+        console.log('No authenticated user');
+        setLoading(false); // Stop loading if no user is authenticated
+      }
+    });
 
-    fetchRecipes();
-  }, []);
-  //updates page to selected recipe
+    // Cleanup the listener when the component unmounts
+    return () => unsubscribe();
+  }, []); // Only run once when component mounts
+
+  // Updates page to the selected recipe
   const click = (recipe: any) => {
-    showRecipe(recipe);
+    setCurrentRecipe(recipe);
   };
-  
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state
+  }
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          {/* Removed menu button as it is not needed with new nav bar and added CSS to move page tile below Navbar for web */}
           <IonTitle id="title">Recipes</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        {setRecipe ? (
-          /*Button is for when the recipe intructions are displayed so they can return to button page*/
-          /*Added the recipe title to the information once button is clicked*/
+        {currentRecipe ? (
+          // Display selected recipe details
           <div>
-            <IonButton onClick={() => showRecipe(null)}>Back</IonButton>           
+            <IonButton onClick={() => setCurrentRecipe(null)}>Back</IonButton>
             <IonItem>
-              <h2><strong>{setRecipe.name}</strong></h2>
+              <h2><strong>{currentRecipe.name}</strong></h2>
             </IonItem>
             <div id="basic_recipe_info">
               <h3>Ingredients:</h3>
               <ul>
-              {Object.entries(setRecipe.ingredients).map(([ingredientName, amount], index) => (
-                <li key={index}>{ingredientName}: {amount as string}</li>
-              ))}
+                {Object.entries(currentRecipe.ingredients).map(([ingredientName, amount], index) => (
+                  <li key={index}>{ingredientName}: {amount as string}</li>
+                ))}
               </ul>
               <h3>Instructions:</h3>
-              <p>{setRecipe.instructions}</p>
+              <p>{currentRecipe.instructions}</p>
               <h3>User Tags:</h3>
-              <p>{setRecipe.tags}</p> {/*This will probably be a list */}
+              <p>{currentRecipe.tags}</p> {/* This will probably be a list */}
             </div>
           </div>
-      ) : (
-        recipes.length === 0 ? (
-          <div>No recipes found</div>
         ) : (
-          recipes.map((recipe, index) => (
-            <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
-              {recipe.userAllergic === true ? (
-                <IonItem>
-                  <p id="allergic_alert">You are allergic to this recipe</p>
-                </IonItem>
-              ) : (<p></p>) }
-              <IonButton
-                //uses the css description for the button size and I think the round looks better but it can easily be changed
-                //the height and width can easily be changed, will have to come back to see what looks nicest
-                className='recipe_button'
-                shape="round"
-                fill='clear'
-                onClick={() => click(recipe)}
-                //right now this makes them all the same image. Eventually going to find a way to add them to the database so each picture can be different
-                style={{ backgroundImage: `url(https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg)` }}
-                //style={{ backgroundImage: `url(${recipe.image})` }}
+          recipes.length === 0 ? (
+            <div>No recipes found</div>
+          ) : (
+            recipes.map((recipe, index) => (
+              <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
+                {recipe.userAllergic ? (
+                  <IonItem>
+                    <p id="allergic_alert">You are allergic to this recipe</p>
+                  </IonItem>
+                ) : null}
+                <IonButton
+                  className="recipe_button"
+                  shape="round"
+                  fill="clear"
+                  onClick={() => click(recipe)}
+                  style={{
+                    backgroundImage: `url(${recipe.image || 'https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg'})`
+                  }}
                 >
-                {recipe.name}
-              </IonButton>
-            </div>
-          )))
-      )}
-    </IonContent>
-  </IonPage>
-);
+                  {recipe.name}
+                </IonButton>
+              </div>
+            ))
+          )
+        )}
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default Recipe;
