@@ -4,6 +4,7 @@ import { getAuth } from 'firebase/auth';
 
 interface Recipe {
     id: string;
+    image: string;
     name: string;
     ingredients: { [key: string]: string };
     instructions: string;
@@ -36,6 +37,7 @@ export const handleFetchRecipes = async () => {
             const data = doc.data() as DocumentData;
             return {
                 id: doc.id,
+                image: data.image,
                 name: data.name,
                 ingredients: data.ingredients,
                 instructions: data.instructions,

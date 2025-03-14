@@ -1,5 +1,15 @@
 describe('Remove individual allergy from the list', () => {
     it('Adds allergy and removes it', () => {
+        cy.visit('/LandingPage');
+
+        cy.get('input[placeholder="Email"]').type('testuser@gmail.com');
+        cy.get('input[placeholder="Password"]').type('TEST!!!');
+
+        cy.contains('Sign Up / Sign In').click();
+
+        cy.wait(1000);
+
+        cy.contains('Export User Data')
         cy.visit('/IngredientPage');
         cy.wait(5000);
         cy.get('input[placeholder="Enter Allergy"]').type('Allergy Test', {force:true});

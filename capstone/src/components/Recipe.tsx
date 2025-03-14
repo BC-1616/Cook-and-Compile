@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton , IonInput} from '@ionic/react';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
-import { handleFetchAllergy, checkIfAllergic, includesAnyArrayToString } from '../handles/handleAllergy';
+import { handleFetchAllergy, checkIfAllergic, includesStringInArray } from '../handles/handleAllergy';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
 import { saveURL } from '../handles/handleImages';
@@ -17,7 +17,6 @@ const Recipe: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [imageURLs, setImageURLs] = useState<{ [key: string]: string }>({});
     
-  var icon_class_name = 'recipe_button';
   // Fetch recipes only after authentication is complete
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -36,8 +35,8 @@ const Recipe: React.FC = () => {
           }));
 
           // If undefined, they will be set with empty lists
-          allergyData ? setAllergies(allergyData[0]): setAllergies([""]);
-          allergyData ? setPref(allergyData[1]): setAllergies([""]);
+          allergyData ? setAllergies(allergyData[0].allergies) : setAllergies([""]);
+          allergyData ? setPref(allergyData[1]) : setPref([""]);
           setRecipes(updatedRecipes);
         } catch (error) {
           console.error("Error fetching recipes:", error);
@@ -105,8 +104,8 @@ const Recipe: React.FC = () => {
               <h3>Ingredients:</h3>
               <ul>
               {Object.entries(currentRecipe.ingredients).map(([ingredientName, amount], index) => (
-                includesAnyArrayToString(allergies, ingredientName) ? (
-                  <li key={index}>{ingredientName}ALLERGIC: {amount as string}</li>
+                includesStringInArray(allergies, ingredientName) ? (
+                  <li key={index} style={{color: 'red'}}>{ingredientName}: {amount as string}</li>
                 ) : (
                   <li key={index}>{ingredientName}: {amount as string}</li>
                 )

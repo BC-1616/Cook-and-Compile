@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 import IngredientPage from './components/IngredientList';
 import Recipe from './components/Recipe';
-import { checkIfAllergic, includesAnyArrayToString } from './handles/handleAllergy';
+import { checkIfAllergic, includesStringInArray } from './handles/handleAllergy';
 import {MemoryRouter} from 'react-router-dom';
 import RecipeModifier from './components/RecipeModifier';
 import '@testing-library/jest-dom';
@@ -165,10 +165,13 @@ test('tests array comparison function', () => {
 test('test measures effectiveness of finding string in any type array', () => {
   const arr: any[] = ["thing", "new thing", "string", "another thing"];
 
-  expect(includesAnyArrayToString(arr, "string")).toBe(true);
-  expect(includesAnyArrayToString(arr, "String")).toBe(true);
-  expect(includesAnyArrayToString(arr, "false thing")).toBe(false);
-  expect(includesAnyArrayToString(arr, "")).toBe(false);
+  expect(includesStringInArray(arr, "string")).toBe(true);
+  expect(includesStringInArray(arr, "String")).toBe(true);
+  expect(includesStringInArray(arr, "false thing")).toBe(true);
+  expect(includesStringInArray(arr, "false ting")).toBe(false);
+  expect(includesStringInArray(arr, "false thi")).toBe(false);
+  
+  expect(includesStringInArray(arr, " ")).toBe(false);
 
 
 });

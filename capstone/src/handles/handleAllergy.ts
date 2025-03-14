@@ -103,9 +103,14 @@ export const checkIfAllergic = async (recipe_array: String[], allergy_array: Str
 
 // I hate that I suck at naming functions
 
-export const includesAnyArrayToString = (haystack: String[], needle: String) => {
+export const includesStringInArray = (haystack: String[], needle: String) => {
+    if(haystack.length === 0 || needle === "" || needle === " "){
+        return false;
+    }
+    
     for(let i=0; i<haystack.length; i++){
-        if(haystack[i].toLowerCase() === needle.toLowerCase()){
+        if(haystack[i].toLowerCase().indexOf(needle.toLowerCase()) != -1 ||
+            needle.toLowerCase().indexOf(haystack[i].toLowerCase()) != -1){
             return true;
         }
     }
