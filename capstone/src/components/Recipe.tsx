@@ -125,11 +125,6 @@ const Recipe: React.FC = () => {
         ) : (
           recipes.map((recipe, index) => (
             <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
-              {recipe.userAllergic === true ? (
-                <IonItem>
-                  <p id="allergic_alert">You are allergic to this recipe</p>
-                </IonItem>
-              ) : (<p></p>) }
                 <IonItem>
                   {/* Input for image URL will accept anything causing image to be blank if bad url is submitted
                   will need to add some constraints later but for now,
@@ -146,7 +141,7 @@ const Recipe: React.FC = () => {
                 <IonButton
                   //uses the css description for the button size and I think the round looks better but it can easily be changed
                   //the height and width can easily be changed, will have to come back to see what looks nicest
-                  className='recipe_button'
+                  className={recipe.userAllergic === true ? "recipe_button_allergic" : "recipe_button"}
                   shape="round"
                   fill='clear'
                   onClick={() => click(recipe)}
