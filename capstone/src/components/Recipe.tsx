@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton } from '@ionic/react';
+import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton , IonInput} from '@ionic/react';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleFetchAllergy, checkIfAllergic } from '../handles/handleAllergy';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
+import { saveURL } from '../handles/handleImages';
 import '../Styles/Recipe.css';
 
 const Recipe: React.FC = () => {
@@ -13,7 +14,7 @@ const Recipe: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [statusMessage, setStatusMessage] = useState<string>('');
-
+    const [imageURLs, setImageURLs] = useState<{ [key: string]: string }>({});
   // Fetch recipes only after authentication is complete
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -61,6 +62,22 @@ const Recipe: React.FC = () => {
     return <div>Loading...</div>; // Show loading state
   }
 
+  const urlChange = (recipeId: string, url: string) => {
+    setImageURLs((prev) => ({ ...prev, [recipeId]: url }));
+  };
+  // saves the new URL to Firebase database and updates it
+  const urlSubmit = async (recipeId: string) => {
+    const url = imageURLs[recipeId];
+    if (url) {
+      await saveURL(recipeId, url);
+      setRecipes((prev) =>
+        prev.map((recipe) =>
+          recipe.id === recipeId ? { ...recipe, image: url } : recipe
+        )
+      );
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -89,25 +106,39 @@ const Recipe: React.FC = () => {
               <p>{currentRecipe.tags}</p> {/* This will probably be a list */}
             </div>
           </div>
+      ) : (
+        recipes.length === 0 ? (
+          <div>No recipes found</div>
         ) : (
-          recipes.length === 0 ? (
-            <div>No recipes found</div>
-          ) : (
-            recipes.map((recipe, index) => (
-              <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
-                {recipe.userAllergic ? (
-                  <IonItem>
-                    <p id="allergic_alert">You are allergic to this recipe</p>
-                  </IonItem>
-                ) : null}
-                <IonButton
-                  className="recipe_button"
-                  shape="round"
-                  fill="clear"
-                  onClick={() => click(recipe)}
-                  style={{
-                    backgroundImage: `url(${recipe.image || 'https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg'})`
-                  }}
+          recipes.map((recipe, index) => (
+            <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
+              {recipe.userAllergic === true ? (
+                <IonItem>
+                  <p id="allergic_alert">You are allergic to this recipe</p>
+                </IonItem>
+              ) : (<p></p>) }
+                <IonItem>
+                  {/* Input for image URL will accept anything causing image to be blank if bad url is submitted
+                  will need to add some constraints later but for now,
+                  if the user just hits sumbit it reuploadeds the url so no changes will be made for blank text */}
+                  <IonInput
+                    placeholder="Enter image URL"
+                    value={imageURLs[recipe.id] || ''}
+                    onIonChange={(event) => urlChange(recipe.id, event.detail.value || '')}
+                  />
+                  {/* Placeholder button for sumbiting urls does not look pretty but just a
+                  basic implementation for now */}
+                  <IonButton onClick={() => urlSubmit(recipe.id)}>Submit</IonButton>
+                </IonItem>
+              <IonButton
+                //uses the css description for the button size and I think the round looks better but it can easily be changed
+                //the height and width can easily be changed, will have to come back to see what looks nicest
+                className='recipe_button'
+                shape="round"
+                fill='clear'
+                onClick={() => click(recipe)}
+                //Will display the image if there is one otherwise will fallback to pan
+                style={{ backgroundImage: `url(${recipe.image || 'https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg'})` }}
                 >
                   {recipe.name}
                 </IonButton>
