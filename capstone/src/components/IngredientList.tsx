@@ -52,9 +52,9 @@ const IngredientPage: React.FC = () => {
         const fetchAllergy = async () => {
           try {
             const allergyData = await handleFetchAllergy(setStatusMessage);
-            if (allergyData) {
-              setAllergy(allergyData); // Set the fetched allergies in state if they exist
-            }
+
+            allergyData ? setAllergy(allergyData) : ['']; // Set the fetched allergies in state if they exist
+
             setStatusMessage('Allergies fetched successfully!');
           } catch(error){
             setError('Failed to fetch Allergies');
@@ -127,7 +127,8 @@ const IngredientPage: React.FC = () => {
               {allergyList.map((allergy, index) => (
                 <IonItem key={index}>
                   <IonLabel>
-                    {Object.entries(allergy.allergies).map(([idx, allergyName], index) => (
+                    {allergy.allergies === undefined || allergy.allergies === null ? <p></p> :
+                    Object.entries(allergy.allergies).map(([idx, allergyName], index) => (
                       <li id="allergy_list_item" key={index}>{allergyName as string}</li>
                     ))}
                   </IonLabel>
