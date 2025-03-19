@@ -11,12 +11,13 @@ import { set } from 'cypress/types/lodash';
 
 
 interface Recipe {
-  id: string;
-  name: string;
-  ingredients: { [key: string]: string };
-  instructions: string;
-  tags: string;
-  userAllergic: boolean;
+    id: string;
+    name: string;
+    ingredients: { [key: string]: string };
+    instructions: string;
+    tags: string; //again, maybe make this a list
+    userAllergic: boolean,
+    userPref: boolean
 }
 
 const RecipeModifier: React.FC = () => {

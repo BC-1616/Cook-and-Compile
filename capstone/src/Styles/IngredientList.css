@@ -12,6 +12,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    margin-bottom: 50px;
 }
 
 #ingredient_content_top_label{
@@ -23,7 +24,20 @@
 #right_ingredient_content h2{
     font-weight: bold;
 }
+#left_ingredient_content{
+    text-align: center;
+}
+#left_ingredient_content h2{
+    font-weight: bold;
+}
 
+#allergy_list_list{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
 #allergy_list_item{
     text-align: center;
 }

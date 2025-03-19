@@ -17,12 +17,14 @@ describe('Tests if url submit functions', () => {
         //I orginally had it just enter test, but that would always return http://localhost:8100/test, so I just simplified it to be the whole url from the start
         const setupImageUrl = 'http://localhost:8100/test';
         cy.get('input[placeholder="Enter image URL"]').first().type(setupImageUrl);
+        cy.wait(1000);
 
         //submit image url
         //having it click once didnt work, but twice did.
         cy.contains('Submit').first().click();
         cy.contains('Submit').first().click();
     
+        cy.wait(1000);
         //verify url is updated
         cy.get('.recipe_button').first().should('have.css', 'background-image', `url("${setupImageUrl}")`);
         
@@ -30,6 +32,7 @@ describe('Tests if url submit functions', () => {
         const testImageUrl = 'https://media.istockphoto.com/id/1323555385/vector/hazard-warning-attention-sign-with-exclamation-mark-symbol-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=gimkMa-4zCpVJzyAQRjZ4vkqOXXnZAZISbO9Kj3lh_I=';
         cy.get('input[placeholder="Enter image URL"]').first().clear().type(testImageUrl);
 
+        cy.wait(1000);
         //submit image url
         cy.contains('Submit').first().click();
         cy.contains('Submit').first().click();

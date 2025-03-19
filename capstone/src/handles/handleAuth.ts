@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { getAuth, onAuthStateChanged, User, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Import the auth instance from firebase.ts
 import { getFirestore, doc, setDoc, getDoc, collection, runTransaction } from 'firebase/firestore';  // Firestore imports
 import { handleFetchRecipes } from './handleFetchRecipes';  // Import your function to fetch recipes
@@ -46,8 +46,12 @@ const handleAuth = () => {
 
           //create a new allergies collection for the user
           const allergiesCollectionRef = doc(collection(db, 'users', userId, 'allergies'), 'allergy_list');
+          const allergiesCollectionPrefRef = doc(collection(db, 'users', userId, 'allergies'), 'preference_list');
           transaction.set(allergiesCollectionRef, {
             "allergies": []
+          });
+          transaction.set(allergiesCollectionPrefRef, {
+            "pref_list": []
           });
 
           console.log('User collections created in Firestore!');
@@ -68,7 +72,7 @@ const handleAuth = () => {
         // Optionally set persistence once a user signs in
         // This can be set during login or when the user signs in for the first time
         try {
-          await setPersistence(auth, browserLocalPersistence);
+          //await setPersistence(auth, browserSessionPersistence);
           console.log("Auth state changed", authUser);  // Log the user object after sign-in
 
           // Check if the user already has a Firestore document

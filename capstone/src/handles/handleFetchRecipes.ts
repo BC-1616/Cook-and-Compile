@@ -4,11 +4,13 @@ import { getAuth } from 'firebase/auth';
 
 interface Recipe {
     id: string;
+    image: string;
     name: string;
     ingredients: { [key: string]: string };
     instructions: string;
     tags: string; // Maybe change to a list if tags are multiple
-    userAllergic: boolean;
+    userAllergic: boolean,
+    userPref: boolean
 }
 
 export const handleFetchRecipes = async () => {
@@ -35,11 +37,13 @@ export const handleFetchRecipes = async () => {
             const data = doc.data() as DocumentData;
             return {
                 id: doc.id,
+                image: data.image,
                 name: data.name,
                 ingredients: data.ingredients,
                 instructions: data.instructions,
                 tags: data.tags || "", // Add default if no tags are available
-                userAllergic: false // This can be dynamic based on allergies, if needed
+                userAllergic: false,
+                userPref: false // don't assume they like it // This can be dynamic based on allergies, if needed
             };
         });
 

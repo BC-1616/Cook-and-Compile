@@ -1,4 +1,4 @@
-import { arrayUnion, getDoc, getDocs, collection, addDoc, updateDoc, doc } from '@firebase/firestore';
+import { arrayUnion, arrayRemove, getDoc, getDocs, collection, addDoc, updateDoc, doc } from '@firebase/firestore';
 import { firestore } from '../firebase_setup/firebase';
 import { getAuth } from 'firebase/auth';
 
@@ -19,6 +19,7 @@ export const handleAddAllergy = async (
         
         const allergyDocRef = doc(firestore, 'users', user.uid, 'allergies', 'allergy_list');
         
+        
         await updateDoc(allergyDocRef, {
            allergies: arrayUnion(text),
         });
@@ -32,8 +33,9 @@ export const handleAddAllergy = async (
     }
 };
 
-export const handleClearAllergy = async (
-    setStatusMessage: React.Dispatch<React.SetStateAction<string>>
+export const handleEraseAllergy = async (
+    setStatusMessage: React.Dispatch<React.SetStateAction<string>>,
+    allergyItem: string
 ): Promise<void> => {
     try{
         const user = getAuth().currentUser;
@@ -47,24 +49,19 @@ export const handleClearAllergy = async (
         const allergyDocRef = doc(firestore, 'users', user.uid, 'allergies', 'allergy_list');
         //This can be modified to remove specific elements or just 'pop off' elements
         await updateDoc(allergyDocRef, {
-            allergies: [],
+            allergies: arrayRemove(allergyItem)
         });
-        setStatusMessage('Allergy list cleared');
+        setStatusMessage('Allergy item Erased');
     } catch(error) {
-        setStatusMessage('Failed to clear allergy list');
-        throw new Error('Failed to clear allergy list');
+        setStatusMessage('Failed to clear allergy');
+        throw new Error('Failed to clear allergy');
     }
 };
 
 export const handleFetchAllergy = async (
     setStatusMessage: React.Dispatch<React.SetStateAction<string>>
 ) => {
-    try{/*
-        const allergyDocRef = doc(firestore, 'allergies', 'allergy_list');
-        const allergyDocSnap = await getDoc(allergyDocRef);
-
-        return allergyDocSnap.data();
-        */
+    try{
         const user = getAuth().currentUser;
 
         if(!user){
@@ -82,23 +79,39 @@ export const handleFetchAllergy = async (
         });
         return allergyData;
         
-    } catch(error){
+    } catch(error){ 
         throw new Error('Failed to fetch allergies');
     }
 };
 
-
+// This will also be used for string checking in other lists
 export const checkIfAllergic = async (recipe_array: String[], allergy_array: String[]) => {
-    //Conditional check for invalid array types
-    if(typeof recipe_array[0] != 'string' || typeof allergy_array[0] != 'string'){
+    if(allergy_array === undefined){
         return false;
     }
 
     for(let i=0; i<recipe_array.length; i++){
         for(let j=0; j<allergy_array.length; j++){
-            if(recipe_array[i].toLowerCase() === allergy_array[j].toLowerCase()){
+            if(recipe_array[i].toLowerCase().indexOf(allergy_array[j].toLowerCase()) != -1){
+                //This is a needle in the haystack search
                 return true;
             }
+        }
+    }
+    return false;
+};
+
+// I hate that I suck at naming functions
+
+export const includesStringInArray = (haystack: String[], needle: String) => {
+    if(haystack.length === 0 || needle === "" || needle === " "){
+        return false;
+    }
+    
+    for(let i=0; i<haystack.length; i++){
+        if(haystack[i].toLowerCase().indexOf(needle.toLowerCase()) != -1 ||
+            needle.toLowerCase().indexOf(haystack[i].toLowerCase()) != -1){
+            return true;
         }
     }
     return false;
