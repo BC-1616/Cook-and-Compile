@@ -3,6 +3,7 @@ import { IonContent, IonPage, IonHeader, IonToolbar, IonButtons, IonMenuButton, 
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
+import { handleFetchAllergy } from '../handles/handleAllergy';
 import '../Styles/BlankPage.css';
 
 interface Recipe {
@@ -18,8 +19,11 @@ interface Recipe {
 
 const BlankPage: React.FC = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [allergies, setAllergies] = useState<any>([]); // We don't have a set interface for the allergy/pref data
+    const [preferences, setPref] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(true); // For loading state
     const [user, setUser] = useState<any>(null);  // Track authenticated user
+    const [statusMessage, setStatusMessage] = useState<string>('');
 
     useEffect(() => {
         // Auth state change listener
@@ -28,6 +32,7 @@ const BlankPage: React.FC = () => {
                 console.log("User authenticated:", user);
                 setUser(user);  // Set user to the state
                 await fetchRecipes(user.uid);  // Fetch recipes once user is authenticated
+                await fetchAllergies(user.uid);
             } else {
                 setUser(null);  // No user authenticated
             }
@@ -46,6 +51,20 @@ const BlankPage: React.FC = () => {
             console.log(error);
         } finally {
             setLoading(false); // Stop loading once the recipes are fetched
+        }
+    };
+
+    const fetchAllergies = async (userId: string) => {
+        setLoading(true);
+        try{
+            const allergyData = await handleFetchAllergy(setStatusMessage);
+            console.log("Fetched Allergies:", allergyData);
+            allergyData ? setAllergies(allergyData[0].allergies) : setAllergies([""]);
+            allergyData ? setPref(allergyData[1].pref_list) : setPref([""]);
+        } catch(error) {
+            console.log(error);
+        }finally {
+            setLoading(false);
         }
     };
 
@@ -70,16 +89,18 @@ const BlankPage: React.FC = () => {
             displayName: user?.displayName || 'Anonymous',
             email: user?.email || 'N/A',
             photoURL: user?.photoURL || 'N/A',
+            creationTime: user.metadata.creationTime,
+            lastLogin: user.metadata.lastSignInTime
         };
-
         const otherData = {
-            type: "recipes",
             recipes: recipes, // Include the recipes array here
+            allergies: allergies,
+            preferences: preferences
         };
 
         const userData = {
             ppd: userPersonalData,
-            other: otherData,
+            other: otherData
         };
 
         const jsonData = JSON.stringify(userData, null, 2);

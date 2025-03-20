@@ -36,7 +36,7 @@ const Recipe: React.FC = () => {
 
           // If undefined, they will be set with empty lists
           allergyData ? setAllergies(allergyData[0].allergies) : setAllergies([""]);
-          allergyData ? setPref(allergyData[1]) : setPref([""]);
+          allergyData ? setPref(allergyData[1].pref_list) : setPref([""]);
           setRecipes(updatedRecipes);
         } catch (error) {
           console.error("Error fetching recipes:", error);
@@ -104,10 +104,14 @@ const Recipe: React.FC = () => {
               <h3>Ingredients:</h3>
               <ul>
               {Object.entries(currentRecipe.ingredients).map(([ingredientName, amount], index) => (
-                includesStringInArray(allergies, ingredientName) ? (
+                includesStringInArray(allergies, ingredientName) ? ( // The Allergic ingredient takes precedent
                   <li key={index} style={{color: 'red'}}>{ingredientName}: {amount as string}</li>
                 ) : (
-                  <li key={index}>{ingredientName}: {amount as string}</li>
+                  includesStringInArray(preferences, ingredientName) ? (
+                    <li key={index} style={{color: 'green'}}>{ingredientName}: {amount as string}</li>
+                  ) : (
+                    <li key={index}>{ingredientName}: {amount as string}</li>
+                  )
                 )
               ))}
               
