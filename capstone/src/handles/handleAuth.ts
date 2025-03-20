@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { getAuth, onAuthStateChanged, User, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Import the auth instance from firebase.ts
-import { getFirestore, doc, setDoc, getDoc, collection, runTransaction } from 'firebase/firestore';  // Firestore imports
+import { getFirestore, doc, setDoc, getDoc, arrayUnion, collection, runTransaction } from 'firebase/firestore';  // Firestore imports
 import { handleFetchRecipes } from './handleFetchRecipes';  // Import your function to fetch recipes
 
 const handleAuth = () => {
@@ -24,6 +24,8 @@ const handleAuth = () => {
           transaction.set(userDocRef, {
             email: email,
             createdAt: new Date(),
+            successfulLoginCount: 1, // Set to one since they are logged in for the first time
+            loginTimestamp: arrayUnion(new Date())
           });
           console.log('User document created in Firestore!');
     

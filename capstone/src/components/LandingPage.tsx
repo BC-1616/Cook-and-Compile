@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { IonContent, IonPage, IonButton, IonInput } from '@ionic/react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useUser } from './UserContext'; // Assuming you have a context for user data
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'; // Firestore imports
+import { addLoginSuccess, addLoginFailure } from '../handles/handleLoginAttempt';
+import { getFirestore, doc, arrayUnion, setDoc, getDoc } from 'firebase/firestore'; // Firestore imports
 
 const LandingPage: React.FC = () => {
   const { setUser } = useUser();
@@ -24,6 +25,8 @@ const LandingPage: React.FC = () => {
           email: user.email,
           name: user.displayName || 'Unnamed User',
           createdAt: new Date(),
+          successfulLoginCount: 0,
+          loginTimestamp: arrayUnion(new Date()),
         });
         console.log('User document created in Firestore');
       } catch (error) {
@@ -50,12 +53,16 @@ const LandingPage: React.FC = () => {
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
           console.log("User signed in:", userCredential.user);
           setUser(userCredential.user);  // Set user state if sign-in is successful
+          await addLoginSuccess(userCredential.user.uid);
+
           window.location.href = '/Home';  // Redirect user to Home page
         } catch (signInError : any) {
           console.error("Error during sign-in:", signInError.message);
         }
       } else {
         console.error("Error during sign-up:", error.message);
+        // This is where they put in the wrong password
+        await addLoginFailure();
       }
     } finally {
       setLoading(false);

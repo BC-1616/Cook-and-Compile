@@ -4,6 +4,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleFetchAllergy } from '../handles/handleAllergy';
+import { fetchGlobalFailureLogin, fetchGlobalSuccessLogin, fetchUserLogin } from '../handles/handleLoginAttempt';
 import '../Styles/BlankPage.css';
 
 interface Recipe {
@@ -23,6 +24,9 @@ const BlankPage: React.FC = () => {
     const [preferences, setPref] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(true); // For loading state
     const [user, setUser] = useState<any>(null);  // Track authenticated user
+    const [globalLoginFailure, setGlobalLoginFailure] = useState<any>([]); // Two elements, count and timestamp array
+    const [globalLoginSuccess, setGlobalLoginSuccess] = useState<any>([]);
+    const [userLogin, setUserLoginDetails] = useState<any>(); // Only going to take a couple fields
     const [statusMessage, setStatusMessage] = useState<string>('');
 
     useEffect(() => {
@@ -33,6 +37,8 @@ const BlankPage: React.FC = () => {
                 setUser(user);  // Set user to the state
                 await fetchRecipes(user.uid);  // Fetch recipes once user is authenticated
                 await fetchAllergies(user.uid);
+                await fetchUserLoginAttempts(user.uid);
+                await fetchGlobalLogin();
             } else {
                 setUser(null);  // No user authenticated
             }
@@ -68,6 +74,42 @@ const BlankPage: React.FC = () => {
         }
     };
 
+    const fetchUserLoginAttempts = async (userId: string) => {
+        setLoading(true);
+        try{
+            const userLoginData = await fetchUserLogin(userId);
+            var specificLoginData;
+            userLoginData ? (
+                specificLoginData = {
+                    loginTimestamp: userLoginData.loginTimestamp,
+                    successfulLoginCount: userLoginData.successfulLoginCount,
+                }
+            ) : (
+                specificLoginData = {}
+            )
+            setUserLoginDetails(specificLoginData);
+        }catch(error){
+            console.log(error);
+        }finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchGlobalLogin = async () => {
+        setLoading(true);
+        try{
+            const failData = await fetchGlobalFailureLogin();
+            const successData = await fetchGlobalSuccessLogin();
+
+            setGlobalLoginFailure(failData);
+            setGlobalLoginSuccess(successData);
+        }catch(error) {
+            console.log(error);
+        }finally {
+            setLoading(false);
+        }
+    };
+
     const handleSignOut = async () => {
         try {
             await signOut(auth);
@@ -90,17 +132,25 @@ const BlankPage: React.FC = () => {
             email: user?.email || 'N/A',
             photoURL: user?.photoURL || 'N/A',
             creationTime: user.metadata.creationTime,
-            lastLogin: user.metadata.lastSignInTime
+            lastLogin: user.metadata.lastSignInTime,
+            successfulLogins: userLogin.successfulLoginCount,
+            loginTimestamps: userLogin.loginTimestamp,
+
         };
         const otherData = {
             recipes: recipes, // Include the recipes array here
             allergies: allergies,
             preferences: preferences
         };
+        const globalData = {
+            globalLoginSuccess: globalLoginSuccess,
+            globalLoginFailure: globalLoginFailure,
+        }
 
         const userData = {
             ppd: userPersonalData,
-            other: otherData
+            other: otherData,
+            globalData: globalData,
         };
 
         const jsonData = JSON.stringify(userData, null, 2);
