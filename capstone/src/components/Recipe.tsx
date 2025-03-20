@@ -119,7 +119,19 @@ const Recipe: React.FC = () => {
               <h3>Instructions:</h3>
               <p>{currentRecipe.instructions}</p>
               <h3>User Tags:</h3>
-              <p>{currentRecipe.tags}</p> 
+              <p>{currentRecipe.tags}</p>
+
+              {/* Image URL Submission */}
+              <h3>Change Recipe Image:</h3>
+              {/* Input for image URL will accept anything causing image to be blank if bad url is submitted
+              will need to add some constraints later but for now,
+              if the user just hits sumbit it reuploadeds the url so no changes will be made for blank text */}
+              <IonInput
+                placeholder="Enter image URL"
+                value={imageURLs[currentRecipe.id] || ''}
+                onIonChange={(event) => urlChange(currentRecipe.id, event.detail.value || '')}
+              />
+              <IonButton onClick={() => urlSubmit(currentRecipe.id)}>Submit</IonButton>
             </div>
           </div>
       ) : (
@@ -128,19 +140,6 @@ const Recipe: React.FC = () => {
         ) : (
           recipes.map((recipe, index) => (
             <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
-                <IonItem>
-                  {/* Input for image URL will accept anything causing image to be blank if bad url is submitted
-                  will need to add some constraints later but for now,
-                  if the user just hits sumbit it reuploadeds the url so no changes will be made for blank text */}
-                  <IonInput
-                    placeholder="Enter image URL"
-                    value={imageURLs[recipe.id] || ''}
-                    onIonChange={(event) => urlChange(recipe.id, event.detail.value || '')}
-                  />
-                  {/* Placeholder button for sumbiting urls does not look pretty but just a
-                  basic implementation for now */}
-                  <IonButton onClick={() => urlSubmit(recipe.id)}>Submit</IonButton>
-                </IonItem>
                 <IonButton
                   //uses the css description for the button size and I think the round looks better but it can easily be changed
                   //the height and width can easily be changed, will have to come back to see what looks nicest
