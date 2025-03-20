@@ -38,6 +38,7 @@
     border-radius: 60px;
     box-shadow: 0 5px 5px 2px red;
     background-size: cover;
+    filter: brightness(75%) grayscale(10%);
     background-position: center;
     font-size: 28px;
     font-weight: bolder;
@@ -48,6 +49,10 @@
     height: 200px;
     border-radius: 60px; 
     background-size: cover;
+    /* I tried some other methods to make text more readable
+    this is the best method I got to working
+    there might be a better method but I'm not great with css*/
+    filter: brightness(75%) grayscale(10%);
     background-position: center;
     font-size: 28px;
     font-weight: bolder;
