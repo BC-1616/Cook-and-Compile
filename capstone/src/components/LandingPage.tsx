@@ -25,7 +25,7 @@ const LandingPage: React.FC = () => {
           email: user.email,
           name: user.displayName || 'Unnamed User',
           createdAt: new Date(),
-          successfulLoginCount: 0,
+          successfulLoginCount: 1,
           loginTimestamp: arrayUnion(new Date()),
         });
         console.log('User document created in Firestore');
