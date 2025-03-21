@@ -150,7 +150,7 @@ const Recipe: React.FC = () => {
                   //Will display the image if there is one otherwise will fallback to pan
                   style={{ backgroundImage: `url(${recipe.image || 'https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg'})` }}
                   >
-                  {recipe.name}
+                  <span id="recipe_button_text">{recipe.name}</span>
                 </IonButton>
               </div>
             ))
