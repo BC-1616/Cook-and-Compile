@@ -5,6 +5,10 @@ const firestore = getFirestore();
 
 export const saveURL = async (recipeId: string, imageURL: string) => {
   const user = getAuth().currentUser;
+  if(!user){
+    console.error('No user is authenticated.');
+    return;
+  }
 
   const userId = user.uid;
   console.log("saveURL called with:", { userId, recipeId, imageURL });
