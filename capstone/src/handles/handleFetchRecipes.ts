@@ -9,8 +9,17 @@ interface Recipe {
     ingredients: { [key: string]: string };
     instructions: string;
     tags: string; // Maybe change to a list if tags are multiple
-    userAllergic: boolean,
-    userPref: boolean
+    userAllergic: boolean;
+    userPref: boolean;
+}
+
+// Interface for the expected structure of recipe data from Firestore
+interface RecipeData {
+    image: string;
+    name: string;
+    ingredients: { [key: string]: string };
+    instructions: string;
+    tags?: string; // tags are optional
 }
 
 export const handleFetchRecipes = async () => {
@@ -24,26 +33,32 @@ export const handleFetchRecipes = async () => {
         const userId = user.uid; // Get the user's ID
 
         // Reference the user's 'recipes' subcollection
-        console.log('Looking under ', userId, ' collection for recipes.');
+        console.log('Looking under', userId, 'collection for recipes.');
         const recipesCollectionRef = collection(firestore, 'users', userId, 'recipes');
         
         // Fetch the recipes from the user's subcollection
         const querySnapshot = await getDocs(recipesCollectionRef);
-
         console.log('Fetched documents:', querySnapshot.docs.length); // Log the number of fetched documents
 
+        // If no recipes are found
+        if (querySnapshot.empty) {
+            console.log("No recipes found for this user.");
+            return [];
+        }
+
         const recipes: Recipe[] = querySnapshot.docs.map(doc => {
-            console.log('Document ID:', doc.id); // Log the document ID of each fetched recipe
-            const data = doc.data() as DocumentData;
+            const data = doc.data() as RecipeData;
+            console.log('Document Data:', data); // Log the data of each document
+
             return {
                 id: doc.id,
-                image: data.image,
-                name: data.name,
-                ingredients: data.ingredients,
-                instructions: data.instructions,
-                tags: data.tags || "", // Add default if no tags are available
+                image: data.image || '', // Default empty string if no image
+                name: data.name || 'Untitled', // Default value if no name
+                ingredients: data.ingredients || {}, // Default empty object if no ingredients
+                instructions: data.instructions || '', // Default empty string if no instructions
+                tags: data.tags || '', // Add default if no tags are available
                 userAllergic: false,
-                userPref: false // don't assume they like it // This can be dynamic based on allergies, if needed
+                userPref: false,
             };
         });
 

@@ -36,7 +36,7 @@ const Recipe: React.FC = () => {
 
           // If undefined, they will be set with empty lists
           allergyData ? setAllergies(allergyData[0].allergies) : setAllergies([""]);
-          allergyData ? setPref(allergyData[1]) : setPref([""]);
+          allergyData ? setPref(allergyData[1].pref_list) : setPref([""]);
           setRecipes(updatedRecipes);
         } catch (error) {
           console.error("Error fetching recipes:", error);
@@ -104,10 +104,14 @@ const Recipe: React.FC = () => {
               <h3>Ingredients:</h3>
               <ul>
               {Object.entries(currentRecipe.ingredients).map(([ingredientName, amount], index) => (
-                includesStringInArray(allergies, ingredientName) ? (
+                includesStringInArray(allergies, ingredientName) ? ( // The Allergic ingredient takes precedent
                   <li key={index} style={{color: 'red'}}>{ingredientName}: {amount as string}</li>
                 ) : (
-                  <li key={index}>{ingredientName}: {amount as string}</li>
+                  includesStringInArray(preferences, ingredientName) ? (
+                    <li key={index} style={{color: 'green'}}>{ingredientName}: {amount as string}</li>
+                  ) : (
+                    <li key={index}>{ingredientName}: {amount as string}</li>
+                  )
                 )
               ))}
               
@@ -115,7 +119,19 @@ const Recipe: React.FC = () => {
               <h3>Instructions:</h3>
               <p>{currentRecipe.instructions}</p>
               <h3>User Tags:</h3>
-              <p>{currentRecipe.tags}</p> 
+              <p>{currentRecipe.tags}</p>
+
+              {/* Image URL Submission */}
+              <h3>Change Recipe Image:</h3>
+              {/* Input for image URL will accept anything causing image to be blank if bad url is submitted
+              will need to add some constraints later but for now,
+              if the user just hits sumbit it reuploadeds the url so no changes will be made for blank text */}
+              <IonInput
+                placeholder="Enter image URL"
+                value={imageURLs[currentRecipe.id] || ''}
+                onIonChange={(event) => urlChange(currentRecipe.id, event.detail.value || '')}
+              />
+              <IonButton onClick={() => urlSubmit(currentRecipe.id)}>Submit</IonButton>
             </div>
           </div>
       ) : (
@@ -124,19 +140,6 @@ const Recipe: React.FC = () => {
         ) : (
           recipes.map((recipe, index) => (
             <div key={recipe.id} id={index === recipes.length - 1 ? "last-recipe" : ""}>
-                <IonItem>
-                  {/* Input for image URL will accept anything causing image to be blank if bad url is submitted
-                  will need to add some constraints later but for now,
-                  if the user just hits sumbit it reuploadeds the url so no changes will be made for blank text */}
-                  <IonInput
-                    placeholder="Enter image URL"
-                    value={imageURLs[recipe.id] || ''}
-                    onIonChange={(event) => urlChange(recipe.id, event.detail.value || '')}
-                  />
-                  {/* Placeholder button for sumbiting urls does not look pretty but just a
-                  basic implementation for now */}
-                  <IonButton onClick={() => urlSubmit(recipe.id)}>Submit</IonButton>
-                </IonItem>
                 <IonButton
                   //uses the css description for the button size and I think the round looks better but it can easily be changed
                   //the height and width can easily be changed, will have to come back to see what looks nicest
@@ -147,7 +150,7 @@ const Recipe: React.FC = () => {
                   //Will display the image if there is one otherwise will fallback to pan
                   style={{ backgroundImage: `url(${recipe.image || 'https://t4.ftcdn.net/jpg/02/33/56/39/360_F_233563961_kE9T55F8EoBCKpKuXnrXTV1bIgQIve7W.jpg'})` }}
                   >
-                  {recipe.name}
+                  <span id="recipe_button_text">{recipe.name}</span>
                 </IonButton>
               </div>
             ))

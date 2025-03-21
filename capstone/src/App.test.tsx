@@ -42,7 +42,8 @@ test('renders "Export User Data" button', () => {
       <BlankPage />
     </MemoryRouter>
   );
-  expect(screen.getByText('Export User Data')).toBeInTheDocument();
+  // When the screen first renders, this button will be loading
+  expect(screen.getByText("Loading...")).toBeInTheDocument()
 });
 
 test('renders ingredient page', () => {
