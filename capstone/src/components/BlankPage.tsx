@@ -5,6 +5,9 @@ import { auth } from '../firebase_setup/firebase';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleFetchAllergy } from '../handles/handleAllergy';
 import { fetchGlobalFailureLogin, fetchGlobalSuccessLogin, fetchUserLogin } from '../handles/handleLoginAttempt';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { isPlatform } from '@ionic/react';
+import { Share } from '@capacitor/share';
 import '../Styles/BlankPage.css';
 
 interface Recipe {
@@ -46,6 +49,15 @@ const BlankPage: React.FC = () => {
 
         return () => unsubscribe();  // Clean up the listener when component is unmounted
     }, []);
+
+    const shareFile = async (fileUri: string) => {
+      await Share.share({
+          title: 'Exported User Data',
+          text: 'Here is the exported user data file.',
+          url: fileUri,  // Share the file URI
+          dialogTitle: 'Share User Data'
+      });
+  };
 
     const fetchRecipes = async (userId: string) => {
         setLoading(true); // Start loading when fetching recipes
@@ -120,48 +132,70 @@ const BlankPage: React.FC = () => {
         }
     };
 
-    const exportToJson = () => {
-        if (recipes.length === 0) {
-            console.log("No recipes available to export");
-            return;
+    const exportToJson = async () => {
+      if (recipes.length === 0) {
+          console.log("No recipes available to export");
+          return;
+      }
+  
+      const userPersonalData = {
+          uid: user?.uid || 'Anonymous',
+          displayName: user?.displayName || 'Anonymous',
+          email: user?.email || 'N/A',
+          photoURL: user?.photoURL || 'N/A',
+          creationTime: user.metadata.creationTime,
+          lastLogin: user.metadata.lastSignInTime,
+          successfulLogins: userLogin.successfulLoginCount,
+          loginTimestamps: userLogin.loginTimestamp,
+      };
+  
+      const otherData = {
+          recipes: recipes,
+          allergies: allergies,
+          preferences: preferences
+      };
+  
+      const globalData = {
+          globalLoginSuccess: globalLoginSuccess,
+          globalLoginFailure: globalLoginFailure,
+      };
+  
+      const userData = {
+          ppd: userPersonalData,
+          other: otherData,
+          globalData: globalData,
+      };
+  
+      const jsonData = JSON.stringify(userData, null, 2);
+  
+      // Platform check: Use isPlatform('hybrid') to differentiate mobile from web
+      if (isPlatform('hybrid')) {
+        try {
+            const result = await Filesystem.writeFile({
+                path: 'userData.json',
+                data: jsonData,
+                directory: Directory.Documents,
+                encoding: Encoding.UTF8
+            });
+            console.log('File saved:', result.uri);
+    
+            // Share the file after saving
+            shareFile(result.uri);  // Share the saved file
+        } catch (e) {
+            console.error('Error writing file', e);
         }
+      } else {
+          // For web, use Blob and create an <a> link to trigger the file download
+          const blob = new Blob([jsonData], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'userData.json';
+          link.click();
+          URL.revokeObjectURL(url);
+      }
+  };
 
-        const userPersonalData = {
-            uid: user?.uid || 'Anonymous',
-            displayName: user?.displayName || 'Anonymous',
-            email: user?.email || 'N/A',
-            photoURL: user?.photoURL || 'N/A',
-            creationTime: user.metadata.creationTime,
-            lastLogin: user.metadata.lastSignInTime,
-            successfulLogins: userLogin.successfulLoginCount,
-            loginTimestamps: userLogin.loginTimestamp,
-
-        };
-        const otherData = {
-            recipes: recipes, // Include the recipes array here
-            allergies: allergies,
-            preferences: preferences
-        };
-        const globalData = {
-            globalLoginSuccess: globalLoginSuccess,
-            globalLoginFailure: globalLoginFailure,
-        }
-
-        const userData = {
-            ppd: userPersonalData,
-            other: otherData,
-            globalData: globalData,
-        };
-
-        const jsonData = JSON.stringify(userData, null, 2);
-        const blob = new Blob([jsonData], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'userData.json';
-        link.click();
-        URL.revokeObjectURL(url);
-    };
 
     return (
         <IonPage>
