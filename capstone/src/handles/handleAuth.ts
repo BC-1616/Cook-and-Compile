@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { getAuth, onAuthStateChanged, User, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Import the auth instance from firebase.ts
-import { getFirestore, doc, setDoc, getDoc, arrayUnion, collection, runTransaction } from 'firebase/firestore';  // Firestore imports
+import { getFirestore, doc, setDoc, getDocs, getDoc, arrayUnion, collection, runTransaction } from 'firebase/firestore';  // Firestore imports
 import { handleFetchRecipes } from './handleFetchRecipes';  // Import your function to fetch recipes
 
 const handleAuth = () => {
@@ -86,8 +86,15 @@ const handleAuth = () => {
             console.log('No user document found, creating new user...');
             await handleNewUser(authUser.uid, authUser.email!); 
             isUserCreateRef.current = true; 
-            } else {
-              console.error('User document already exists');
+          } else {
+            // In case they don't have documents, make sure they do.
+            const allergyCheckRef = collection(db, 'users', authUser.uid, 'allergies');
+            const allergyCheckSnap = await getDocs(allergyCheckRef);
+            if(allergyCheckSnap.empty){
+              // This will essentailly remake their account if there was an error in making their documents.
+              await handleNewUser(authUser.uid, authUser.email!);
+            }
+            console.error('User document already exists');
           } 
 
           // Update the state with the user once Firestore operation is done

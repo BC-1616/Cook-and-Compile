@@ -87,13 +87,13 @@ const IngredientPage: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           {/* Added CSS to move page tile below Navbar */}
-          <IonTitle id="title">Ingredients</IonTitle>
+          <IonTitle id="title">Alergy Information</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Ingredient List</IonTitle>
+            <IonTitle class="ion-text-center" size="large">Allergy Information</IonTitle>
           </IonToolbar>
         </IonHeader>
         <div id="ingredient_content_parent">
