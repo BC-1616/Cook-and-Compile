@@ -10,6 +10,8 @@ import { isPlatform } from '@ionic/react';
 import { Share } from '@capacitor/share';
 import '../Styles/BlankPage.css';
 
+import {checkUserStatus} from '../handles/handleRetention';
+
 interface Recipe {
     id: string;
     image: string;
@@ -31,6 +33,7 @@ const BlankPage: React.FC = () => {
     const [globalLoginSuccess, setGlobalLoginSuccess] = useState<any>([]);
     const [userLogin, setUserLoginDetails] = useState<any>(); // Only going to take a couple fields
     const [statusMessage, setStatusMessage] = useState<string>('');
+
 
     useEffect(() => {
         // Auth state change listener
