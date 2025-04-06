@@ -1,4 +1,7 @@
 import { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase-admin/app";
+import admin from 'firebase-admin/app';
+import serviceAccount from './capstone-firebase-admin.json';
 import { GoogleAuthProvider, signInWithRedirect, setPersistence, Auth } from 'firebase/auth';  // Import Auth for type
 import { getFirestore } from 'firebase/firestore';  // Import getFirestore to initialize Firestore
 import { initializeAuth, indexedDBLocalPersistence, getAuth } from 'firebase/auth'; // Import initializeAuth for hybrid environments
@@ -33,9 +36,15 @@ if (isPlatform('hybrid')) {
   setPersistence(auth, indexedDBLocalPersistence);
 }
 
+
+const firebase = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://capstone-644c8-default-rtdb.firebaseio.com"
+});
+
 const provider = new GoogleAuthProvider();
 
 // Initialize Firestore and export it
 const firestore = getFirestore(app);  // Initialize Firestore with getFirestore
 
-export { auth, provider, firestore, signInWithRedirect };
+export { auth, provider, firestore, firebase, signInWithRedirect };

@@ -10,7 +10,7 @@ import { isPlatform } from '@ionic/react';
 import { Share } from '@capacitor/share';
 import '../Styles/BlankPage.css';
 
-import {checkUserStatus} from '../handles/handleRetention';
+import {deleteUnusedUsers} from '../handles/handleRetention';
 
 interface Recipe {
     id: string;
@@ -45,6 +45,7 @@ const BlankPage: React.FC = () => {
                 await fetchAllergies(user.uid);
                 await fetchUserLoginAttempts(user.uid);
                 await fetchGlobalLogin();
+                await deleteUnusedUsers();
             } else {
                 setUser(null);  // No user authenticated
             }

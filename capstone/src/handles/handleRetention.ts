@@ -8,15 +8,15 @@
 //    delete if the account doens't exist.
 
 import { collection, getDocs, DocumentData } from '@firebase/firestore';
-import { firestore } from '../firebase_setup/firebase';
+import { firestore, firebase } from '../firebase_setup/firebase';
 import { getAuth, fetchSignInMethodsForEmail } from 'firebase/auth';
 
-export const checkUserStatus = async () => { // Return s a list of invalid users.
+const checkUserStatus = async () => { // Return s a list of invalid users.
     // Can get all user docs and check those user id's with a created user?
     const userCollectionRef = collection(firestore, 'users');
     const userDocsSnap = await getDocs(userCollectionRef);
-    const users: any[] = userDocsSnap.docs.map(doc => { // Look at all user collection's ID's
-        return doc.data();;
+    const users: any[] = userDocsSnap.docs.map(doc => {
+        return doc.data();
     });
 
     const auth = getAuth();
@@ -28,5 +28,13 @@ export const checkUserStatus = async () => { // Return s a list of invalid users
             invalidUsers.push(user);
         }
     }
-    return invalidUsers
+
+    const stringUsers: string[] = [];
+    return stringUsers.concat(invalidUsers.map(String));
+}
+
+// Exported function that will properly remove the invalid users.
+export const deleteUnusedUsers = async () => {
+    const invalidUsers = await checkUserStatus(); // invalidUsers is a list of emails in which we will check the last time they logged in. If it is after 6 months their collections will be deleted.
+    console.log(invalidUsers);
 }
