@@ -8,7 +8,7 @@
 //    delete if the account doens't exist.
 
 import { collection, getDocs, DocumentData } from '@firebase/firestore';
-import { firestore, firebase } from '../firebase_setup/firebase';
+import { firestore } from '../firebase_setup/firebase';
 import { getAuth, fetchSignInMethodsForEmail } from 'firebase/auth';
 
 const checkUserStatus = async () => { // Return s a list of invalid users.
@@ -23,18 +23,20 @@ const checkUserStatus = async () => { // Return s a list of invalid users.
     const invalidUsers: any[] = [];
     for (const user of users){
         // Check if email is authorized?
-        const ref = await fetchSignInMethodsForEmail(auth, user.email);
+        const ref = await fetchSignInMethodsForEmail(auth, user.email); // this is depreciated :(
         if(ref.length === 0){
             invalidUsers.push(user);
         }
     }
-
-    const stringUsers: string[] = [];
-    return stringUsers.concat(invalidUsers.map(String));
+    
+    return invalidUsers;
 }
 
 // Exported function that will properly remove the invalid users.
 export const deleteUnusedUsers = async () => {
     const invalidUsers = await checkUserStatus(); // invalidUsers is a list of emails in which we will check the last time they logged in. If it is after 6 months their collections will be deleted.
-    console.log(invalidUsers);
+    console.log(invalidUsers.length);
+    for(let i = 0; i<invalidUsers.length; i++) {
+        console.log(invalidUsers[i].uid);
+    }
 }
