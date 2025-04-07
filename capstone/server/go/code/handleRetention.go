@@ -5,10 +5,21 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/firestore"
+	"firebase.google.com/go/auth"
 	"google.golang.org/api/iterator"
 )
 
-func FindInvalidUsers(ctx context.Context, client *firestore.Client) error { // will return a list of users, don't know the types
+// Elements of the user map:
+//   - createdAt			time.Time
+//   - email				string
+//   - name					string
+//   - loginTimestamp		[]time.Time
+//   - successfulLoginCount int
+
+// FindInvalidUsers is a function that will find the users that used to have authentication
+// but don't anymore
+func FindInvalidUsers(ctx context.Context, client *firestore.Client, admin *auth.Client) error { // will return a list of users, don't know the types
+
 	userRef := client.Collection("users")
 	userDocIter := userRef.Documents(ctx)
 
@@ -23,8 +34,14 @@ func FindInvalidUsers(ctx context.Context, client *firestore.Client) error { // 
 		}
 
 		data := doc.Data()
+
 		// Check their data here
-		userList = append(userList, data)
+		userEmail := data["email"].(string)
+		_, err = admin.GetUserByEmail(ctx, userEmail)
+		if err != nil { // Throws an error if the user doesn't exist (they have collections but no authentication)
+			//Full of invalid users
+			userList = append(userList, data)
+		}
 	}
 
 	err := removeInvalidUsers(userList)
@@ -35,61 +52,10 @@ func FindInvalidUsers(ctx context.Context, client *firestore.Client) error { // 
 	return nil
 }
 
-// Elements of the user map:
-//   - createdAt
-//   - email
-//   - loginTimestamp
-//   - successfulLoginCount
-
 func removeInvalidUsers(userList []map[string]interface{}) error {
 	for _, user := range userList {
-		fmt.Println(user["email"])
+		fmt.Println(user)
 	}
 
 	return nil
 }
-
-/*
-// For retaining / deleting data with or after account deletion, a method could be
-// checking periodically* if the account still has their firebase authorization, and
-// if it doesn't, check their last login time. If it has been more than 6 months**, delete
-// their collections.
-//
-// * Can check whenever handleSignInOrSignUp is called for any user. Check all users.
-// ** For user created things, delete after 6 months, for allergies/preferences,
-//    delete if the account doens't exist.
-
-import { collection, getDocs, DocumentData } from '@firebase/firestore';
-import { firestore } from '../firebase_setup/firebase';
-import { getAuth, fetchSignInMethodsForEmail } from 'firebase/auth';
-
-const checkUserStatus = async () => { // Return s a list of invalid users.
-    // Can get all user docs and check those user id's with a created user?
-    const userCollectionRef = collection(firestore, 'users');
-    const userDocsSnap = await getDocs(userCollectionRef);
-    const users: any[] = userDocsSnap.docs.map(doc => {
-        return doc.data();
-    });
-
-    const auth = getAuth();
-    const invalidUsers: any[] = [];
-    for (const user of users){
-        // Check if email is authorized?
-        const ref = await fetchSignInMethodsForEmail(auth, user.email); // this is depreciated :(
-        if(ref.length === 0){
-            invalidUsers.push(user);
-        }
-    }
-
-    return invalidUsers;
-}
-
-// Exported function that will properly remove the invalid users.
-export const deleteUnusedUsers = async () => {
-    const invalidUsers = await checkUserStatus(); // invalidUsers is a list of emails in which we will check the last time they logged in. If it is after 6 months their collections will be deleted.
-    console.log(invalidUsers.length);
-    for(let i = 0; i<invalidUsers.length; i++) {
-        console.log(invalidUsers[i].uid);
-    }
-}
-*/
