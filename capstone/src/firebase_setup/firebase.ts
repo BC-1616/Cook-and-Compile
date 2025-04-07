@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import serviceAccount from './capstone-firebase-admin.json';
 import { GoogleAuthProvider, signInWithRedirect, setPersistence, Auth } from 'firebase/auth';  // Import Auth for type
 import { getFirestore } from 'firebase/firestore';  // Import getFirestore to initialize Firestore
 import { initializeAuth, indexedDBLocalPersistence, getAuth } from 'firebase/auth'; // Import initializeAuth for hybrid environments
