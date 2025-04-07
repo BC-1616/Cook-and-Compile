@@ -23,7 +23,7 @@ func FindInvalidUsers(ctx context.Context, client *firestore.Client, admin *auth
 	userRef := client.Collection("users")
 	userDocIter := userRef.Documents(ctx)
 
-	var userList []map[string]interface{} // List of user documents.
+	var userList []string // List of user documents.
 	for {
 		doc, err := userDocIter.Next()
 		if err == iterator.Done {
@@ -33,14 +33,15 @@ func FindInvalidUsers(ctx context.Context, client *firestore.Client, admin *auth
 			return err
 		}
 
+		// userID := doc.Ref.ID //Use this for thier ID
 		data := doc.Data()
 
 		// Check their data here
 		userEmail := data["email"].(string)
-		_, err = admin.GetUserByEmail(ctx, userEmail)
+		record, err := admin.GetUserByEmail(ctx, userEmail)
 		if err != nil { // Throws an error if the user doesn't exist (they have collections but no authentication)
 			//Full of invalid users
-			userList = append(userList, data)
+			userList = append(userList, record.UID)
 		}
 	}
 
@@ -52,7 +53,7 @@ func FindInvalidUsers(ctx context.Context, client *firestore.Client, admin *auth
 	return nil
 }
 
-func removeInvalidUsers(userList []map[string]interface{}) error {
+func removeInvalidUsers(userList []string) error {
 	for _, user := range userList {
 		fmt.Println(user)
 	}
