@@ -3,9 +3,9 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import IngredientPage from './components/IngredientList';
 import BlankPage from './components/BlankPage';
-import CreateRecipes from './components/CreateRecipes';
 import ModifyRecipes from './components/RecipeModifier';
 import Recipe from './components/Recipe';
+import MealCalendar from './components/MealPlan/MealCalender';
 import LandingPage from './components/LandingPage';
 import NavBar from './components/NavBar';
 import handleAuth from './handles/handleAuth';
@@ -71,6 +71,10 @@ const App: React.FC = () => {
 
                 <Route path="/ModifyRecipes" exact={true}>
                   <ModifyRecipes />
+                </Route>
+
+                <Route path="/MealPlan" exact={true}>
+                  <MealCalendar />
                 </Route>
               </Switch>
             </IonRouterOutlet>
