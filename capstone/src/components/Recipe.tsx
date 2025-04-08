@@ -33,6 +33,7 @@ const Recipe: React.FC = () => {
   const [ingredientAmount, setIngredientAmount] = useState('');
   const [recipeInstructions, setRecipeInstructions] = useState('');
   const [expandedRecipe, setExpandedRecipe] = useState<string | null>(null);
+  const [confirmationMessage, setConfirmationMessage] = useState<string>('');
 
   // Fetch recipes only after authentication is complete
   useEffect(() => {
@@ -106,6 +107,7 @@ const Recipe: React.FC = () => {
           recipe.id === recipeId ? { ...recipe, image: url } : recipe
         )
       );
+      setConfirmationMessage('Image URL Updated!');
     }
   };
 
@@ -306,6 +308,7 @@ const handleAddIngredient = () => {
                 onIonChange={(event) => urlChange(currentRecipe.id, event.detail.value || '')}
               />
               <IonButton onClick={() => urlSubmit(currentRecipe.id)}>Submit</IonButton>
+              {confirmationMessage && <p style={{ color: 'green', marginTop: '8px' }}>{confirmationMessage}</p>}
             </div>
           </div>
         ) : filteredRecipes.length === 0 ? (
