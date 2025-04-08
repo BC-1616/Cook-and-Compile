@@ -42,6 +42,12 @@
     font-size: 28px;
     font-weight: bolder;
 }
+.recipe_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 100px; 
+    padding: 10px;
+  }
 .recipe_button {
     width: 250px;
     height: 200px;
