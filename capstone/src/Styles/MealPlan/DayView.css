@@ -1,0 +1,64 @@
+/* Web page styles for the Meal Calendar component */
+@media (min-width: 769px) {
+    
+}
+@media (max-width: 768px) {
+    /* Mobile page styles for the Meal Calendar component */
+}
+
+.day-view-container {
+    text-align: center; 
+    padding: 20px;
+}
+
+.day-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--ion-color-primary-shade); 
+    margin-bottom: 20px;
+}
+
+.meal-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 12px;
+    max-width: 900px;
+    margin: auto;
+}
+
+.meal-column {
+    background-color: var(--ion-color-light); 
+    padding: 15px;
+    border-radius: 10px; 
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.meal-header {
+    font-size: 1.2rem;
+    color: var(--ion-color-tertiary-shade); 
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.meal-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.empty-meal {
+    color: var(--ion-color-medium); 
+}
+
+button {
+    background-color: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--ion-color-primary-shade);
+}
