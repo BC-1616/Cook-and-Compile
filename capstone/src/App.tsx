@@ -5,7 +5,7 @@ import IngredientPage from './components/IngredientList';
 import BlankPage from './components/BlankPage';
 import ModifyRecipes from './components/RecipeModifier';
 import Recipe from './components/Recipe';
-import MealCalendar from './components/MealPlan/MealCalender';
+import MealCalendar from './components/MealPlan/MealPlan';
 import LandingPage from './components/LandingPage';
 import NavBar from './components/NavBar';
 import handleAuth from './handles/handleAuth';

@@ -34,7 +34,7 @@ const MealCalendar: React.FC = () => {
     return (
         <><div id="spacer"></div>
         <div className="meal-calendar-container">
-            <div className="calendar-title">Meal Calendar</div>
+            <div className="calendar-title">Meal Plan</div>
 
             <div className="button-row">
                 <button onClick={navigateBackward} className="forward-back-button">⬅</button>

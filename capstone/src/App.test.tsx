@@ -10,7 +10,7 @@ import '@testing-library/jest-dom';
 import LandingPage from './components/LandingPage';
 import BlankPage from './components/BlankPage';
 import { UserProvider } from './components/UserContext';
-import MealPlan from './components/MealPlan/MealCalender';
+import MealPlan from './components/MealPlan/MealPlan';
 
 test('renders without crashing', () => {
   const { baseElement } = render(<App />);
