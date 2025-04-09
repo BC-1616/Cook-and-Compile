@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getMealPlan } from "../../handles/handleMealPlan";
 import { MealPlan } from "../../types/mealTypes";
+import "../../Styles/MealPlan/WeekView.css";
 
 interface WeeklyViewProps {
     selectedWeek: Date;
@@ -12,57 +13,58 @@ interface WeeklyViewProps {
 const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
     const [weeklyMealPlans, setWeeklyMealPlans] = useState<{ date: string; meals: MealPlan["meals"] }[]>([]);
 
+    // Needed to display meals in a specific order
+    const mealOrder: Array<keyof MealPlan["meals"]> = ["breakfast", "lunch", "snack", "dinner"];
+
     useEffect(() => {
         const fetchWeeklyMealPlan = async () => {
             if (!userId) return;
             let mealPlanData = [];
-
+    
             for (let i = 0; i < 7; i++) {
                 const date = new Date(selectedWeek);
                 date.setDate(selectedWeek.getDate() + i);
                 const data = await getMealPlan(userId, date);
-
-                if (data) {
-                    mealPlanData.push({ date: date.toISOString().split("T")[0], meals: data.meals });
-                }
+    
+                mealPlanData.push({ 
+                    date: date.toISOString().split("T")[0], 
+                    meals: data?.meals ?? { 
+                        breakfast: [], lunch: [], snack: [], dinner: [] 
+                    }
+                });
             }
-
+    
             setWeeklyMealPlans(mealPlanData);
         };
-
+    
         fetchWeeklyMealPlan();
     }, [selectedWeek, userId]);
 
     return (
-        <div>
-            <h2>Weekly Meal Plan</h2>
-            {weeklyMealPlans.length === 0 ? (
-                <p>No meal plans found for this week.</p>
-            ) : (
-                weeklyMealPlans.map(({ date, meals }) => (
-                    <div key={date}>
-                        <h3>{new Date(date).toDateString()}</h3>
-                        <ul>
-                            {Object.entries(meals).map(([mealType, mealList]) => (
-                                <li key={mealType}>
+        <div className="weekly-view-container">
+            <h2 className="week-title">Weekly Meal Plan</h2>
+
+            <div className="week-scroll-container">
+                <div className="week-grid">
+                    {weeklyMealPlans.map(({ date, meals }) => (
+                        <div key={date} className="day-column">
+                            <h3 className="day-header">{new Date(date).toDateString()}</h3>
+                            {mealOrder.map((mealType) => (
+                                <div key={mealType} className="meal-section">
                                     <strong>{mealType.charAt(0).toUpperCase() + mealType.slice(1)}</strong>
-                                    <ul>
-                                        {mealList.length > 0 ? (
-                                            mealList.map((meal) => (
-                                                <li key={meal.id}>
-                                                    {meal.name} {meal.isRecipe ? "(Recipe)" : "(Item)"}
-                                                </li>
-                                            ))
+                                    <ul className="meal-list">
+                                        {meals[mealType]?.length > 0 ? (
+                                            meals[mealType].map((meal) => <li key={meal.id}>{meal.name}</li>)
                                         ) : (
-                                            <li>No meals planned.</li>
+                                            <li className="empty-meal">No meals planned.</li>
                                         )}
                                     </ul>
-                                </li>
+                                </div>
                             ))}
-                        </ul>
-                    </div>
-                ))
-            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };
