@@ -212,28 +212,30 @@ const BlankPage: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
+                <div id="full_content">
                 <IonHeader collapse="condense">
                     <IonToolbar>
                         <IonTitle size="large">Home</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <h1>Welcome to the Jandonshurell Recipe App!!!</h1>
-                <p>This page is a placeholder for other routes. User authentication coming soon</p>
-
+                <h1>Welcome to <strong>Cook & Compile!</strong></h1>
                 {/* Sign Out Button */}
-                <IonButton expand="full" color="danger" onClick={handleSignOut}>
-                    Sign Out
-                </IonButton>
+                <div id="signInButton">
+                    <IonButton expand="full" color="danger" onClick={handleSignOut}>
+                        Sign Out
+                    </IonButton>
 
-                {/* Export User Data Button */}
-                <IonButton
-                    expand="full"
-                    color="primary"
-                    onClick={exportToJson}
-                    disabled={loading || recipes.length === 0 || !user}
-                >
-                    {loading ? "Loading..." : "Export User Data"}
-                </IonButton>
+                    {/* Export User Data Button */}
+                    <IonButton
+                        expand="full"
+                        color="primary"
+                        onClick={exportToJson}
+                        disabled={loading || recipes.length === 0 || !user}
+                    >
+                        {loading ? "Loading..." : "Export User Data"}
+                    </IonButton>
+                </div>
+                </div>
             </IonContent>
         </IonPage>
     );

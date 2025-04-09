@@ -41,6 +41,6 @@ func main() {
 		if err != nil {
 			fmt.Printf("Error finding invalid users: %v", err)
 		}
-		time.Sleep(time.Minute * 5) // Change this time checking period
+		time.Sleep(time.Hour * 24) // Once per day.
 	}
 }

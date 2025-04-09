@@ -8,6 +8,12 @@
     margin-left: 0;
     color: #EB1D36;
 }
+#main_content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
 
 /* Web Page Styles */
 @media (min-width: 769px) {

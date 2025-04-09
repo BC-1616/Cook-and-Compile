@@ -91,7 +91,7 @@ func removeInvalidUsers(userList []string, ctx context.Context, client *firestor
 		b := userSnap.Data()["loginTimestamp"].([]interface{})
 		lastLogin := b[len(b)-1].(time.Time)
 
-		if lastLogin.Before(lastLogin.Add(time.Hour * 24 * 5)) { // 5 Days for testing
+		if time.Now().After(lastLogin.Add(time.Hour * 24 * 30 * 6)) { // 6 Months
 			userRef.Delete(ctx)
 		}
 	}
