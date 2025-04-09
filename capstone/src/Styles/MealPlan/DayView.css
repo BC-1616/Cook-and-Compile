@@ -9,22 +9,6 @@
         gap: 16px !important;
         max-width: 90% !important;
         margin: auto !important;
-        overflow-y: auto; /* Enables vertical scrolling */
-        max-height: 400px; /* Adjusts height to trigger scrolling */
-        padding-right: 10px;
-        padding-bottom: 20px; /* Adds space for the bottom navbar */
-    }
-    .meal-grid::-webkit-scrollbar {
-        width: 8px; 
-    }
-    
-    .meal-grid::-webkit-scrollbar-thumb {
-        background-color: var(--ion-color-medium); 
-        border-radius: 10px; 
-    }
-    
-    .meal-grid::-webkit-scrollbar-track {
-        background-color: var(--ion-color-light);
     }
 }
 
@@ -46,6 +30,23 @@
     gap: 12px;
     max-width: 900px;
     margin: auto;
+    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 450px; /* Adjusts height to trigger scrolling */
+    padding-right: 10px;
+    padding-bottom: 20px; /* Adds space for the bottom navbar */
+}
+
+.meal-grid::-webkit-scrollbar {
+    width: 8px; 
+}
+
+.meal-grid::-webkit-scrollbar-thumb {
+    background-color: var(--ion-color-medium); 
+    border-radius: 10px; 
+}
+
+.meal-grid::-webkit-scrollbar-track {
+    background-color: var(--ion-color-light);
 }
 
 .meal-column {
