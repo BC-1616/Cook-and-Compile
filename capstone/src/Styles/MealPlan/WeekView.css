@@ -54,7 +54,7 @@
 
 .day-header {
     font-size: 1.2rem;
-    color: var(--ion-color-success); 
+    color: var(--ion-color-success-shade); 
     margin-bottom: 8px;
 }
 
@@ -77,8 +77,9 @@
         display: flex;
         flex-direction: column; 
         gap: 10px;
+        width: 90%;
     }
-    #spacer {
-        height: 80px; /* Adjusts the height for mobile */
+    .week-scroll-container {
+        padding-bottom: 120px; /* nav overlap fix*/
     }
 }
