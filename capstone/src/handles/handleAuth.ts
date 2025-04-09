@@ -87,13 +87,6 @@ const handleAuth = () => {
             await handleNewUser(authUser.uid, authUser.email!); 
             isUserCreateRef.current = true; 
           } else {
-            // In case they don't have documents, make sure they do.
-            const allergyCheckRef = collection(db, 'users', authUser.uid, 'allergies');
-            const allergyCheckSnap = await getDocs(allergyCheckRef);
-            if(allergyCheckSnap.empty){
-              // This will essentailly remake their account if there was an error in making their documents.
-              await handleNewUser(authUser.uid, authUser.email!);
-            }
             console.error('User document already exists');
           } 
 
