@@ -10,6 +10,7 @@ import '@testing-library/jest-dom';
 import LandingPage from './components/LandingPage';
 import BlankPage from './components/BlankPage';
 import { UserProvider } from './components/UserContext';
+import MealPlan from './components/MealPlan/MealCalender';
 
 test('renders without crashing', () => {
   const { baseElement } = render(<App />);
@@ -175,4 +176,35 @@ test('test measures effectiveness of finding string in any type array', () => {
   expect(includesStringInArray(arr, " ")).toBe(false);
 
 
+});
+
+describe('Meal Plan Unit Tests', () => {
+  test('renders Meal Plan page', () => {
+    render(
+      <MemoryRouter initialEntries={['/MealCalendar']}>
+        <MealPlan />
+      </MemoryRouter>
+    );
+    expect(screen.getByText('Meal Calendar')).toBeInTheDocument();
+  });
+  describe('Meal Plan Unit Tests', () => {
+    test('renders Meal Plan page', () => {
+      render(
+        <MemoryRouter initialEntries={['/MealCalendar']}>
+          <MealPlan />
+        </MemoryRouter>
+      );
+      expect(screen.getByText('Meal Calendar')).toBeInTheDocument();
+    });
+  });
+  test('renders Daily and Weekly View buttons', () => {
+    render(
+      <MemoryRouter initialEntries={['/MealCalendar']}>
+        <MealPlan />
+      </MemoryRouter>
+    );
+    
+    expect(screen.getByRole('button', { name: /Daily/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Weekly/i })).toBeInTheDocument();
+  });
 });
