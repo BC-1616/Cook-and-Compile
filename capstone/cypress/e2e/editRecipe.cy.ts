@@ -32,7 +32,7 @@ describe('Edit Recipe', () => {
       cy.contains('Test Recipe').click();
       cy.contains('Edit').click();
 
-      cy.wait(3000); //wait 1 seconds for popup to load   
+      cy.wait(1000); //wait 1 seconds for popup to load   
 
       cy.get('input[placeholder="Edit Recipe Name"]').clear().type('Edited Recipe');
       cy.get('textarea[placeholder="Edit Instructions"]').clear().type('Edited ingredients');
@@ -41,6 +41,9 @@ describe('Edit Recipe', () => {
     
       cy.contains('Add Ingredient').click();
       cy.contains('Save').click();
+      cy.wait(1000);
+      //this could be useful if the test is failing because it is not in view
+      cy.get('ion-searchbar input').type('Edit');
       cy.contains('Edited Recipe').should('be.visible');
     });
   });
