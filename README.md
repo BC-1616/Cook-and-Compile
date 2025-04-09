@@ -22,6 +22,7 @@ For testing, we use Cypress for end-to-end testing and Vitest for unit testing. 
 - npm (Node Package Manager)
 - Ionic CLI
 - React
+- Go
 
 ### Steps
 1. Clone the repository 
