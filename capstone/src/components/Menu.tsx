@@ -45,13 +45,15 @@ const appPages: AppPage[] = [
     url: '/CreateRecipes',
     iosIcon: addCircleOutline, // Choose an appropriate icon
     mdIcon: addCircleSharp
-  },
+  }
+  /*
   {
     title: 'Recipe Modifier', // New entry for Recipe Viewer Page
     url: '/RecipeModifier',
     iosIcon: cutOutline, // Choose an appropriate icon
     mdIcon: cutSharp
   }
+    */
 ];
 
 
