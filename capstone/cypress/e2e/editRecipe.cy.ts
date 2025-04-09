@@ -15,7 +15,7 @@ describe('Edit Recipe', () => {
 
       cy.contains('Export User Data')
       // must create a recipe to be edited during testing each time so that the test will pass without trying to run the test when the recipe does not exist.
-      cy.visit('/ModifyRecipes');
+      cy.visit('/Recipes');
 
       cy.contains('Create Recipe').click();
 
@@ -32,7 +32,7 @@ describe('Edit Recipe', () => {
       cy.contains('Test Recipe').click();
       cy.contains('Edit').click();
 
-      cy.wait(2000); //wait 1 seconds for popup to load   
+      cy.wait(3000); //wait 1 seconds for popup to load   
 
       cy.get('input[placeholder="Edit Recipe Name"]').clear().type('Edited Recipe');
       cy.get('textarea[placeholder="Edit Instructions"]').clear().type('Edited ingredients');

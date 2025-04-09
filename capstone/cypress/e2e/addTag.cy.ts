@@ -11,7 +11,7 @@ describe('Create Custom Tag', () => {
       cy.wait(1000);
 
       cy.contains('Export User Data')
-      cy.visit('/ModifyRecipes');
+      cy.visit('/Recipes');
 
       cy.contains('Create Recipe').click();
 
