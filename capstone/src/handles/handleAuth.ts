@@ -3,6 +3,8 @@ import { getAuth, onAuthStateChanged, User, setPersistence, browserLocalPersiste
 import { auth } from '../firebase_setup/firebase';  // Import the auth instance from firebase.ts
 import { getFirestore, doc, setDoc, getDocs, getDoc, arrayUnion, collection, runTransaction } from 'firebase/firestore';  // Firestore imports
 import { handleFetchRecipes } from './handleFetchRecipes';  // Import your function to fetch recipes
+import recipeData from '../recipes.json';  // Adjust the path if needed
+
 
 const handleAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -12,60 +14,45 @@ const handleAuth = () => {
 
   // Function to create a new user in Firestore when they sign up with their own recipe and allergy collections
   const handleNewUser = async (userId: string, email: string) => {
-    console.log('Creating new user document for:', userId); // log when creating user doc
-    
-    try { 
-      // Using firestore transaction to ensure atomic operations so if any steps fail the entire transaction will not go through and no changes will happen. This will help ensure recipes are not created twice and everything stays consistent.
+    console.log('Creating new user document for:', userId);
+  
+    try {
       await runTransaction(db, async (transaction) => {
-        const userDocRef = doc(db, 'users', userId); // Ref to user doc
+        const userDocRef = doc(db, 'users', userId); 
         const userDocSnap = await transaction.get(userDocRef);
-
+  
         if (!userDocSnap.exists()) {
           transaction.set(userDocRef, {
             email: email,
             createdAt: new Date(),
-            successfulLoginCount: 1, // Set to one since they are logged in for the first time
+            successfulLoginCount: 1,
             loginTimestamp: arrayUnion(new Date())
           });
           console.log('User document created in Firestore!');
-    
-          //create a new recipes collection for the user
-          const recipeRef1 = doc(collection(db, 'users', userId, 'recipes')); // Firestore generates a unique ID
-          const recipeRef2 = doc(collection(db, 'users', userId, 'recipes'));
-
-          transaction.set(recipeRef1, {
-            "image": "https://simply-delicious-food.com/wp-content/uploads/2013/07/IMG_3369.jpg",
-            "name": "Bacon Gnocchi Bake ",
-            "ingredients": {["Diced Tomatoes"]: "1 can", ["Bacon"]: "1/2 lb", ["Garlic"]: "2 cloves", ["Gnocchi"]: "1 lb", ["Heavy Cream"]: "3 tbsp", ["Mozzarella"]: "1/2 cup", ["Paprika"]: "1 tsp", ["Tomato Paste"]: "1 tbsp"},
-            "instructions": "Preheat oven to 400 degrees F. Bring a pot of salted water to boil and cook the gnocchi until it floats. In a large oven safe pan, cook the bacon until crisp anf fat is rendered. Drain most of the fat and add garlic and paprika. Add the diced tomatoes, tomato paste, and heavy cream. Simmer for 5 minutes. Add the gnocchi and mix, then top with the mozzarella and bake for 10 minutes until the cheese is melted and golden. Rest for 5 minutes and serve!"
+  
+          // Loop over the recipes in the JSON data and add them to Firestore
+          recipeData.forEach((recipe, index) => {
+            const recipeRef = doc(collection(db, 'users', userId, 'recipes'));
+            transaction.set(recipeRef, recipe);
+            console.log(`Recipe ${index + 1} added to Firestore`);
           });
-          transaction.set(recipeRef2, {
-            "image": "https://bakingmischief.com/wp-content/uploads/2024/10/baked-potato-soup-image-square-4.jpg",
-            "name": "Baked Potato Soup",
-            "ingredients": {["2% Milk"]: "6 cups", ["All-Purpose Flour"]: "2/3 cups", ["Bacon (Cooked and Crumbled)"]: "6 slices", ["Black Pepper"]: "1/2 tsp", ["Chopped Green Onions"]: "3/4 cups", ["Potatoes (2.5lb)"]: "4", ["Salt"]: "1 tsp", ["Shredded Extra-Sharp Chedar"]: "1 cup", ["Sour Cream"]: "1 cup"},
-            "instructions": "Preheat oven to 400. Pierce potatoes with a fork; bake at 400 for 1 hour or until tender. Cool. Peel potatoes; coarsely mash. Discard skins. Lightly spoon flour into a dry measuring cup; level with a knife. Place flour in a large Dutch oven; gradually add milk, stirring with a whisk until blended. Cook over medium heat until thick and bubbly (about 8 minutes). Add mashed potatoes, ¾ c. cheese, salt and pepper, stirring until cheese melts. Remove from heat. Stir in sour cream and ½ c. onions. Cook over low heat 10 minutes or until thoroughly heated (do not boil). Sprinkle each serving lightly with cheese onions & bacon."
-          });
-
-          //create a new allergies collection for the user
+  
+          // Create allergies collection
           const allergiesCollectionRef = doc(collection(db, 'users', userId, 'allergies'), 'allergy_list');
           const allergiesCollectionPrefRef = doc(collection(db, 'users', userId, 'allergies'), 'preference_list');
-          transaction.set(allergiesCollectionRef, {
-            "allergies": []
-          });
-          transaction.set(allergiesCollectionPrefRef, {
-            "pref_list": []
-          });
-
+          transaction.set(allergiesCollectionRef, { "allergies": [] });
+          transaction.set(allergiesCollectionPrefRef, { "pref_list": [] });
+  
           console.log('User collections created in Firestore!');
         } else {
-          console.log('User document already exists in transaction.')
+          console.log('User document already exists in transaction.');
         }
       });
     } catch (error) {
       console.error('Error creating user document', error);
     }
   };
-
+  
   useEffect(() => {
     console.log('useEffect triggered');
 
