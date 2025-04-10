@@ -11,7 +11,7 @@
     "lint": "eslint",
     "ionic:build": "npm run build",
     "ionic:serve": "npm run dev -- --open",
-    "deploy" : "cd ./server/go && make run"
+    "deploy" : "cd ./server/safely-go && make run"
     
   },
   "dependencies": {
