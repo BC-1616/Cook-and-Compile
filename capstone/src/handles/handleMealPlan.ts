@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
 import { firestore } from "../firebase_setup/firebase";
 import { MealPlan, MealItem,  } from "../types/mealTypes"; 
 
@@ -113,4 +113,26 @@ export const handleDeleteMeal = async (
             [mealType]: prevMeals.meals[mealType].filter((meal) => meal.id !== mealId), // Remove meal by ID
         },
     }));
+};
+
+export const fetchAllMealPlans = async (userId: string): Promise<{ date: string; meals: Partial<MealPlan["meals"]> }[]> => {
+    if (!userId) return [];
+
+    const mealPlanCollectionRef = collection(firestore, "users", userId, "MealPlan");
+    const mealPlanSnapshots = await getDocs(mealPlanCollectionRef);
+
+    let filteredMealPlans: { date: string; meals: Partial<MealPlan["meals"]> }[] = [];
+
+    mealPlanSnapshots.forEach((doc) => {
+        const data = doc.data() as MealPlan;
+        const nonEmptyMeals = Object.fromEntries(
+            Object.entries(data.meals).filter(([_, meals]) => meals.length > 0)
+        );
+
+        if (Object.keys(nonEmptyMeals).length > 0) {
+            filteredMealPlans.push({ date: doc.id, meals: nonEmptyMeals });
+        }
+    });
+
+    return filteredMealPlans;
 };

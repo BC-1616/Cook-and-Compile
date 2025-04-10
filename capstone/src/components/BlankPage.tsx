@@ -4,11 +4,14 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleFetchAllergy } from '../handles/handleAllergy';
+import { fetchAllMealPlans } from '../handles/handleMealPlan';
 import { fetchGlobalFailureLogin, fetchGlobalSuccessLogin, fetchUserLogin } from '../handles/handleLoginAttempt';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { isPlatform } from '@ionic/react';
 import { Share } from '@capacitor/share';
 import '../Styles/BlankPage.css';
+import { set } from 'cypress/types/lodash';
+import { c } from 'vitest/dist/reporters-5f784f42';
 
 interface Recipe {
     id: string;
@@ -21,7 +24,7 @@ interface Recipe {
     userPref: boolean;
 }
 
-const BlankPage: React.FC = () => {
+const BlankPage: React.FC = (): JSX.Element => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [allergies, setAllergies] = useState<any>([]); // We don't have a set interface for the allergy/pref data
     const [preferences, setPref] = useState<any>([]);
@@ -31,6 +34,7 @@ const BlankPage: React.FC = () => {
     const [globalLoginSuccess, setGlobalLoginSuccess] = useState<any>([]);
     const [userLogin, setUserLoginDetails] = useState<any>(); // Only going to take a couple fields
     const [statusMessage, setStatusMessage] = useState<string>('');
+    const [mealplan, setMealPlan] = useState<any>();
 
     useEffect(() => {
         // Auth state change listener
@@ -42,6 +46,7 @@ const BlankPage: React.FC = () => {
                 await fetchAllergies(user.uid);
                 await fetchUserLoginAttempts(user.uid);
                 await fetchGlobalLogin();
+                await fetchMealPlans(user.uid); // Fetch meal plans
             } else {
                 setUser(null);  // No user authenticated
             }
@@ -82,6 +87,18 @@ const BlankPage: React.FC = () => {
         } catch(error) {
             console.log(error);
         }finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchMealPlans = async (userId: string) => { 
+        setLoading(true);
+        try {
+            const mealPlans = await fetchAllMealPlans(userId); 
+            setMealPlan(mealPlans);
+        } catch (error) {
+            console.log(error);
+        } finally {
             setLoading(false);
         }
     };
@@ -134,10 +151,14 @@ const BlankPage: React.FC = () => {
 
     const exportToJson = async () => {
       if (recipes.length === 0) {
-          console.log("No recipes available to export");
+          console.log("No data available to export");
           return;
       }
-  
+      setLoading(true); // Start loading when exporting data
+      try {
+        const mealPlans = await fetchAllMealPlans(user?.uid); // Fetch meal plans
+        setMealPlan(mealPlans);
+        
       const userPersonalData = {
           uid: user?.uid || 'Anonymous',
           displayName: user?.displayName || 'Anonymous',
@@ -152,7 +173,8 @@ const BlankPage: React.FC = () => {
       const otherData = {
           recipes: recipes,
           allergies: allergies,
-          preferences: preferences
+          preferences: preferences,
+          mealplan: mealplan // Placeholder for meal plan data
       };
   
       const globalData = {
@@ -194,7 +216,14 @@ const BlankPage: React.FC = () => {
           link.click();
           URL.revokeObjectURL(url);
       }
-  };
+  }
+  catch (error) {
+    console.error("Error exporting data: ", error);
+    }
+    finally {
+        setLoading(false); // Stop loading once the export is done
+    }
+}
 
 
     return (
