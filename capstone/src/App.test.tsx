@@ -185,7 +185,7 @@ describe('Meal Plan Unit Tests', () => {
         <MealPlan />
       </MemoryRouter>
     );
-    expect(screen.getByText('Meal Calendar')).toBeInTheDocument();
+    expect(screen.getByText('Meal Plan')).toBeInTheDocument();
   });
   describe('Meal Plan Unit Tests', () => {
     test('renders Meal Plan page', () => {
@@ -194,7 +194,7 @@ describe('Meal Plan Unit Tests', () => {
           <MealPlan />
         </MemoryRouter>
       );
-      expect(screen.getByText('Meal Calendar')).toBeInTheDocument();
+      expect(screen.getByText('Meal Plan')).toBeInTheDocument();
     });
   });
   test('renders Daily and Weekly View buttons', () => {
