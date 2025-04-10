@@ -1,7 +1,7 @@
 
-# Cook & Compile Server
+# Safely GO
 
-This is some of the server-side application for our app written in Golang! The main purpose for this is access to the Firebase Admin SDK.
+This is Safely GO, our server-side application for our app written in Golang! The main purpose for this is access to the Firebase Admin SDK and handle proper data retention.
 
 ## How to Use
 
