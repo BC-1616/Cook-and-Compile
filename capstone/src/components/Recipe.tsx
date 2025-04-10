@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonLabel, IonList, IonPage, IonHeader, IonToolbar, IonTitle, IonItem, IonButton , IonInput, IonModal, IonText, IonTextarea, IonIcon, IonSearchbar} from '@ionic/react';
 import { removeCircleOutline, addCircleOutline } from 'ionicons/icons';
-import '../Styles/RecipeModifier.css';
 import { handleFetchRecipes } from '../handles/handleFetchRecipes';
 import { handleCreateRecipe } from '../handles/handleCreateRecipe';
 import { handleDeleteRecipe } from '../handles/handleDeleteRecipe';
 import { handleEditRecipe } from '../handles/handleEditRecipe';
 import { handleFetchAllergy, checkIfAllergic, includesStringInArray } from '../handles/handleAllergy';
+import { saveURL } from '../handles/handleImages';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
-import { saveURL } from '../handles/handleImages';
-import { set } from 'cypress/types/lodash';
 import '../Styles/Recipe.css';
-
+import '../Styles/RecipeModifier.css';
 
 const Recipe: React.FC = () => {
   const [recipes, setRecipes] = useState<any[]>([]);
@@ -159,13 +157,13 @@ const Recipe: React.FC = () => {
       setFilteredRecipes(filteredRecipes.filter(recipe => recipe.id !== recipeId));
       setCurrentRecipe(null);
       setStatusMessage('Recipe deleted successfully!');
-      setTimeout(() => setMessage(''), 3000);
+      setTimeout(() => postMessage(''), 3000);
     } catch (error) {
       console.error('Failed to delete recipe:', error);
     }
   };
 
-  const handleEdit = (recipe: Recipe) => {
+  const handleEdit = (recipe: typeof Recipe) => {
     setCurrentRecipe(recipe);
     setIsCreateModalOpen(false);
     setIsEditModalOpen(true);
@@ -369,7 +367,7 @@ const handleAddIngredient = () => {
                       onIonChange={e => handleIngredientNameChange(index, e.detail.value!)}
                     />
                     <IonInput
-                      value={value}
+                      value={value as string}
                       placeholder={`Amount of ${key}`}
                       onIonChange={e => handleIngredientAmountChange(key, e.detail.value!)}
                     />
