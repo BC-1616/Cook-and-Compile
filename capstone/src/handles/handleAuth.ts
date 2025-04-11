@@ -5,6 +5,7 @@ import { getFirestore, doc, setDoc, getDoc, arrayUnion, collection, runTransacti
 import { handleFetchRecipes } from './handleFetchRecipes';  // Import your function to fetch recipes
 import recipeData from '../recipes.json';  // Adjust the path if needed
 
+import { initializeMealPlanCollection, initializeMonthMealPlan } from "./handleMealPlan"; // Import Meal Plan setup function
 
 const handleAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -79,6 +80,13 @@ const handleAuth = () => {
 
           // Update the state with the user once Firestore operation is done
           setUser(authUser); // Set the user after Firestore document check
+
+          // Initialize the meal plan collection for the user
+          await initializeMealPlanCollection(authUser.uid);
+          console.log('Meal plan collection initialized for user:', authUser.uid);
+          // Initialize the month meal plan for the current month
+          await initializeMonthMealPlan(authUser.uid, new Date()); 
+          console.log('Meal plan for the current month initialized for user:', authUser.uid);
 
           // Now, fetch the recipes for this user
           const fetchedRecipes = await handleFetchRecipes();

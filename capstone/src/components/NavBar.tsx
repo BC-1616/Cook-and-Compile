@@ -6,6 +6,7 @@ import home from '../ICONS/Home.png';
 import ingredients from '../ICONS/Ingredients.png';
 import recipes from '../ICONS/Recipes.png';
 import modify from '../ICONS/Modify.png';
+import plan from '../ICONS/Plan.png';
 
 const appPages = [
   {
@@ -22,13 +23,18 @@ const appPages = [
     title: 'Recipes',
     url: '/Recipes',
     icon: recipes
-  }
+  },
   /*
   {
     title: 'Modify',
     url: '/ModifyRecipes',
     icon: modify
-  }*/
+  },*/
+  {
+    title: 'Meal Plan',
+    url: '/MealPlan',
+    icon: plan
+  }
 ];
 
 const CustomNavBar: React.FC = () => {
