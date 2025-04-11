@@ -26,8 +26,8 @@ const IngredientPage: React.FC = () => {
   const fetchAllergy = async () => { // This function takes care of both allergies and preferences
     try{
       const allergyData = await handleFetchAllergy(setStatusMessage);
-      allergyData ? setAllergy(allergyData[0]): [''];
-      allergyData ? setPref(allergyData[1]): [''];
+      allergyData ? setAllergy(allergyData[0]): setAllergy(null);
+      allergyData ? setPref(allergyData[1]): setPref(null);
     } catch(error){
       setError('Failed to fetch Allergies');
     }
@@ -87,13 +87,13 @@ const IngredientPage: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           {/* Added CSS to move page tile below Navbar */}
-          <IonTitle id="title">Ingredients</IonTitle>
+          <IonTitle id="title">Allergy Information</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Ingredient List</IonTitle>
+            <IonTitle class="ion-text-center" size="large">Allergy Information</IonTitle>
           </IonToolbar>
         </IonHeader>
         <div id="ingredient_content_parent">
@@ -107,7 +107,7 @@ const IngredientPage: React.FC = () => {
             <IonList>
               <div id="allergy_list_list_list">
                 {/*This section handles intolerances / preferences*/}
-                {prefList.pref_list == null || prefList.pref_list == undefined ? <p></p> :
+                {prefList?.pref_list ? (
                 Object.entries(prefList.pref_list).reverse().map(([idx, prefName], index) => (
                   <IonItem key={index}>
                     <div id="allergy_list_list">
@@ -117,7 +117,10 @@ const IngredientPage: React.FC = () => {
                       </IonButton>
                     </div>
                   </IonItem>
-                ))}
+                ))  
+                ) : (
+                  <p></p>
+                )}
               </div>
             </IonList>
           </div>
@@ -132,7 +135,7 @@ const IngredientPage: React.FC = () => {
             {/*Impliment a list of user's allergies here*/}
             <IonList>
               <div id="allergy_list_list_list">
-                {allergyList.allergies == null || allergyList.allergies == undefined ? <p></p> :
+                {allergyList?.allergies? (
                 Object.entries(allergyList.allergies).reverse().map(([idx, allergyName], index) => (
                   <IonItem key={index}>
                     <div id="allergy_list_list">
@@ -142,7 +145,10 @@ const IngredientPage: React.FC = () => {
                       </IonButton>
                     </div>
                   </IonItem>
-                ))}
+                ))
+                ) : (
+                  <p></p>
+                )}
               </div>
             </IonList>
           </div>

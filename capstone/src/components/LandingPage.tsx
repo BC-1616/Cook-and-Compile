@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { IonContent, IonPage, IonButton, IonInput } from '@ionic/react';
+import { IonContent, IonPage, IonHeader, IonButton, IonInput } from '@ionic/react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useUser } from './UserContext'; // Assuming you have a context for user data
 import { addLoginSuccess, addLoginFailure } from '../handles/handleLoginAttempt';
-import { getFirestore, doc, arrayUnion, setDoc, getDoc } from 'firebase/firestore'; // Firestore imports
+import {deleteUnusedUsers} from '../handles/handleRetention';
+import { getFirestore, doc, arrayUnion, getCountFromServer, setDoc, getDocs, count, collection, getDoc } from 'firebase/firestore'; // Firestore imports
+import '../Styles/LandingPage.css';
 
 const LandingPage: React.FC = () => {
   const { setUser } = useUser();
@@ -72,35 +74,40 @@ const LandingPage: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <h1>Welcome to the Jandonshurell Recipe App!!!</h1>
+        <h1>Welcome to Cook & Compile!</h1>
+        <div id="landing_page_main_content">
+          <form onSubmit={(e) => e.preventDefault()}>
+            <IonInput
+              className="login_input"
+              value={email}
+              onIonInput={(e: any) => setEmail(e.detail.value!)} // Use onIonInput to capture changes immediately
+              placeholder="Email"
+              type="email"
+              required
+            />
 
-        <form onSubmit={(e) => e.preventDefault()}>
-          <IonInput
-            value={email}
-            onIonInput={(e: any) => setEmail(e.detail.value!)} // Use onIonInput to capture changes immediately
-            placeholder="Email"
-            type="email"
-            required
-          />
+            <IonInput
+              className="login_input"
+              value={password}
+              onIonInput={(e: any) => setPassword(e.detail.value!)} // Use onIonInput to capture changes immediately
+              placeholder="Password"
+              type="password"
+              required
+            />
+            <p>Your password must be <u>at least</u> 6 characters long.</p>
 
-          <IonInput
-            value={password}
-            onIonInput={(e: any) => setPassword(e.detail.value!)} // Use onIonInput to capture changes immediately
-            placeholder="Password"
-            type="password"
-            required
-          />
-
-          <IonButton 
-            type="button" 
-            expand="block" 
-            color="primary" 
-            disabled={loading} 
-            onClick={handleSignUpOrSignIn}
-          >
-            {loading ? 'Processing...' : 'Sign Up / Sign In'}
-          </IonButton>
-        </form>
+            <IonButton
+              id="signup_button" 
+              type="button" 
+              expand="block" 
+              color="primary" 
+              disabled={loading} 
+              onClick={handleSignUpOrSignIn}
+            >
+              {loading ? 'Processing...' : 'Sign Up / Sign In'}
+            </IonButton>
+          </form>
+        </div>
       </IonContent>
     </IonPage>
   );

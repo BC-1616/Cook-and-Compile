@@ -1,0 +1,26 @@
+#landing_page_main_content{
+    max-width: 800px;
+    display: block;
+    margin: auto;
+    height: 85vh;
+    position: relative;
+}
+.login_input{
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+h1{
+    font-size: 2em;
+}
+
+#signup_button{
+    position: absolute;
+    bottom: 0;
+}
+
+@media(max-width: 600px){
+    #landing_page_main_content{
+        height: 70vh;
+    }
+}

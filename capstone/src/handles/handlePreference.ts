@@ -2,6 +2,8 @@ import { arrayUnion, arrayRemove, getDoc, getDocs, collection, addDoc, updateDoc
 import { firestore } from '../firebase_setup/firebase';
 import { getAuth } from 'firebase/auth'
 
+import { handleNewUser } from './handleAuth'
+
 // Using this as a method to find what the user likes will help us with creating
 // meals to their preference.
 export const handleAddPref = async (
@@ -20,6 +22,10 @@ export const handleAddPref = async (
         } // If no user is logged in, return and don't proceed
         
         const allergyDocRef = doc(firestore, 'users', user.uid, 'allergies', 'preference_list');
+        const snap = await getDoc(allergyDocRef)
+        if(snap.exists()){
+            await handleNewUser(firestore, user.uid, "");
+        }
         
         
         await updateDoc(allergyDocRef, {

@@ -2,6 +2,8 @@ import { arrayUnion, arrayRemove, getDoc, getDocs, collection, addDoc, updateDoc
 import { firestore } from '../firebase_setup/firebase';
 import { getAuth } from 'firebase/auth';
 
+import { handleNewUser } from './handleAuth'
+
 export const handleAddAllergy = async (
     text: string,
     setStatusMessage: React.Dispatch<React.SetStateAction<string>>,
@@ -18,7 +20,10 @@ export const handleAddAllergy = async (
         } // If no user is logged in, return and don't proceed
         
         const allergyDocRef = doc(firestore, 'users', user.uid, 'allergies', 'allergy_list');
-        
+        const snap = await getDoc(allergyDocRef)
+        if(!snap.exists()){
+            await handleNewUser(firestore, user.uid, "");
+        }
         
         await updateDoc(allergyDocRef, {
            allergies: arrayUnion(text),

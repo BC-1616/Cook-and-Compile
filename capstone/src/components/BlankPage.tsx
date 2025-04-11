@@ -36,6 +36,7 @@ const BlankPage: React.FC = (): JSX.Element => {
     const [statusMessage, setStatusMessage] = useState<string>('');
     const [mealplan, setMealPlan] = useState<any>();
 
+
     useEffect(() => {
         // Auth state change listener
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -177,15 +178,9 @@ const BlankPage: React.FC = (): JSX.Element => {
           mealplan: mealplan // Placeholder for meal plan data
       };
   
-      const globalData = {
-          globalLoginSuccess: globalLoginSuccess,
-          globalLoginFailure: globalLoginFailure,
-      };
-  
       const userData = {
           ppd: userPersonalData,
           other: otherData,
-          globalData: globalData,
       };
   
       const jsonData = JSON.stringify(userData, null, 2);
@@ -237,28 +232,30 @@ const BlankPage: React.FC = (): JSX.Element => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
+                <div id="full_content">
                 <IonHeader collapse="condense">
                     <IonToolbar>
                         <IonTitle size="large">Home</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <h1>Welcome to the Jandonshurell Recipe App!!!</h1>
-                <p>This page is a placeholder for other routes. User authentication coming soon</p>
-
+                <h1>Welcome to <strong>Cook & Compile!</strong></h1>
                 {/* Sign Out Button */}
-                <IonButton expand="full" color="danger" onClick={handleSignOut}>
-                    Sign Out
-                </IonButton>
+                <div id="signInButton">
+                    <IonButton expand="full" color="danger" onClick={handleSignOut}>
+                        Sign Out
+                    </IonButton>
 
-                {/* Export User Data Button */}
-                <IonButton
-                    expand="full"
-                    color="primary"
-                    onClick={exportToJson}
-                    disabled={loading || recipes.length === 0 || !user}
-                >
-                    {loading ? "Loading..." : "Export User Data"}
-                </IonButton>
+                    {/* Export User Data Button */}
+                    <IonButton
+                        expand="full"
+                        color="primary"
+                        onClick={exportToJson}
+                        disabled={loading || recipes.length === 0 || !user}
+                    >
+                        {loading ? "Loading..." : "Export User Data"}
+                    </IonButton>
+                </div>
+                </div>
             </IonContent>
         </IonPage>
     );

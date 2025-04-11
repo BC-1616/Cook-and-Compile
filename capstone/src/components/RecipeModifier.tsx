@@ -205,7 +205,7 @@ const handleAddIngredient = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Modify Recipes</IonTitle>
+          <IonTitle id="title">Modify Recipes</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>

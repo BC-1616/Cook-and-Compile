@@ -22,16 +22,21 @@ For testing, we use Cypress for end-to-end testing and Vitest for unit testing. 
 - npm (Node Package Manager)
 - Ionic CLI
 - React
+- Go
 
 ### Steps
 1. Clone the repository 
 2. Navigate to the project directory
 3. Install dependencies
+ 
    ```bash
    npm install
+   ```
+   - [Go Version 1.23^](https://go.dev/doc/install)
 4. Run the app
    ```bash
     ionic serve 
+   ```
 
 ## Features 
 More information will be added as we develop new features.

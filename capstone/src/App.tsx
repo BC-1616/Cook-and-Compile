@@ -8,7 +8,7 @@ import Recipe from './components/Recipe';
 import MealCalendar from './components/MealPlan/MealPlan';
 import LandingPage from './components/LandingPage';
 import NavBar from './components/NavBar';
-import handleAuth from './handles/handleAuth';
+import { handleAuth } from './handles/handleAuth';
 import { UserProvider } from './components/UserContext'; // Import UserProvider
 import React from 'react';
 

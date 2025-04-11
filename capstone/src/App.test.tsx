@@ -47,13 +47,13 @@ test('renders "Export User Data" button', () => {
   expect(screen.getByText("Loading...")).toBeInTheDocument()
 });
 
-test('renders ingredient page', () => {
+test('renders allergy page', () => {
   render(
     <MemoryRouter initialEntries={['/test-route']}>
       <IngredientPage />
     </MemoryRouter>
   );
-  expect(screen.getByText('Ingredients')).toBeInTheDocument();
+  expect(screen.getByText('Allergy Input')).toBeInTheDocument();
 });
 
 // unit tests for modify recipes page
