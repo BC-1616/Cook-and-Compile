@@ -33,26 +33,32 @@
    Border radius can be adjusted to make buttons rounder
 */
 .recipe_button_allergic {
-    width: 250px;
-    height: 200px;
-    border-radius: 60px;
+    width: 250px !important;
+    height: 200px !important;
+    border-radius: 60px !important;
     box-shadow: 0 5px 5px 2px red;
     background-size: cover;
     background-position: center;
-    font-size: 28px;
+    font-size: 28px !important;
     font-weight: bolder;
 }
+.recipe_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 100px; 
+    padding: 10px;
+  }
 .recipe_button {
-    width: 250px;
-    height: 200px;
-    border-radius: 60px; 
+    width: 250px !important;
+    height: 200px !important;
+    border-radius: 60px !important; 
     background-size: cover;
     /* I tried some other methods to make text more readable
     this is the best method I got to working
     there might be a better method but I'm not great with css*/
     background-position: center;
-    font-size: 28px;
-    font-weight: bolder;
+    font-size: 28px !important;
+    font-weight: bolder ;
 }
 
 .recipe_button, .recipe_button_allergic{

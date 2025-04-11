@@ -24,11 +24,12 @@ const appPages = [
     url: '/Recipes',
     icon: recipes
   },
+  /*
   {
     title: 'Modify',
     url: '/ModifyRecipes',
     icon: modify
-  },
+  },*/
   {
     title: 'Meal Plan',
     url: '/MealPlan',

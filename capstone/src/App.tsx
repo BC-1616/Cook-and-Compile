@@ -69,9 +69,11 @@ const App: React.FC = () => {
                   <Recipe />
                 </Route>
 
+                {/*
                 <Route path="/ModifyRecipes" exact={true}>
                   <ModifyRecipes />
                 </Route>
+                */}
 
                 <Route path="/MealPlan" exact={true}>
                   <MealCalendar />
