@@ -1,3 +1,4 @@
+<img src="../public/js_logo.png" width="50px" height="50px">
 
 # Safely GO
 
@@ -13,5 +14,3 @@ To kill, look up the process ID of `start-server` and write `kill PID`
 GO Version 1.24.1
 
 [Install GO](https://go.dev/doc/install)
-
-![App Logo](../public/js_logo.png)

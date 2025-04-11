@@ -26,6 +26,7 @@ func main() {
 
 	// Run in the background. If we want other processes moving, we can put this
 	// in a go routine
+	fmt.Println("Started Retention Process.")
 	for {
 		err = FindInvalidUsers(ctx, client, admin)
 		if err != nil {

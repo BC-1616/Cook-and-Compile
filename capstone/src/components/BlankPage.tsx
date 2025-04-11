@@ -10,8 +10,6 @@ import { isPlatform } from '@ionic/react';
 import { Share } from '@capacitor/share';
 import '../Styles/BlankPage.css';
 
-import {deleteUnusedUsers} from '../handles/handleRetention';
-
 interface Recipe {
     id: string;
     image: string;
@@ -45,7 +43,6 @@ const BlankPage: React.FC = () => {
                 await fetchAllergies(user.uid);
                 await fetchUserLoginAttempts(user.uid);
                 await fetchGlobalLogin();
-                await deleteUnusedUsers();
             } else {
                 setUser(null);  // No user authenticated
             }
@@ -159,15 +156,9 @@ const BlankPage: React.FC = () => {
           preferences: preferences
       };
   
-      const globalData = {
-          globalLoginSuccess: globalLoginSuccess,
-          globalLoginFailure: globalLoginFailure,
-      };
-  
       const userData = {
           ppd: userPersonalData,
           other: otherData,
-          globalData: globalData,
       };
   
       const jsonData = JSON.stringify(userData, null, 2);
