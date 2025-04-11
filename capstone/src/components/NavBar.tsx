@@ -22,12 +22,13 @@ const appPages = [
     title: 'Recipes',
     url: '/Recipes',
     icon: recipes
-  },
+  }
+  /*
   {
     title: 'Modify',
     url: '/ModifyRecipes',
     icon: modify
-  }
+  }*/
 ];
 
 const CustomNavBar: React.FC = () => {

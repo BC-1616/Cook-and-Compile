@@ -13,7 +13,7 @@ describe('Delete Recipe', () => {
 
       cy.contains('Export User Data')
       // must create a new recipe to be deleted during testing each time so that the test will pass without trying to run the test when the recipe does not exist.
-      cy.visit('/ModifyRecipes');
+      cy.visit('/Recipes');
 
       cy.contains('Create Recipe').click();
 

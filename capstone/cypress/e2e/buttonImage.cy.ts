@@ -25,7 +25,9 @@ describe('Tests if url submit functions', () => {
         //having it click once didnt work, but twice did.
         cy.contains('Submit').first().click();
         cy.contains('Submit').first().click();
+        cy.contains('Image URL Updated!').should('be.visible');
         cy.contains('Back').first().click();
+        cy.reload();
     
         cy.wait(1000);
         //verify url is updated
@@ -40,7 +42,9 @@ describe('Tests if url submit functions', () => {
         //submit image url
         cy.contains('Submit').first().click();
         cy.contains('Submit').first().click();
+        cy.contains('Image URL Updated!').should('be.visible');
         cy.contains('Back').first().click();
+        cy.reload();
         //verify url is updated
         cy.contains('.recipe_button', 'Test Recipe').should('have.css', 'background-image', `url("${testImageUrl}")`);
     });
