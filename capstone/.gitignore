@@ -31,4 +31,4 @@ yarn-error.log*
 .eslintcache
 
 # Firebase 
-src/firebase_setup
+./src/firebase_setup/firebase.ts
