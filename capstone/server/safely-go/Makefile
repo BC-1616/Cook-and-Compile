@@ -4,7 +4,7 @@ build:
 	go build -o ${BINARY_NAME} ./code/
 
 run: build
-	./${BINARY_NAME} &
+	./${BINARY_NAME}
 
 clean:
 	go clean
