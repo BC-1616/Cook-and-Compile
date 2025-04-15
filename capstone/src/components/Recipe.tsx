@@ -190,51 +190,51 @@ const Recipe: React.FC = () => {
 
   const handleIngredientNameChange = (index: number, newName: string) => {
     if (currentRecipe) {
-        const newIngredients = { ...currentRecipe.ingredients };
-        const oldKey = Object.keys(newIngredients)[index];
-        const value = newIngredients[oldKey];
-        delete newIngredients[oldKey];
-        newIngredients[newName] = value;
-        setCurrentRecipe({
-            ...currentRecipe,
-            ingredients: newIngredients
-        });
+      const newIngredients = { ...currentRecipe.ingredients };
+      const oldKey = Object.keys(newIngredients)[index];
+      const value = newIngredients[oldKey];
+      delete newIngredients[oldKey];
+      newIngredients[newName] = value;
+      setCurrentRecipe({
+          ...currentRecipe,
+          ingredients: newIngredients
+      });
     }
-};
+  };
 
-const handleIngredientAmountChange = (key: string, newAmount: string) => {
-    if (currentRecipe) {
-        setCurrentRecipe({
-            ...currentRecipe,
-            ingredients: {
-                ...currentRecipe.ingredients,
-                [key]: newAmount
-            }
-        });
-    }
-};
+  const handleIngredientAmountChange = (key: string, newAmount: string) => {
+      if (currentRecipe) {
+          setCurrentRecipe({
+              ...currentRecipe,
+              ingredients: {
+                  ...currentRecipe.ingredients,
+                  [key]: newAmount
+              }
+          });
+      }
+  };
 
-const handleDeleteIngredient = (key: string) => {
-    if (currentRecipe) {
-        const newIngredients = { ...currentRecipe.ingredients };
-        delete newIngredients[key];
-        setCurrentRecipe({
-            ...currentRecipe,
-            ingredients: newIngredients
-        });
-    }
-};
+  const handleDeleteIngredient = (key: string) => {
+      if (currentRecipe) {
+          const newIngredients = { ...currentRecipe.ingredients };
+          delete newIngredients[key];
+          setCurrentRecipe({
+              ...currentRecipe,
+              ingredients: newIngredients
+          });
+      }
+  };
 
-const handleAddIngredient = () => {
-    if (currentRecipe) {
-        const newIngredients = { ...currentRecipe.ingredients, '': '' };
-        setCurrentRecipe({
-            ...currentRecipe,
-            ingredients: newIngredients
-        });
-    }
-};
-  
+  const handleAddIngredient = () => {
+      if (currentRecipe) {
+          const newIngredients = { ...currentRecipe.ingredients, '': '' };
+          setCurrentRecipe({
+              ...currentRecipe,
+              ingredients: newIngredients
+          });
+      }
+  };
+
   return (
     <IonPage>
       <IonHeader>

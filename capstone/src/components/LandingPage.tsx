@@ -3,7 +3,6 @@ import { IonContent, IonPage, IonHeader, IonButton, IonInput } from '@ionic/reac
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useUser } from './UserContext'; // Assuming you have a context for user data
 import { addLoginSuccess, addLoginFailure } from '../handles/handleLoginAttempt';
-import {deleteUnusedUsers} from '../handles/handleRetention';
 import { getFirestore, doc, arrayUnion, getCountFromServer, setDoc, getDocs, count, collection, getDoc } from 'firebase/firestore'; // Firestore imports
 import '../Styles/LandingPage.css';
 

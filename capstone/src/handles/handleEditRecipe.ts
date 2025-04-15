@@ -10,6 +10,7 @@ interface Recipe {
     tags: string; // maybe make this a list
     userAllergic: boolean;
     userPref : boolean; // true if they like it
+    score: number
 }
 
 export const handleEditRecipe = async (recipe: Recipe, setStatusMessage: React.Dispatch<React.SetStateAction<string>>): Promise<void> => {

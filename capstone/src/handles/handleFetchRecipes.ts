@@ -59,6 +59,7 @@ export const handleFetchRecipes = async () => {
                 tags: data.tags || '', // Add default if no tags are available
                 userAllergic: false,
                 userPref: false,
+                score: 0,
             };
         });
 

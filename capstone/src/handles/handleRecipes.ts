@@ -1,30 +1,41 @@
-import { collection, getDocs } from "@firebase/firestore";
+import { collection, getDocs, getDoc, updateDoc, doc} from "@firebase/firestore";
 import { firestore } from "../firebase_setup/firebase";
+import { getAuth } from 'firebase/auth';
+import { useState } from 'react';
 
-export const handleRecipe = async () => {
-  try {
-    const recipesCollection = collection(firestore, "recipes");
+import {handleFetchAllergy, includesStringInArray} from "./handleAllergy";
+
+export const updateRecipeScore = async () => {
+  try{
+    const user = getAuth().currentUser;    
+    if (!user) {
+      console.error('No user is authenticated.');
+      return;
+    }
+
+    const [statusMessage, setStatusMessage] = useState<string>('');
+
+    const allergyData = await handleFetchAllergy(setStatusMessage);
+
+    const recipesCollection = collection(firestore, "users", user.uid, "recipes");
     const querySnapshot = await getDocs(recipesCollection);
 
-    const recipesData = querySnapshot.docs.map((doc) => {
+    querySnapshot.docs.map((doc) => {
+      var currentScore = 0;
+      // Look at each recipe for each document and give the score
       const data = doc.data();
+      Object.entries(data.ingredients).map(([ingredientName, amt], idx) => {
+        if(allergyData != undefined){
+          if(includesStringInArray(allergyData[1].pref_list, ingredientName)){
+            currentScore++;
+          }
+        }
+      })
+    })
 
-      return {
-        id: doc.id,
-        name: data.name || "Unnamed Recipe",
-        ingredients: data.ingredients || [],
-        instructions: data.instructions || "No instructions provided",
-        image: data.image || "No Imgae provided",
-        // We will want the recipe tag beging returned here as well.
-        tags: data.tags || "No recipe tags",
-        userAllergic: false,
-      };
-    });
 
-    //console.log("Fetched recipe:", recipesData);
-    return recipesData;
-  } catch (error) {
-    console.error("Failed to fetch recipes:", error);
-    throw new Error("Failed to fetch recipes");
+
+  }catch{
+    console.error("failed to update recipe score");
   }
-};
+}
