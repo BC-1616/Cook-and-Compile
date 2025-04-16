@@ -20,10 +20,10 @@ export const updateRecipeScore = async () => {
     const recipesCollection = collection(firestore, "users", user.uid, "recipes");
     const querySnapshot = await getDocs(recipesCollection);
 
-    querySnapshot.docs.map((doc) => {
+    querySnapshot.docs.map((recipeDoc) => {
       var currentScore = 0;
       // Look at each recipe for each document and give the score
-      const data = doc.data();
+      const data = recipeDoc.data();
       Object.entries(data.ingredients).map(([ingredientName, amt], idx) => {
         if(allergyData != undefined){
           if(includesStringInArray(allergyData[1].pref_list, ingredientName)){
@@ -31,9 +31,11 @@ export const updateRecipeScore = async () => {
           }
         }
       })
+      const docRef = doc(firestore, "users", user.uid, "recipes", data.id);
+      updateDoc(docRef, {
+        score: currentScore,
+      })
     })
-
-
 
   }catch{
     console.error("failed to update recipe score");

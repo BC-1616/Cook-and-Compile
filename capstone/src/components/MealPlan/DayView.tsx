@@ -3,6 +3,7 @@ import { getMealPlan, handleAddMeal, handleDeleteMeal } from "../../handles/hand
 import { MealPlan, MealItem } from "../../types/mealTypes";
 import "../../Styles/MealPlan/DayView.css";
 import MealSelector from "./MealSelector";
+import {updateRecipeScore} from "../../handles/handleRecipes";
 
 interface DayViewProps {
     selectedDate: Date;
@@ -21,6 +22,7 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
             if (!userId) return;
             const data = await getMealPlan(userId, selectedDate);
             setMealPlan(data);
+            await updateRecipeScore()
         };
 
         fetchMealPlan();
