@@ -26,18 +26,10 @@ export const handleAuth = () => {
           //await setPersistence(auth, browserSessionPersistence);
           console.log("Auth state changed", authUser);  // Log the user object after sign-in
 
-          // Check if the user already has a Firestore document
-          const userDocRef = doc(db, 'users', authUser.uid); // Reference to the user's document
-          const userDocSnap = await getDoc(userDocRef);
-
-          if (!userDocSnap.exists() && !isUserCreateRef.current) {
-            // If user does not exist in Firestore, create a new document
-            console.log('No user document found, creating new user...');
-            await handleNewUser(db, authUser.uid, authUser.email!); 
-            isUserCreateRef.current = true; 
-          } else {
-            console.error('User document already exists');
-          } 
+          // The check for if a user has been created has been moved to 'handleNewUser'
+          console.log('No user document found, creating new user...');
+          await handleNewUser(db, authUser.uid, authUser.email!); 
+          isUserCreateRef.current = true; 
 
           // Update the state with the user once Firestore operation is done
           setUser(authUser); // Set the user after Firestore document check
@@ -82,7 +74,7 @@ export const handleNewUser = async (db: any, userId: string, email: string) => {
 
       const userAllergyDocRef = doc(db, 'users', userId, 'allergies', 'allergy_list');
       const userAllergyDocSnap = await transaction.get(userAllergyDocRef);
-
+      
       // I am using this function to help re-create allergy documents. This already happens with recipes.
       // When a user gets deleted, their email will stick around for 6 months, and if they create a new
       // account with the same email at that time, thier collections don't get initialized properly.
@@ -97,14 +89,13 @@ export const handleNewUser = async (db: any, userId: string, email: string) => {
             loginTimestamp: arrayUnion(new Date())
           });
           console.log('User document created in Firestore!');
-
-          // Loop over the recipes in the JSON data and add them to Firestore
-          recipeData.forEach((recipe, index) => {
-            const recipeRef = doc(collection(db, 'users', userId, 'recipes'));
-            transaction.set(recipeRef, recipe);
-            console.log(`Recipe ${index + 1} added to Firestore`);
-          });
         }
+        // Loop over the recipes in the JSON data and add them to Firestore
+        recipeData.forEach((recipe, index) => {
+          const recipeRef = doc(collection(db, 'users', userId, 'recipes'));
+          transaction.set(recipeRef, recipe);
+          console.log(`Recipe ${index + 1} added to Firestore`);
+        });
 
         // Create allergies collection
         const allergiesCollectionRef = doc(collection(db, 'users', userId, 'allergies'), 'allergy_list');
@@ -113,8 +104,6 @@ export const handleNewUser = async (db: any, userId: string, email: string) => {
         transaction.set(allergiesCollectionPrefRef, { "pref_list": [] });
 
         console.log('User collections created in Firestore!');
-      } else {
-        console.log('User document already exists in transaction.');
       }
     });
   } catch (error) {
