@@ -13,12 +13,18 @@ export const updateRecipeScore = async () => {
       return;
     }
 
-    const [statusMessage, setStatusMessage] = useState<string>('');
+    const allergyCollectionRef = collection(firestore, 'users', user.uid, 'allergies');
+    const allergyQuery = await getDocs(allergyCollectionRef);
 
-    const allergyData = await handleFetchAllergy(setStatusMessage);
+    const allergyData = allergyQuery.docs.map((doc) => {
+        const data = doc.data();
+        return { ...data};
+    });
 
     const recipesCollection = collection(firestore, "users", user.uid, "recipes");
+    console.log("DOCUMENT::::");
     const querySnapshot = await getDocs(recipesCollection);
+    console.log("DOCUMENT::::");
 
     querySnapshot.docs.map((recipeDoc) => {
       var currentScore = 0;
@@ -28,10 +34,11 @@ export const updateRecipeScore = async () => {
         if(allergyData != undefined){
           if(includesStringInArray(allergyData[1].pref_list, ingredientName)){
             currentScore++;
+            console.log("Increasing score")
           }
         }
       })
-      const docRef = doc(firestore, "users", user.uid, "recipes", data.id);
+      const docRef = doc(firestore, "users", user.uid, "recipes", recipeDoc.id);
       updateDoc(docRef, {
         score: currentScore,
       })

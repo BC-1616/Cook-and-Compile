@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { handleFetchRecipes } from '../../handles/handleFetchRecipes';
 import { Recipe } from "../../types/mealTypes";
+import {updateRecipeScore} from "../../handles/handleRecipes";
 import "../../Styles/MealPlan/MealSelector.css";
 
 interface MealSelectorProps {
@@ -20,6 +21,7 @@ const MealSelector: React.FC<MealSelectorProps> = ({ onAddMeal, onClose }) => {
                 ...recipe,
                 ingredients: Object.values(recipe.ingredients), // Convert object to array
             })));
+            await updateRecipeScore()
         };
         fetchRecipes();
     }, []);

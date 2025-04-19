@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getMealPlan } from "../../handles/handleMealPlan";
 import { MealPlan } from "../../types/mealTypes";
+import {updateRecipeScore} from "../../handles/handleRecipes";
 import "../../Styles/MealPlan/WeekView.css";
 
 interface WeeklyViewProps {
@@ -34,6 +35,7 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
                 });
             }
     
+            await updateRecipeScore()
             setWeeklyMealPlans(mealPlanData);
         };
     
