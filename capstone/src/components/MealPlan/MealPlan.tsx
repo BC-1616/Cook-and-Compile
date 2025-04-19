@@ -3,6 +3,7 @@ import WeekView from "./WeekView";
 import DayView from "./DayView";
 import { getAuth } from "firebase/auth";
 import "../../Styles/MealPlan/MealCalendar.css";
+import {updateRecipeScore} from "../../handles/handleRecipes";
 
 const MealCalendar: React.FC = () => {
     console.log("MealCalendar is rendering!");
@@ -31,6 +32,11 @@ const MealCalendar: React.FC = () => {
         setSelectedDate(newDate);
     };
 
+    const generatePlan = () => {
+        updateRecipeScore()
+        console.log("Feature coming soon!");
+    }
+
     return (
         <><div id="spacer"></div>
         <div className="meal-calendar-container">
@@ -42,6 +48,7 @@ const MealCalendar: React.FC = () => {
                 <button onClick={() => setView("weekly")} className="view-button">Weekly</button>
                 <button onClick={navigateForward} className="forward-back-button">➡</button>
             </div>
+            <button id="generation-button" onClick={generatePlan}>Generate Meal Plan</button>
 
             {view === "weekly" && <WeekView selectedWeek={selectedDate} userId={userId} />}
             {view === "daily" && <DayView selectedDate={selectedDate} userId={userId} />}

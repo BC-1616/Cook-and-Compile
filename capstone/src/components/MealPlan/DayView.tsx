@@ -3,7 +3,6 @@ import { getMealPlan, handleAddMeal, handleDeleteMeal } from "../../handles/hand
 import { MealPlan, MealItem } from "../../types/mealTypes";
 import "../../Styles/MealPlan/DayView.css";
 import MealSelector from "./MealSelector";
-import {updateRecipeScore} from "../../handles/handleRecipes";
 
 interface DayViewProps {
     selectedDate: Date;
@@ -22,12 +21,13 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
             if (!userId) return;
             const data = await getMealPlan(userId, selectedDate);
             setMealPlan(data);
-            await updateRecipeScore()
         };
 
         fetchMealPlan();
     }, [selectedDate, userId]);
 
+    // Could use this function for the generation button, pass in a bool if we want to automate, then do a randomized
+    // routine of selecting a recipe, then call handleAddMeal
     const handleMealSelection = async (meal: MealItem) => {
         if (!selectedMealType) return;
         const updatedMealPlan = await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], selectedMealType, meal);

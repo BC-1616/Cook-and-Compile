@@ -1,9 +1,8 @@
 import { collection, getDocs, getDoc, updateDoc, doc} from "@firebase/firestore";
 import { firestore } from "../firebase_setup/firebase";
 import { getAuth } from 'firebase/auth';
-import { useState } from 'react';
 
-import {handleFetchAllergy, includesStringInArray} from "./handleAllergy";
+import {includesStringInArray} from "./handleAllergy";
 
 export const updateRecipeScore = async () => {
   try{
@@ -22,9 +21,7 @@ export const updateRecipeScore = async () => {
     });
 
     const recipesCollection = collection(firestore, "users", user.uid, "recipes");
-    console.log("DOCUMENT::::");
     const querySnapshot = await getDocs(recipesCollection);
-    console.log("DOCUMENT::::");
 
     querySnapshot.docs.map((recipeDoc) => {
       var currentScore = 0;
@@ -34,7 +31,7 @@ export const updateRecipeScore = async () => {
         if(allergyData != undefined){
           if(includesStringInArray(allergyData[1].pref_list, ingredientName)){
             currentScore++;
-            console.log("Increasing score")
+            console.log("Modifying score");
           }
         }
       })
