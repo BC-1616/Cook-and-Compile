@@ -11,6 +11,7 @@ interface Recipe {
     tags: string; // Maybe change to a list if tags are multiple
     userAllergic: boolean;
     userPref: boolean;
+    score: number;
 }
 
 // Interface for the expected structure of recipe data from Firestore
@@ -20,6 +21,7 @@ interface RecipeData {
     ingredients: { [key: string]: string };
     instructions: string;
     tags?: string; // tags are optional
+    score: number;
 }
 
 export const handleFetchRecipes = async () => {
