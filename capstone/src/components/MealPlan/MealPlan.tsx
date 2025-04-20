@@ -30,8 +30,8 @@ const MealCalendar: React.FC = () => {
   useEffect(() => {
     const fetchAndInitializeMealPlan = async () => {
       if (!userId) {
-        console.log("No userId available, redirecting to login screen.");
-        window.location.href = '/LandingPage';  // Navigate to LandingPage
+        console.log("No userId available, no meal plan to be fetched.");
+        setMealPlanLoaded(true);
         return;
       }
       console.log("Fetching meal plan for date:", selectedDate.toDateString());
