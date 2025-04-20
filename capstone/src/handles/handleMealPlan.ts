@@ -89,6 +89,7 @@ export const handleAddMeal = async (
 
         // Ensure meal is added inside the correct category
         prevMeals.meals[mealType] = [...prevMeals.meals[mealType], newMeal];
+        console.log("MEAL TYPE: ", mealType)
         prevMeals.lastEdited = new Date().toISOString(); // Update lastEdited timestamp
 
         await setDoc(mealPlanRef, prevMeals);

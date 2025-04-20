@@ -10,7 +10,6 @@ import { saveURL } from '../handles/handleImages';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase_setup/firebase';  // Ensure you have the auth instance setup
 import '../Styles/Recipe.css';
-import '../Styles/RecipeModifier.css';
 
 const Recipe: React.FC = () => {
   const [recipes, setRecipes] = useState<any[]>([]);
