@@ -16,14 +16,24 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
     // Needed to display meals in a specific order
     const mealOrder: Array<keyof MealPlan["meals"]> = ["breakfast", "lunch", "snack", "dinner"];
 
+    // Function to get the Sunday of the week for the selected date. Ensures the week starts on Sunday and does not make today the start of the week.
+    const getSundayOfWeek = (date: Date) => {
+        const today = date.getDay(); 
+        const sunday = new Date(date); 
+        sunday.setDate(date.getDate() - today); 
+        return sunday;
+    };
+
     useEffect(() => {
         const fetchWeeklyMealPlan = async () => {
             if (!userId) return;
             let mealPlanData = [];
+
+            const startOfWeek = getSundayOfWeek(selectedWeek); // Get the Sunday of the selected week to correctly set the order of the week
     
             for (let i = 0; i < 7; i++) {
-                const date = new Date(selectedWeek);
-                date.setDate(selectedWeek.getDate() + i);
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
                 const data = await getMealPlan(userId, date);
     
                 mealPlanData.push({ 
