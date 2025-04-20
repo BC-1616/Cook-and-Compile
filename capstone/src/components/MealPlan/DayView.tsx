@@ -86,10 +86,15 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
             <ul className="meal-list">
               {mealPlan && mealPlan.meals[mealType]?.length > 0 ? (
                 mealPlan.meals[mealType].map((meal) => (
-                  <li key={meal.id}>
+                  <li key={meal.id} className="meal-item">
+                  <span className="meal-name">{meal.name}</span>
                     {/* Instead of the x emoji like button I had before I changed a lot of buttons to ion icons to be more consistent with the rest of the app. */}
-                    <IonButton color="danger" onClick={() => handleDelete(mealType, meal.id)}>
-                      {meal.name} <IonIcon icon={removeCircleOutline} />
+                    <IonButton 
+                        className="consistent-icon-btn" 
+                        color="danger" 
+                        onClick={() => handleDelete(mealType, meal.id)}
+                    >
+                        <IonIcon icon={removeCircleOutline} />
                     </IonButton>
                   </li>
                 ))
