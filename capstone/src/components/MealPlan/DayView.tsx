@@ -17,10 +17,16 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
     const [selectedMealType, setSelectedMealType] = useState<keyof MealPlan["meals"] | null>(null);
 
     useEffect(() => {
+        console.log("Fetching meal plan for date:", selectedDate.toDateString());
         const fetchMealPlan = async () => {
             if (!userId) return;
-            const data = await getMealPlan(userId, selectedDate);
-            setMealPlan(data);
+            try {
+                const data = await getMealPlan(userId, selectedDate);
+                setMealPlan(data);
+            }
+            catch (error) {
+                console.error("Error fetching meal plan:", error); 
+            }
         };
 
         fetchMealPlan();
@@ -38,8 +44,6 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
         if (updatedMealPlan) setMealPlan(updatedMealPlan);
     };
 
-    if (!mealPlan) return <h3>Loading meal plan for {selectedDate.toDateString()}...</h3>;
-
     return (
         <div className="day-view-container">
             <h2 className="day-title">{selectedDate.toDateString()}</h2>
@@ -49,7 +53,8 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
                     <div key={mealType} className="meal-column">
                         <h3 className="meal-header">{mealType.charAt(0).toUpperCase() + mealType.slice(1)}</h3>
                         <ul className="meal-list">
-                            {mealPlan.meals[mealType]?.length > 0 ? (
+                            {/* fixed issue with mealplan possibly being null */}
+                            {mealPlan && mealPlan.meals[mealType]?.length > 0 ? (
                                 mealPlan.meals[mealType].map((meal) => (
                                     <li key={meal.id}>
                                         {meal.name}
