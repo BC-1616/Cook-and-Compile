@@ -46,6 +46,11 @@
     .spacer {
         height: 50px;
     }
+    /* Aligned the recipe buttons to the center for mobile. */
+    .recipe_button, .recipe_button_allergic{
+        display: block;
+        margin: auto;
+    }
 }
 
 /* Allows us to customize the size of buttons for the recipes.

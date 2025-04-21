@@ -15,7 +15,7 @@ const MealCalendar: React.FC = () => {
   const [view, setView] = useState<"daily" | "weekly">("daily");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userId, setUserId] = useState<string>("");
-    const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   // flag for whether the meal plan data for the selected date is loaded.
   const [mealPlanLoaded, setMealPlanLoaded] = useState(false);
 
@@ -30,39 +30,38 @@ const MealCalendar: React.FC = () => {
     return unsubscribe;
   }, []);
 
+  const fetchAndInitializeMealPlan = async () => {
+    if (!userId) {
+      console.log("No userId available, no meal plan to be fetched.");
+      setMealPlanLoaded(true);
+      return;
+    }
+    console.log("Fetching meal plan for date:", selectedDate.toDateString());
+    try {
+      let data = await getMealPlan(userId, selectedDate);
+      console.log("Fetched meal plan data:", data);
+      // If the meal plan document does not exist, initialize it.
+      if (!data) {
+        await initializeMealPlanCollection(userId);
+        data = await getMealPlan(userId, selectedDate);
+        console.log("Initialized and re-fetched meal plan:", data);
+      }
+      setMealPlanLoaded(true);
+    } catch (error) {
+      console.error("Error fetching meal plan:", error);
+      setMealPlanLoaded(true);
+    }
+  };
   // When the selected date or userId changes, fetch/initialize the meal plan.
   useEffect(() => {
-    const fetchAndInitializeMealPlan = async () => {
-      if (!userId) {
-        console.log("No userId available, no meal plan to be fetched.");
-        setMealPlanLoaded(true);
-        return;
-      }
-      console.log("Fetching meal plan for date:", selectedDate.toDateString());
-      try {
-        let data = await getMealPlan(userId, selectedDate);
-        console.log("Fetched meal plan data:", data);
-        // If the meal plan document does not exist, initialize it.
-        if (!data) {
-          await initializeMealPlanCollection(userId);
-          data = await getMealPlan(userId, selectedDate);
-          console.log("Initialized and re-fetched meal plan:", data);
-        }
-        setMealPlanLoaded(true);
-      } catch (error) {
-        console.error("Error fetching meal plan:", error);
-        setMealPlanLoaded(true);
-      }
+    const fetchRecipes = async () => {
+        const response = await handleFetchRecipes();
+        setRecipes(response.map(recipe => ({
+            ...recipe,
+            ingredients: Object.values(recipe.ingredients), // Convert object to array
+        })));
     };
-        const fetchRecipes = async () => {
-            const response = await handleFetchRecipes();
-            setRecipes(response.map(recipe => ({
-                ...recipe,
-                ingredients: Object.values(recipe.ingredients), // Convert object to array
-            })));
-        };
-        fetchRecipes();
-
+    fetchRecipes();
     fetchAndInitializeMealPlan();
   }, [selectedDate, userId]);
 
@@ -83,44 +82,51 @@ const MealCalendar: React.FC = () => {
     setMealPlanLoaded(false);
   };
 
-    const generateDayPlan = async () => {
-        await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "breakfast", generateMeal());
-        await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "lunch", generateMeal());
-        await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "snack", generateMeal());
-        await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "dinner", generateMeal());
+  const generateDayPlan = async () => {
+    const mp = await getMealPlan(userId, selectedDate);
+    if(mp?.meals.breakfast.length == 0){
+      await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "breakfast", generateMeal());
     }
-
-    // There is an issue if you click the button before recipes are pulled down :(
-    const generateMeal = () => {
-        // Make it weighted based on score.
-        var randNum = Math.floor(Math.random() * recipes.length);
-        console.log("NUMBER: ", randNum, recipes.length);
-        var randMeal: MealItem = {
-            id: recipes[randNum].id,
-            name: recipes[randNum].name,
-            isRecipe: true,
-        }
-        return randMeal;
+    if(mp?.meals.lunch.length == 0){
+      await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "lunch", generateMeal());
     }
-
-    const generatePlan = () => {
-        updateRecipeScore()
-        switch(view){
-            case "daily":
-                console.log("Generating day");
-                generateDayPlan();
-                break;
-            case "weekly":
-                break;
-            default:
-                console.log("Select Day or Week to receive generated meal plans!");
-                return;
-        }
-
+    if(mp?.meals.snack.length == 0){
+      await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "snack", generateMeal());
     }
+    if(mp?.meals.dinner.length == 0){
+      await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "dinner", generateMeal());
+    }
+  }
+
+  // There is an issue if you click the button before recipes are pulled down :(
+  const generateMeal = () => {
+      // Make it weighted based on score.
+      var randNum = Math.floor(Math.random() * recipes.length);
+      var randMeal: MealItem = {
+          id: recipes[randNum].id,
+          name: recipes[randNum].name,
+          isRecipe: true,
+      }
+      return randMeal;
+  }
+
+  const generatePlan = () => {
+    updateRecipeScore()
+    switch(view){
+        case "daily":
+            console.log("Generating day");
+            generateDayPlan();
+            break;
+        case "weekly":
+            break;
+        default:
+            console.log("Select Day or Week to receive generated meal plans!");
+            return;
+    }
+  }
 
   return (
-    <><div id="spacer"></div>
+    <><div className="spacer"></div>
       <div className="meal-calendar-container">
         <div className="calendar-title">Meal Plan</div>
 

@@ -76,7 +76,6 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
   return (
     <div className="day-view-container">
       <h2 className="day-title">{localDate.toDateString()}</h2>
-
       <div className="meal-grid">
         {mealOrder.map((mealType) => (
           <div key={mealType} className="meal-column">
