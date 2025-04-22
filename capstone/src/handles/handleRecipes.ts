@@ -1,6 +1,7 @@
 import { collection, getDocs, getDoc, updateDoc, doc} from "@firebase/firestore";
 import { firestore } from "../firebase_setup/firebase";
 import { getAuth } from 'firebase/auth';
+import { Recipe } from "../types/mealTypes";
 
 import {includesStringInArray} from "./handleAllergy";
 
@@ -44,4 +45,16 @@ export const updateRecipeScore = async () => {
   }catch{
     console.error("failed to update recipe score");
   }
+}
+
+export const weightedRandomRecipe = (recipeList: Recipe[]) => {
+  var weightList: number[] = [];
+  for(let j=0; j<recipeList.length; j++){
+    for(let i=0; i<=recipeList[j].score; i++){
+      weightList.push(j); // values will be: indexOfRecipe*scoreOfRecipe + 1 for each recipe
+    }
+  }
+
+  var randIDX = Math.floor(Math.random() * weightList.length);
+  return weightList[randIDX];
 }

@@ -5,7 +5,7 @@ import DayView from "./DayView";
 import { getMealPlan, initializeMealPlanCollection, handleAddMeal } from "../../handles/handleMealPlan";
 import { getAuth } from "firebase/auth";
 import "../../Styles/MealPlan/MealCalendar.css";
-import {updateRecipeScore} from "../../handles/handleRecipes";
+import {updateRecipeScore, weightedRandomRecipe} from "../../handles/handleRecipes";
 import { MealPlan, MealItem, Recipe } from "../../types/mealTypes";
 import { handleFetchRecipes } from '../../handles/handleFetchRecipes';
 
@@ -119,7 +119,8 @@ const MealCalendar: React.FC = () => {
   // There is an issue if you click the button before recipes are pulled down :(
   const generateMeal = () => {
       // Make it weighted based on score.
-      var randNum = Math.floor(Math.random() * recipes.length);
+      var randNum = weightedRandomRecipe(recipes);
+      console.log("RANDOM NUMBER: ", randNum);
       var randMeal: MealItem = {
           id: recipes[randNum].id,
           name: recipes[randNum].name,
