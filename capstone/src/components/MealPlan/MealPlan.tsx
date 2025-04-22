@@ -81,20 +81,38 @@ const MealCalendar: React.FC = () => {
     setSelectedDate(newDate);
     setMealPlanLoaded(false);
   };
+  const getSundayOfWeek = (date: Date) => {
+      const today = date.getDay(); 
+      const sunday = new Date(date); 
+      sunday.setDate(date.getDate() - today); 
+      return sunday;
+  };
 
-  const generateDayPlan = async () => {
-    const mp = await getMealPlan(userId, selectedDate);
+  const generateDayPlan = async (day: Date) => {
+    const mp = await getMealPlan(userId, day);
+    console.log("MAKING MEAL FOR DAY: ", day);
     if(mp?.meals.breakfast.length == 0){
-      await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "breakfast", generateMeal());
+      await handleAddMeal(userId, day.toISOString().split("T")[0], "breakfast", generateMeal());
     }
     if(mp?.meals.lunch.length == 0){
-      await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "lunch", generateMeal());
+      await handleAddMeal(userId, day.toISOString().split("T")[0], "lunch", generateMeal());
     }
     if(mp?.meals.snack.length == 0){
-      await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "snack", generateMeal());
+      await handleAddMeal(userId, day.toISOString().split("T")[0], "snack", generateMeal());
     }
     if(mp?.meals.dinner.length == 0){
-      await handleAddMeal(userId, selectedDate.toISOString().split("T")[0], "dinner", generateMeal());
+      await handleAddMeal(userId, day.toISOString().split("T")[0], "dinner", generateMeal());
+    }
+  }
+
+  // Will add day plan for each 7 days from the start 'day'. 'day' is Sunday of the week
+  const generateWeekPlan = async (day: Date) => {
+    let startDate = getSundayOfWeek(day);
+    for(let i=0; i<7; i++){
+      let currentDay = new Date();
+      currentDay.setDate(startDate.getDate() + i)
+
+      generateDayPlan(currentDay);
     }
   }
 
@@ -115,9 +133,11 @@ const MealCalendar: React.FC = () => {
     switch(view){
         case "daily":
             console.log("Generating day");
-            generateDayPlan();
+            generateDayPlan(selectedDate);
             break;
         case "weekly":
+            console.log("Generating Week");
+            generateWeekPlan(selectedDate);
             break;
         default:
             console.log("Select Day or Week to receive generated meal plans!");
@@ -136,7 +156,7 @@ const MealCalendar: React.FC = () => {
           <button onClick={() => setView("weekly")} className="view-button">Weekly</button>
           <button onClick={navigateForward} className="forward-back-button">➡</button>
         </div>
-            <button id="generation-button" onClick={generatePlan}>Generate Meal Plan</button>
+        <button id="generation-button" onClick={generatePlan}>Generate Meal Plan</button>
 
         {mealPlanLoaded ? (
           view === "weekly" ? (
