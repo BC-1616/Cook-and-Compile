@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import WeekView from "./WeekView";
 import DayView from "./DayView";
-import { getMealPlan, initializeMealPlanCollection, handleAddMeal } from "../../handles/handleMealPlan";
+import { getMealPlan, handleDeleteMeal, initializeMealPlanCollection, handleAddMeal } from "../../handles/handleMealPlan";
 import { getAuth } from "firebase/auth";
 import "../../Styles/MealPlan/MealCalendar.css";
 import {updateRecipeScore, weightedRandomRecipe} from "../../handles/handleRecipes";
@@ -146,6 +146,29 @@ const MealCalendar: React.FC = () => {
     }
   }
 
+  const deleteDayPlan = async () => {
+    let meal = await getMealPlan(userId, selectedDate);
+    await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], "breakfast", meal?.meals.breakfast[0].id ? meal?.meals.breakfast[0].id : "");
+    await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], "lunch", meal?.meals.lunch[0].id ? meal?.meals.lunch[0].id : "");
+    await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], "snack", meal?.meals.snack[0].id ? meal?.meals.snack[0].id : "");
+    await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], "dinner", meal?.meals.dinner[0].id ? meal?.meals.dinner[0].id : "");
+  }
+  
+  const deletePlan = () => {
+    switch(view){
+        case "daily":
+            console.log("Deleting day");
+            deleteDayPlan();
+            break;
+        case "weekly":
+            console.log("Generating Week");
+            break;
+        default:
+            console.log("Select Day or Week to receive generated meal plans!");
+            return;
+    }
+  }
+
   return (
     <><div className="spacer"></div>
       <div className="meal-calendar-container">
@@ -158,6 +181,7 @@ const MealCalendar: React.FC = () => {
           <button onClick={navigateForward} className="forward-back-button">➡</button>
         </div>
         <button id="generation-button" onClick={generatePlan}>Generate Meal Plan</button>
+        <button id="delete-button" onClick={deletePlan}>Delete Meal Plan</button>
 
         {mealPlanLoaded ? (
           view === "weekly" ? (
