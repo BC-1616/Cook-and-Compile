@@ -8,6 +8,7 @@ import "../../Styles/MealPlan/MealCalendar.css";
 import {updateRecipeScore, weightedRandomRecipe} from "../../handles/handleRecipes";
 import { MealPlan, MealItem, Recipe } from "../../types/mealTypes";
 import { handleFetchRecipes } from '../../handles/handleFetchRecipes';
+import { logoMarkdown } from "ionicons/icons";
 
 const MealCalendar: React.FC = () => {
   console.log("MealCalendar is rendering!");
@@ -146,22 +147,52 @@ const MealCalendar: React.FC = () => {
     }
   }
 
-  const deleteDayPlan = async () => {
+
+
+  const deleteDayPlan = async (day: Date) => {
     let meal = await getMealPlan(userId, selectedDate);
-    await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], "breakfast", meal?.meals.breakfast[0].id ? meal?.meals.breakfast[0].id : "");
-    await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], "lunch", meal?.meals.lunch[0].id ? meal?.meals.lunch[0].id : "");
-    await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], "snack", meal?.meals.snack[0].id ? meal?.meals.snack[0].id : "");
-    await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], "dinner", meal?.meals.dinner[0].id ? meal?.meals.dinner[0].id : "");
+    let bufferList: MealItem[] = [];
+    // Hold the lists here for easier access
+    let breakfast = meal?.meals.breakfast ? meal?.meals.breakfast : bufferList;
+    let lunch = meal?.meals.lunch ? meal?.meals.lunch : bufferList;
+    let snack = meal?.meals.snack ? meal?.meals.snack : bufferList;
+    let dinner = meal?.meals.dinner ? meal?.meals.dinner : bufferList;
+
+    // We want to delete all recipes for that meal
+    for(let i=0; i<breakfast.length; i++){
+      await handleDeleteMeal(userId, day.toISOString().split("T")[0], "breakfast", breakfast[i].id);
+    }
+    for(let i=0; i<lunch.length; i++){
+      await handleDeleteMeal(userId, day.toISOString().split("T")[0], "lunch", lunch[i].id);
+    }
+    for(let i=0; i<snack.length; i++){
+      await handleDeleteMeal(userId, day.toISOString().split("T")[0], "snack", snack[i].id);
+    }
+    for(let i=0; i<dinner.length; i++){
+      await handleDeleteMeal(userId, day.toISOString().split("T")[0], "dinner", dinner[i].id);
+    }
+  }
+
+  const deleteWeekPlan = async (day: Date) => {
+    let startDate = getSundayOfWeek(day);
+    for(let i=0; i<7; i++){
+      let currentDay = new Date();
+      currentDay.setDate(startDate.getDate() + i)
+
+      deleteDayPlan(currentDay);
+    }
+
   }
   
   const deletePlan = () => {
     switch(view){
         case "daily":
             console.log("Deleting day");
-            deleteDayPlan();
+            deleteDayPlan(selectedDate);
             break;
         case "weekly":
             console.log("Generating Week");
+            deleteWeekPlan(selectedDate)
             break;
         default:
             console.log("Select Day or Week to receive generated meal plans!");
@@ -181,7 +212,7 @@ const MealCalendar: React.FC = () => {
           <button onClick={navigateForward} className="forward-back-button">➡</button>
         </div>
         <button id="generation-button" onClick={generatePlan}>Generate Meal Plan</button>
-        <button id="delete-button" onClick={deletePlan}>Delete Meal Plan</button>
+        <button id="deletion-button" onClick={deletePlan} color="danger">Delete Meal Plan</button>
 
         {mealPlanLoaded ? (
           view === "weekly" ? (

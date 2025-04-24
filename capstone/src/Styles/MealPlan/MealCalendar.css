@@ -56,4 +56,13 @@
     border-radius: 8px;
     display: block;
     margin: auto;
+    margin-bottom: 1em;
+}
+
+#deletion-button{
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+    display: block;
+    margin: auto;
 }
