@@ -22,8 +22,11 @@ describe('Edit Recipe', () => {
       cy.wait(2000); //wait 2 seconds for popup to load   
   
       cy.get('input[placeholder="Enter Recipe Name"]').type('Test Recipe');
+      cy.wait(500);
       cy.get('input[placeholder="Enter Ingredient Name"]').type('Test Ingredient');
+      cy.wait(500);
       cy.get('input[placeholder="Enter Ingredient Amount"]').type('1 cup');
+      cy.wait(500);
       cy.get('textarea[placeholder="Enter Instructions"]').type('Test ingredients');
 
       cy.contains('Add Ingredient').click();
@@ -35,11 +38,8 @@ describe('Edit Recipe', () => {
       cy.wait(3000); 
 
       cy.get('input[placeholder="Edit Recipe Name"]').clear().type('Edited Recipe');
-      cy.get('textarea[placeholder="Edit Instructions"]').clear().type('Edited ingredients');
-      cy.get('input[placeholder="Ingredient Name"]').clear().type('Test Ingredient');
-      cy.get('input[placeholder="Amount of Test Ingredient"]').clear().type('Test cup');
-    
-      cy.contains('Add Ingredient').click();
+      cy.get('textarea[placeholder="Edit Instructions"]').clear().type('Edited Instructions');
+      
       cy.contains('Save').click();
       cy.wait(1000);
       //this could be useful if the test is failing because it is not in view

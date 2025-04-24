@@ -106,6 +106,18 @@ const generateDayPlan = async (day: Date) => {
     }
   }
 
+  const generateSingleMeal = async (day: Date, mt: string) => {
+    var newMeal;
+    
+    if(mt === "breakfast" || mt === "lunch" || mt === "snack" || mt === 'dinner'){
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], mt, generateMeal());
+    }
+
+    if(newMeal){
+      setMealPlan(newMeal);
+    }
+  }
+
   const generateMeal = () => {
       // Make it weighted based on score.
       var randNum = weightedRandomRecipe(recipes);
@@ -120,9 +132,10 @@ const generateDayPlan = async (day: Date) => {
 
   const generatePlan = () => {
     updateRecipeScore()
-            console.log("Generating day");
-            generateDayPlan(selectedDate);
+    console.log("Generating day");
+    generateDayPlan(selectedDate);
   }
+
   const deleteDayPlan = async (day: Date) => {
     let meal = await getMealPlan(userId, selectedDate);
     let bufferList: MealItem[] = [];
@@ -148,9 +161,10 @@ const generateDayPlan = async (day: Date) => {
       newMeal = await handleDeleteMeal(userId, day.toISOString().split("T")[0], "dinner", dinner[i].id);
     }
 
-    if(newMeal){
+    if (newMeal) {
       setMealPlan(newMeal);
     }
+   
   }
 
   const deletePlan = () => {
@@ -191,6 +205,9 @@ const generateDayPlan = async (day: Date) => {
             </ul>
             <IonButton color="success" onClick={() => { setSelectedMealType(mealType); setIsPopupOpen(true); }}>
               <IonIcon icon={addCircleOutline} /> Add Meal
+            </IonButton>
+            <IonButton color="success" onClick={() => {generateSingleMeal(selectedDate, mealType); }}>
+              <IonIcon icon={addCircleOutline} /> Generate Meal
             </IonButton>
           </div>
         ))}
