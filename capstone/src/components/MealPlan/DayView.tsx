@@ -211,6 +211,15 @@ const generateDayPlan = async (day: Date) => {
             </IonButton>
           </div>
         ))}
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
       </div>
 
       {isPopupOpen && (

@@ -82,7 +82,7 @@ const MealCalendar: React.FC = () => {
   };
   
   return (
-    <><div className="spacer"></div>
+      <><div id="spacer"></div>
       <div className="meal-calendar-container">
         <div className="calendar-title">Meal Plan</div>
 
@@ -103,7 +103,7 @@ const MealCalendar: React.FC = () => {
           <p>Loading meal plan...</p>
         )}
       </div>
-    </>
+      </>
   );
 };
 
