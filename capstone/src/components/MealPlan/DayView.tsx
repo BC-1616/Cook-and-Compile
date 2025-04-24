@@ -154,7 +154,7 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
                 ))}
             </div>
 
-            <button onClick={generateShoppingList} className="shopping-button">Generate Shopping List</button>
+            <button onClick={generateShoppingList} className="shopping-button">Shopping List</button>
 
             {isPopupOpen && (
                 <MealSelector 
