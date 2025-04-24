@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../firebase_setup/firebase";
 import { getMealPlan } from "../../handles/handleMealPlan";
-import { MealPlan, MealItem, MealItem } from "../../types/mealTypes";
+import { MealPlan, MealItem} from "../../types/mealTypes";
 import "../../Styles/MealPlan/WeekView.css";
 
 interface WeeklyViewProps {
@@ -27,43 +27,30 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
 
     useEffect(() => {
         const fetchWeeklyMealPlan = async () => {
-            if (!userId) return;
-            const mealPlanData = [];
-
             if (!userId || !selectedWeek) return;
-            let mealPlanData: { date: Date; meals: MealPlan["meals"] }[] = [];
-
+    
+            const mealPlanData: { date: Date; meals: MealPlan["meals"] }[] = []; // Declare once
+    
             const startOfWeek = getSundayOfWeek(selectedWeek); // Get the Sunday of the selected week to correctly set the order of the week
-
+    
             for (let i = 0; i < 7; i++) {
-                const date = new Date(selectedWeek);
-                date.setDate(selectedWeek.getDate() + i);
-                const data = await getMealPlan(userId, date);
-
-                mealPlanData.push({
-                    date: date.toISOString().split("T")[0],
-                    meals: data?.meals ?? { 
-                        breakfast: [], lunch: [], snack: [], dinner: [] 
-                    }
                 const date = new Date(startOfWeek);
                 date.setDate(startOfWeek.getDate() + i);
-
+    
                 // Convert date to the device's local timezone
                 const localFormattedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-                
+    
                 const data = await getMealPlan(userId, localFormattedDate);
-
-                mealPlanData.push({ 
-                    date: localFormattedDate, 
-                    meals: data?.meals ?? { breakfast: [], lunch: [], snack: [], dinner: [] }
+    
+                mealPlanData.push({
+                    date: localFormattedDate,
+                    meals: data?.meals ?? { breakfast: [], lunch: [], snack: [], dinner: [] },
                 });
             }
-
-
+    
             setWeeklyMealPlans(mealPlanData);
         };
-
-
+    
         fetchWeeklyMealPlan();
     }, [selectedWeek, userId]);
 
