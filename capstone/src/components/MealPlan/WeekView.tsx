@@ -10,13 +10,12 @@ interface WeeklyViewProps {
     userId: string;
 }
 
-const mealOrder: Array<keyof MealPlan["meals"]> = ["breakfast", "lunch", "snack", "dinner"];
-
 const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
     const [weeklyMealPlans, setWeeklyMealPlans] = useState<{ date: Date; meals: MealPlan["meals"] }[]>([]);
     const [isShoppingListOpen, setIsShoppingListOpen] = useState(false);
     const [shoppingList, setShoppingList] = useState<string[]>([]);
 
+    const mealOrder: Array<keyof MealPlan["meals"]> = ["breakfast", "lunch", "snack", "dinner"];
     // Function to get the Sunday of the week for the selected date. Ensures the week starts on Sunday and does not make today the start of the week.
     const getSundayOfWeek = (date: Date) => {
         const today = date.getDay(); 
@@ -163,22 +162,22 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
                 </div>
             </div>
 
-            <button onClick={generateWeeklyShoppingList} className="shopping-button">
-                Shopping List
-            </button>
+        <button onClick={generateWeeklyShoppingList} className="shopping-button">
+            Shopping List
+        </button>
 
-            {isShoppingListOpen && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h3>Weekly Shopping List</h3>
-                        <ul>
-                            {shoppingList.map((ingredient, index) => (
-                                <li key={index}>{ingredient}</li>
-                            ))}
-                        </ul>
-                        <button onClick={() => setIsShoppingListOpen(false)} className="close-button">
-                            Close
-                        </button>
+        {isShoppingListOpen && (
+            <div className="modal">
+                <div className="modal-content">
+                    <h3>Weekly Shopping List</h3>
+                    <ul>
+                        {shoppingList.map((ingredient, index) => (
+                            <li key={index}>{ingredient}</li>
+                        ))}
+                    </ul>
+                    <button onClick={() => setIsShoppingListOpen(false)} className="close-button">
+                        Close
+                    </button>
                     </div>
                 </div>
             )}

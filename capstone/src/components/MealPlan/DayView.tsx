@@ -24,8 +24,8 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
   const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedMealType, setSelectedMealType] = useState<keyof MealPlan["meals"] | null>(null);
-    const [isShoppingListOpen, setIsShoppingListOpen] = useState(false);
-    const [shoppingList, setShoppingList] = useState<string[]>([]);
+  const [isShoppingListOpen, setIsShoppingListOpen] = useState(false);
+  const [shoppingList, setShoppingList] = useState<string[]>([]);
 
   useEffect(() => {
     console.log("Fetching meal plan for:", localDate.toDateString());
@@ -59,27 +59,41 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
     setIsPopupOpen(false);
   };
 
-    const handleDelete = async (mealType: keyof MealPlan["meals"], mealId: string) => {
-        const updatedMealPlan = await handleDeleteMeal(userId, selectedDate.toISOString().split("T")[0], mealType, mealId);
-        if (updatedMealPlan) setMealPlan(updatedMealPlan);
-    };
+  const handleDelete = async (mealType: keyof MealPlan["meals"], mealId: string) => {
+    const formattedDateStr = localDate.toISOString().split("T")[0];
+    const updatedPlan = await handleDeleteMeal(userId, formattedDateStr, mealType, mealId);
 
-    const fetchRecipe = async (userId: string, recipeId: string) => {
-        try {
-            const recipeRef = doc(firestore, `users/${userId}/recipes`, recipeId);
-            const recipe = await getDoc(recipeRef);
-    
-            if (!recipe.exists()) {
-                console.error(`No recipe found for ID: ${recipeId}`);
-                return { ingredients: {} };
-            }
-    
-            return recipe.data();
-        } catch (error) {
-            console.error(`Failed to fetch recipe details for ID: ${recipeId}`, error);
-            return { ingredients: {} };
-        }
-    };
+    if (updatedPlan) {
+      setMealPlan(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          meals: {
+            ...prev.meals,
+            [mealType]: prev.meals[mealType]?.filter(meal => meal.id !== mealId) || []
+          },
+          lastEdited: prev.lastEdited ?? ""
+        };
+      });
+    }
+  };
+
+  const fetchRecipe = async (userId: string, recipeId: string) => {
+      try {
+          const recipeRef = doc(firestore, `users/${userId}/recipes`, recipeId);
+          const recipe = await getDoc(recipeRef);
+  
+          if (!recipe.exists()) {
+              console.error(`No recipe found for ID: ${recipeId}`);
+              return { ingredients: {} };
+          }
+  
+          return recipe.data();
+      } catch (error) {
+          console.error(`Failed to fetch recipe details for ID: ${recipeId}`, error);
+          return { ingredients: {} };
+      }
+  };
 
     const generateShoppingList = async () => {
         if (!mealPlan) return;
@@ -186,7 +200,7 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
         ))}
       </div>
 
-            <button onClick={generateShoppingList} className="shopping-button">Shopping List</button>
+      <button onClick={generateShoppingList} className="shopping-button">Shopping List</button>
 
       {isPopupOpen && (
         <MealSelector
@@ -195,19 +209,19 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
         />
       )}
 
-            {isShoppingListOpen && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h3>Shopping List for {selectedDate.toDateString()}</h3>
-                        <ul>
-                            {shoppingList.map((ingredient, index) => (
-                                <li key={index}>{ingredient}</li>
-                            ))}
-                        </ul>
-                        <button onClick={() => setIsShoppingListOpen(false)} className="close-button">Close</button>
-                    </div>
-                </div>
-            )}
+      {isShoppingListOpen && (
+          <div className="modal">
+              <div className="modal-content">
+                  <h3>Shopping List for {selectedDate.toDateString()}</h3>
+                  <ul>
+                      {shoppingList.map((ingredient, index) => (
+                          <li key={index}>{ingredient}</li>
+                      ))}
+                  </ul>
+                  <button onClick={() => setIsShoppingListOpen(false)} className="close-button">Close</button>
+              </div>
+          </div>
+      )}
     </div>
   );
 };
