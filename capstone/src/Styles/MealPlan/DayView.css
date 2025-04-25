@@ -8,6 +8,16 @@
     }
 }
 
+.day-button-row{
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    gap: 12px;
+    width: 35%;
+    margin: 0 auto; 
+    padding: 0 10px; 
+}
+
 .day-view-container {
     text-align: center; 
     padding: 20px;
@@ -29,7 +39,7 @@
     overflow-y: auto; /* Enables vertical scrolling */
     max-height: 450px; /* Adjusts height to trigger scrolling */
     padding-right: 10px;
-    padding-bottom: 20px; /* Adds space for the bottom navbar */
+    padding-bottom: 115px; /* Adds space for the bottom navbar */
 }
 
 .meal-grid::-webkit-scrollbar {
@@ -86,13 +96,13 @@ button:hover {
     display: flex;
     align-items: center; /* Centers the icon and text vertically */
     justify-content: space-between;
-  }
+}
   
-  .meal-name {
+.meal-name {
     flex-grow: 1; /* Allows the name to take up available space */
     text-align: left; 
     padding-right: 10px; /* Adds space between name and icon */
-  }
+}
 
 .consistent-icon-btn {
     display: flex;

@@ -22,6 +22,7 @@
     max-height: 450px; 
     padding-right: 10px;
     display: flex;
+    padding-bottom: 50px; /* Adjusts height to trigger scrolling */
 }
 
 .week-grid {
@@ -78,8 +79,6 @@
         flex-direction: column; 
         gap: 10px;
         width: 90%;
-    }
-    .week-scroll-container {
-        padding-bottom: 120px; /* nav overlap fix*/
+        padding-bottom: 50px;
     }
 }
