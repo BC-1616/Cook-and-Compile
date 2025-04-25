@@ -3,7 +3,7 @@ import { firestore } from "../firebase_setup/firebase";
 import { getAuth } from 'firebase/auth';
 import { Recipe } from "../types/mealTypes";
 
-import {includesStringInArray} from "./handleAllergy";
+import {checkIfAllergic, includesStringInArray} from "./handleAllergy";
 
 export const updateRecipeScore = async () => {
   try{
@@ -47,9 +47,32 @@ export const updateRecipeScore = async () => {
   }
 }
 
-export const weightedRandomRecipe = (recipeList: Recipe[]) => {
+export const weightedRandomRecipe = async (recipeList: Recipe[]) => {
+  const user = getAuth().currentUser;
+  if (!user) {
+    console.error('No user is authenticated.');
+    return;
+  }
+
+    
+  const allergyCollectionRef = collection(firestore, 'users', user.uid, 'allergies');
+  const allergyQuery = await getDocs(allergyCollectionRef);
+
+  const allergyData = allergyQuery.docs.map((doc) => {
+      const data = doc.data();
+      return { ...data};
+  });
+
+  let allergyList = allergyData[0].allergies;
+
+  let badRecipes = 0;
+
   var weightList: number[] = [];
   for(let j=0; j<recipeList.length; j++){
+    if(await checkIfAllergic(recipeList[j].ingredients, allergyList)){
+      console.log("Allergic TO RANDOM");
+      continue; // If they're allergic, this recipe won't be a possibility.
+    }
     for(let i=0; i<=recipeList[j].score; i++){
       weightList.push(j); // values will be: indexOfRecipe*scoreOfRecipe + 1 for each recipe
     }

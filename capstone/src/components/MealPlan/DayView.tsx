@@ -89,16 +89,16 @@ const generateDayPlan = async (day: Date) => {
 
     console.log("MAKING MEAL FOR DAY: ", day);
     if(mp?.meals.breakfast.length == 0){
-      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "breakfast", generateMeal());
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "breakfast", await generateMeal());
     }
     if(mp?.meals.lunch.length == 0){
-      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "lunch", generateMeal());
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "lunch", await generateMeal());
     }
     if(mp?.meals.snack.length == 0){
-      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "snack", generateMeal());
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "snack", await generateMeal());
     }
     if(mp?.meals.dinner.length == 0){
-      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "dinner", generateMeal());
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "dinner", await generateMeal());
     }
 
     if(newMeal){
@@ -110,7 +110,7 @@ const generateDayPlan = async (day: Date) => {
     var newMeal;
     
     if(mt === "breakfast" || mt === "lunch" || mt === "snack" || mt === 'dinner'){
-      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], mt, generateMeal());
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], mt, await generateMeal());
     }
 
     if(newMeal){
@@ -118,10 +118,14 @@ const generateDayPlan = async (day: Date) => {
     }
   }
 
-  const generateMeal = () => {
+  const generateMeal = async () => {
       // Make it weighted based on score.
-      var randNum = weightedRandomRecipe(recipes);
+      const rNum = await weightedRandomRecipe(recipes);
+      var randNum;
+
+      rNum ? randNum = rNum : randNum = 0; // Shouldn't ever happen, is a fine placeholder.  
       console.log("RANDOM NUMBER: ", randNum);
+
       var randMeal: MealItem = {
           id: recipes[randNum].id,
           name: recipes[randNum].name,
@@ -133,11 +137,11 @@ const generateDayPlan = async (day: Date) => {
   const generatePlan = () => {
     updateRecipeScore()
     console.log("Generating day");
-    generateDayPlan(selectedDate);
+    generateDayPlan(localDate);
   }
 
   const deleteDayPlan = async (day: Date) => {
-    let meal = await getMealPlan(userId, selectedDate);
+    let meal = await getMealPlan(userId, day);
     let bufferList: MealItem[] = [];
     // Hold the lists here for easier access
     let breakfast = meal?.meals.breakfast ? meal?.meals.breakfast : bufferList;
@@ -169,7 +173,7 @@ const generateDayPlan = async (day: Date) => {
 
   const deletePlan = () => {
     console.log("Deleting Day");
-    deleteDayPlan(selectedDate);
+    deleteDayPlan(localDate);
   }
 
 
