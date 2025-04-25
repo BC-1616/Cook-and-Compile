@@ -1,7 +1,3 @@
-/* Web page styles for the Meal Calendar component */
-@media (min-width: 769px) {
-    
-}
 @media screen and (max-width: 768px) {
     .meal-grid {
         display: flex !important;

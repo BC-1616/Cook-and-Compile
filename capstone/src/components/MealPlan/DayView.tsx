@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { IonIcon, IonButton } from "@ionic/react";
 import { removeCircleOutline } from "ionicons/icons";
 import { addCircleOutline } from "ionicons/icons";
+import {weightedRandomRecipe, updateRecipeScore} from '../../handles/handleRecipes';
+import { handleFetchRecipes } from '../../handles/handleFetchRecipes';
 import { getMealPlan, handleAddMeal, handleDeleteMeal } from "../../handles/handleMealPlan";
-import { MealPlan, MealItem } from "../../types/mealTypes";
+import { MealPlan, MealItem, Recipe } from "../../types/mealTypes";
 import "../../Styles/MealPlan/DayView.css";
 import MealSelector from "./MealSelector";
 
@@ -21,6 +23,7 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
   const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedMealType, setSelectedMealType] = useState<keyof MealPlan["meals"] | null>(null);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   useEffect(() => {
     console.log("Fetching meal plan for:", localDate.toDateString());
@@ -34,7 +37,15 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
         console.error("Error fetching meal plan:", error);
       }
     };
+    const fetchRecipes = async () => {
+        const response = await handleFetchRecipes();
+        setRecipes(response.map(recipe => ({
+            ...recipe,
+            ingredients: Object.values(recipe.ingredients), // Convert object to array
+        })));
+    };
 
+    fetchRecipes();
     fetchMealPlan();
   }, [selectedDate, userId]); 
 
@@ -72,11 +83,105 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
       });
     }
   };
+const generateDayPlan = async (day: Date) => {
+    const mp = await getMealPlan(userId, day);
+    var newMeal;
+
+    console.log("MAKING MEAL FOR DAY: ", day);
+    if(mp?.meals.breakfast.length == 0){
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "breakfast", await generateMeal());
+    }
+    if(mp?.meals.lunch.length == 0){
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "lunch", await generateMeal());
+    }
+    if(mp?.meals.snack.length == 0){
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "snack", await generateMeal());
+    }
+    if(mp?.meals.dinner.length == 0){
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], "dinner", await generateMeal());
+    }
+
+    if(newMeal){
+      setMealPlan(newMeal);
+    }
+  }
+
+  const generateSingleMeal = async (day: Date, mt: string) => {
+    var newMeal;
+    
+    if(mt === "breakfast" || mt === "lunch" || mt === "snack" || mt === 'dinner'){
+      newMeal = await handleAddMeal(userId, day.toISOString().split("T")[0], mt, await generateMeal());
+    }
+
+    if(newMeal){
+      setMealPlan(newMeal);
+    }
+  }
+
+  const generateMeal = async () => {
+      // Make it weighted based on score.
+      const rNum = await weightedRandomRecipe(recipes);
+      var randNum;
+
+      rNum ? randNum = rNum : randNum = 0; // Shouldn't ever happen, is a fine placeholder.  
+      console.log("RANDOM NUMBER: ", randNum);
+
+      var randMeal: MealItem = {
+          id: recipes[randNum].id,
+          name: recipes[randNum].name,
+          isRecipe: true,
+      }
+      return randMeal;
+  }
+
+  const generatePlan = () => {
+    updateRecipeScore()
+    console.log("Generating day");
+    generateDayPlan(localDate);
+  }
+
+  const deleteDayPlan = async (day: Date) => {
+    let meal = await getMealPlan(userId, day);
+    let bufferList: MealItem[] = [];
+    // Hold the lists here for easier access
+    let breakfast = meal?.meals.breakfast ? meal?.meals.breakfast : bufferList;
+    let lunch = meal?.meals.lunch ? meal?.meals.lunch : bufferList;
+    let snack = meal?.meals.snack ? meal?.meals.snack : bufferList;
+    let dinner = meal?.meals.dinner ? meal?.meals.dinner : bufferList;
+
+    var newMeal;
+
+    // We want to delete all recipes for that meal
+    for(let i=0; i<breakfast.length; i++){
+      newMeal = await handleDeleteMeal(userId, day.toISOString().split("T")[0], "breakfast", breakfast[i].id);
+    }
+    for(let i=0; i<lunch.length; i++){
+      newMeal = await handleDeleteMeal(userId, day.toISOString().split("T")[0], "lunch", lunch[i].id);
+    }
+    for(let i=0; i<snack.length; i++){
+      newMeal = await handleDeleteMeal(userId, day.toISOString().split("T")[0], "snack", snack[i].id);
+    }
+    for(let i=0; i<dinner.length; i++){
+      newMeal = await handleDeleteMeal(userId, day.toISOString().split("T")[0], "dinner", dinner[i].id);
+    }
+
+    if (newMeal) {
+      setMealPlan(newMeal);
+    }
+   
+  }
+
+  const deletePlan = () => {
+    console.log("Deleting Day");
+    deleteDayPlan(localDate);
+  }
+
 
   return (
     <div className="day-view-container">
+      <button id="generation-button" onClick={generatePlan}>Generate Meal Plan</button>
+      <button id="deletion-button" onClick={deletePlan} color="danger">Delete Meal Plan</button>
       <h2 className="day-title">{localDate.toDateString()}</h2>
-
       <div className="meal-grid">
         {mealOrder.map((mealType) => (
           <div key={mealType} className="meal-column">
@@ -105,8 +210,20 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
             <IonButton color="success" onClick={() => { setSelectedMealType(mealType); setIsPopupOpen(true); }}>
               <IonIcon icon={addCircleOutline} /> Add Meal
             </IonButton>
+            <IonButton color="success" onClick={() => {generateSingleMeal(selectedDate, mealType); }}>
+              <IonIcon icon={addCircleOutline} /> Generate Meal
+            </IonButton>
           </div>
         ))}
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
+        <div id="bottom-spacer"></div>
       </div>
 
       {isPopupOpen && (

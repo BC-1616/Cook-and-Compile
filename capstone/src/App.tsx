@@ -3,7 +3,6 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import IngredientPage from './components/IngredientList';
 import BlankPage from './components/BlankPage';
-import ModifyRecipes from './components/RecipeModifier';
 import Recipe from './components/Recipe';
 import MealCalendar from './components/MealPlan/MealPlan';
 import LandingPage from './components/LandingPage';

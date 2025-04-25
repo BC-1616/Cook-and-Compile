@@ -18,12 +18,12 @@
 /* Web Page Styles */
 @media (min-width: 769px) {
     #title {
-    display: flex;
-    align-items: flex-end; 
-    height: 80px; 
-    padding: 10px;
-    /* margin adjustment to fix navbar overlap issue */
-    margin-top: 20px;
+        display: flex;
+        align-items: flex-end; 
+        height: 80px; 
+        padding: 10px;
+        /* margin adjustment to fix navbar overlap issue */
+        margin-top: 20px;
     }
 }
 /* Mobile Page Styles */
@@ -32,6 +32,25 @@
         /* margin adjustment to fix navbar overlap issue */
         margin-bottom: 70px;
     }
+    /* margin adjustment to fix navbar overlap issue */
+    #recipe_modifier_popup, #recipe_modifier_selection {
+        margin-bottom: 75px;
+    }
+    .message {
+        margin-bottom: 70px;
+    }
+    .recipe-dropdown {
+        margin-bottom: 50px;
+    }
+    /* spacer for mobile so that the navbar does not overlap content*/
+    .spacer {
+        height: 50px;
+    }
+    /* Aligned the recipe buttons to the center for mobile. */
+    .recipe_button, .recipe_button_allergic{
+        display: block;
+        margin: auto;
+    }
 }
 
 /* Allows us to customize the size of buttons for the recipes.
@@ -39,7 +58,7 @@
    Border radius can be adjusted to make buttons rounder
 */
 .recipe_button_allergic {
-    width: 250px !important;
+    width: 225px !important;
     height: 200px !important;
     border-radius: 60px !important;
     box-shadow: 0 5px 5px 2px red;
@@ -51,11 +70,12 @@
 .recipe_grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 100px; 
+    gap: 50px; 
     padding: 10px;
   }
 .recipe_button {
-    width: 250px !important;
+    max-width: 100%; /* This ensures the image won't go off the screen. */
+    width: 225px !important;
     height: 200px !important;
     border-radius: 60px !important; 
     background-size: cover;
@@ -68,8 +88,6 @@
 }
 
 .recipe_button, .recipe_button_allergic{
-    margin-top: 1em;
-    margin-bottom: 1em;
     color: black;
 }
 
@@ -78,3 +96,29 @@
     border-radius: 20px;
     box-shadow: 0 0 20px white;
 }
+
+.message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    text-align: center;
+}
+#recipe_modifier_popup, #recipe_modifier_selection {
+    margin-left: .5em;
+    margin-right: .5em;
+}
+
+/* consistent button styling */
+.button {
+    padding: 0.5em; 
+    font-size: 1em;
+    width: 100%;
+    height: 50px;
+}
+
+.page-container {
+    padding: 0.5em;
+} 

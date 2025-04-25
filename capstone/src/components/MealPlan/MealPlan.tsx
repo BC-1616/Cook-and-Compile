@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from "react";
 import WeekView from "./WeekView";
 import DayView from "./DayView";
-import { getMealPlan, initializeMealPlanCollection } from "../../handles/handleMealPlan";
+import { getMealPlan, handleDeleteMeal, initializeMealPlanCollection, handleAddMeal } from "../../handles/handleMealPlan";
 import { getAuth } from "firebase/auth";
 import "../../Styles/MealPlan/MealCalendar.css";
+import { MealPlan, MealItem, Recipe } from "../../types/mealTypes";
+import { handleFetchRecipes } from '../../handles/handleFetchRecipes';
 
 const MealCalendar: React.FC = () => {
   console.log("MealCalendar is rendering!");
@@ -12,6 +14,7 @@ const MealCalendar: React.FC = () => {
   const [view, setView] = useState<"daily" | "weekly">("daily");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userId, setUserId] = useState<string>("");
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   // flag for whether the meal plan data for the selected date is loaded.
   const [mealPlanLoaded, setMealPlanLoaded] = useState(false);
 
@@ -26,31 +29,38 @@ const MealCalendar: React.FC = () => {
     return unsubscribe;
   }, []);
 
+  const fetchAndInitializeMealPlan = async () => {
+    if (!userId) {
+      console.log("No userId available, no meal plan to be fetched.");
+      setMealPlanLoaded(true);
+      return;
+    }
+    console.log("Fetching meal plan for date:", selectedDate.toDateString());
+    try {
+      let data = await getMealPlan(userId, selectedDate);
+      console.log("Fetched meal plan data:", data);
+      // If the meal plan document does not exist, initialize it.
+      if (!data) {
+        await initializeMealPlanCollection(userId);
+        data = await getMealPlan(userId, selectedDate);
+        console.log("Initialized and re-fetched meal plan:", data);
+      }
+      setMealPlanLoaded(true);
+    } catch (error) {
+      console.error("Error fetching meal plan:", error);
+      setMealPlanLoaded(true);
+    }
+  };
   // When the selected date or userId changes, fetch/initialize the meal plan.
   useEffect(() => {
-    const fetchAndInitializeMealPlan = async () => {
-      if (!userId) {
-        console.log("No userId available, no meal plan to be fetched.");
-        setMealPlanLoaded(true);
-        return;
-      }
-      console.log("Fetching meal plan for date:", selectedDate.toDateString());
-      try {
-        let data = await getMealPlan(userId, selectedDate);
-        console.log("Fetched meal plan data:", data);
-        // If the meal plan document does not exist, initialize it.
-        if (!data) {
-          await initializeMealPlanCollection(userId);
-          data = await getMealPlan(userId, selectedDate);
-          console.log("Initialized and re-fetched meal plan:", data);
-        }
-        setMealPlanLoaded(true);
-      } catch (error) {
-        console.error("Error fetching meal plan:", error);
-        setMealPlanLoaded(true);
-      }
+    const fetchRecipes = async () => {
+        const response = await handleFetchRecipes();
+        setRecipes(response.map(recipe => ({
+            ...recipe,
+            ingredients: Object.values(recipe.ingredients), // Convert object to array
+        })));
     };
-
+    fetchRecipes();
     fetchAndInitializeMealPlan();
   }, [selectedDate, userId]);
 
@@ -70,9 +80,9 @@ const MealCalendar: React.FC = () => {
     setSelectedDate(newDate);
     setMealPlanLoaded(false);
   };
-
+  
   return (
-    <><div id="spacer"></div>
+      <><div id="spacer"></div>
       <div className="meal-calendar-container">
         <div className="calendar-title">Meal Plan</div>
 
@@ -93,7 +103,7 @@ const MealCalendar: React.FC = () => {
           <p>Loading meal plan...</p>
         )}
       </div>
-    </>
+      </>
   );
 };
 

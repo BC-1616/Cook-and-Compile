@@ -1,30 +1,83 @@
-import { collection, getDocs } from "@firebase/firestore";
+import { collection, getDocs, getDoc, updateDoc, doc} from "@firebase/firestore";
 import { firestore } from "../firebase_setup/firebase";
+import { getAuth } from 'firebase/auth';
+import { Recipe } from "../types/mealTypes";
 
-export const handleRecipe = async () => {
-  try {
-    const recipesCollection = collection(firestore, "recipes");
-    const querySnapshot = await getDocs(recipesCollection);
+import {checkIfAllergic, includesStringInArray} from "./handleAllergy";
 
-    const recipesData = querySnapshot.docs.map((doc) => {
-      const data = doc.data();
+export const updateRecipeScore = async () => {
+  try{
+    const user = getAuth().currentUser;    
+    if (!user) {
+      console.error('No user is authenticated.');
+      return;
+    }
 
-      return {
-        id: doc.id,
-        name: data.name || "Unnamed Recipe",
-        ingredients: data.ingredients || [],
-        instructions: data.instructions || "No instructions provided",
-        image: data.image || "No Imgae provided",
-        // We will want the recipe tag beging returned here as well.
-        tags: data.tags || "No recipe tags",
-        userAllergic: false,
-      };
+    const allergyCollectionRef = collection(firestore, 'users', user.uid, 'allergies');
+    const allergyQuery = await getDocs(allergyCollectionRef);
+
+    const allergyData = allergyQuery.docs.map((doc) => {
+        const data = doc.data();
+        return { ...data};
     });
 
-    //console.log("Fetched recipe:", recipesData);
-    return recipesData;
-  } catch (error) {
-    console.error("Failed to fetch recipes:", error);
-    throw new Error("Failed to fetch recipes");
+    const recipesCollection = collection(firestore, "users", user.uid, "recipes");
+    const querySnapshot = await getDocs(recipesCollection);
+
+    querySnapshot.docs.map((recipeDoc) => {
+      var currentScore = 0;
+      // Look at each recipe for each document and give the score
+      const data = recipeDoc.data();
+      Object.entries(data.ingredients).map(([ingredientName, amt], idx) => {
+        if(allergyData != undefined){
+          if(includesStringInArray(allergyData[1].pref_list, ingredientName)){
+            currentScore++;
+            console.log("Modifying score");
+          }
+        }
+      })
+      const docRef = doc(firestore, "users", user.uid, "recipes", recipeDoc.id);
+      updateDoc(docRef, {
+        score: currentScore,
+      })
+    })
+
+  }catch{
+    console.error("failed to update recipe score");
   }
-};
+}
+
+export const weightedRandomRecipe = async (recipeList: Recipe[]) => {
+  const user = getAuth().currentUser;
+  if (!user) {
+    console.error('No user is authenticated.');
+    return;
+  }
+
+    
+  const allergyCollectionRef = collection(firestore, 'users', user.uid, 'allergies');
+  const allergyQuery = await getDocs(allergyCollectionRef);
+
+  const allergyData = allergyQuery.docs.map((doc) => {
+      const data = doc.data();
+      return { ...data};
+  });
+
+  let allergyList = allergyData[0].allergies;
+
+  let badRecipes = 0;
+
+  var weightList: number[] = [];
+  for(let j=0; j<recipeList.length; j++){
+    if(await checkIfAllergic(recipeList[j].ingredients, allergyList)){
+      console.log("Allergic TO RANDOM");
+      continue; // If they're allergic, this recipe won't be a possibility.
+    }
+    for(let i=0; i<=recipeList[j].score; i++){
+      weightList.push(j); // values will be: indexOfRecipe*scoreOfRecipe + 1 for each recipe
+    }
+  }
+
+  var randIDX = Math.floor(Math.random() * weightList.length);
+  return weightList[randIDX];
+}
