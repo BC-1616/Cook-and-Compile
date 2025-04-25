@@ -19,18 +19,11 @@ describe('Checks if shopping list is working.', () => {
 
         cy.contains('Close').click();
         
-        // if baked potato soup is already added it will no longer get stuck
-        cy.contains('Baked Potato Soup').then(($meal) => {
-            if ($meal.length === 0) {
-                cy.contains("Add Meal").click();
-                cy.wait(2000);
-                cy.contains('Baked Potato Soup').click();
-            }
-        });
+        cy.contains('Generate Meal Plan').click();
+        cy.wait(3000);
 
         cy.contains('Shopping List').click();
         //this will pass even if there is no items in the shopping list 
         cy.contains('Salt:').should('be.visible');
-
     });
 });
