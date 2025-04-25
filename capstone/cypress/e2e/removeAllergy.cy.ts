@@ -12,12 +12,11 @@ describe('Remove individual allergy from the list', () => {
         cy.contains('Export User Data')
         cy.visit('/IngredientPage');
         cy.wait(5000);
-        cy.get('input[placeholder="Enter Allergy"]').type('Allergy Test', {force:true});
-        cy.wait(1000);
+        cy.get('input[placeholder="Enter Allergy"]').type('Allergy Test');
 
-        cy.contains('Add Allergy').click({force:true});
-        cy.contains('Add Allergy').click({force:true});
-        cy.wait(500);
+        cy.contains('Add Allergy').click();
+        cy.contains('Add Allergy').click();
+        cy.wait(1500);
         cy.contains('Allergy added').should('be.visible');
         cy.wait(1000);
 

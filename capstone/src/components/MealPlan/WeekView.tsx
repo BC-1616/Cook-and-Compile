@@ -3,6 +3,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../firebase_setup/firebase";
 import { getMealPlan } from "../../handles/handleMealPlan";
 import { MealPlan, MealItem} from "../../types/mealTypes";
+import {updateRecipeScore} from "../../handles/handleRecipes";
 import "../../Styles/MealPlan/WeekView.css";
 
 interface WeeklyViewProps {
@@ -46,7 +47,8 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
                     meals: data?.meals ?? { breakfast: [], lunch: [], snack: [], dinner: [] },
                 });
             }
-    
+        
+            await updateRecipeScore()
             setWeeklyMealPlans(mealPlanData);
         };
     
@@ -83,9 +85,9 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
                                 Object.entries(recipeDetails.ingredients).forEach(([ingredient, quantity]) => {
                                     // combine shared ingredients
                                     if (ingredientMap[ingredient]) {
-                                        ingredientMap[ingredient] = combine(ingredientMap[ingredient], quantity);
+                                        ingredientMap[ingredient] = combine(ingredientMap[ingredient], quantity as string | number);
                                     } else {
-                                        ingredientMap[ingredient] = quantity;
+                                        ingredientMap[ingredient] = quantity as string | number;
                                     }
                                 });
                             }

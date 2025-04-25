@@ -105,6 +105,9 @@ export const handleDeleteMeal = async (
     mealType: keyof MealPlan["meals"],
     mealId: string
 ): Promise<MealPlan | null> => {
+    if(mealId === ""){
+        return null
+    }
     return updateMealPlan(userId, date, (prevMeals) => ({
         ...prevMeals,
         lastEdited: new Date().toISOString(), // Update timestamp
