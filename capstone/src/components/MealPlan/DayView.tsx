@@ -270,8 +270,11 @@ const generateDayPlan = async (day: Date) => {
 
   return (
     <div className="day-view-container">
-      <button id="generation-button" onClick={generatePlan}>Generate Meal Plan</button>
-      <button id="deletion-button" onClick={deletePlan} color="danger">Delete Meal Plan</button>
+      <div className = "day-button-row">
+        <button id="generation-button" onClick={generatePlan}>Generate Meal Plan</button>
+        <button onClick={generateShoppingList} className="shopping-button">Shopping List</button>
+        <button id="deletion-button" onClick={deletePlan} color="danger">Delete Meal Plan</button>
+      </div>
       <h2 className="day-title">{localDate.toDateString()}</h2>
       <div className="meal-grid">
         {mealOrder.map((mealType) => (
@@ -306,18 +309,7 @@ const generateDayPlan = async (day: Date) => {
             </IonButton>
           </div>
         ))}
-        <div id="bottom-spacer"></div>
-        <div id="bottom-spacer"></div>
-        <div id="bottom-spacer"></div>
-        <div id="bottom-spacer"></div>
-        <div id="bottom-spacer"></div>
-        <div id="bottom-spacer"></div>
-        <div id="bottom-spacer"></div>
-        <div id="bottom-spacer"></div>
-        <div id="bottom-spacer"></div>
       </div>
-
-      <button onClick={generateShoppingList} className="shopping-button">Shopping List</button>
 
       {isPopupOpen && (
         <MealSelector

@@ -140,7 +140,14 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
 
     return (
         <div className="weekly-view-container">
+
+            <button onClick={generateWeeklyShoppingList} className="shopping-button">
+                Shopping List
+            </button>
+
+
             <h2 className="week-title">Weekly Meal Plan</h2>
+            
 
             <div className="week-scroll-container">
                 <div className="week-grid">
@@ -164,25 +171,21 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ selectedWeek, userId }) => {
                 </div>
             </div>
 
-        <button onClick={generateWeeklyShoppingList} className="shopping-button">
-            Shopping List
-        </button>
-
-        {isShoppingListOpen && (
-            <div className="modal">
-                <div className="modal-content">
-                    <h3>Weekly Shopping List</h3>
-                    <ul>
-                        {shoppingList.map((ingredient, index) => (
-                            <li key={index}>{ingredient}</li>
-                        ))}
-                    </ul>
-                    <button onClick={() => setIsShoppingListOpen(false)} className="close-button">
-                        Close
-                    </button>
+            {isShoppingListOpen && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h3>Weekly Shopping List</h3>
+                        <ul>
+                            {shoppingList.map((ingredient, index) => (
+                                <li key={index}>{ingredient}</li>
+                            ))}
+                        </ul>
+                        <button onClick={() => setIsShoppingListOpen(false)} className="close-button">
+                            Close
+                        </button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
         </div>
     );
 };

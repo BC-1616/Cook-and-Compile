@@ -5,6 +5,10 @@
     }
 }
 
+#bottom-spacer {
+    height: 80px;
+}
+
 .calendar-title {
     color: var(--ion-color-success);
     font-size: 1.5rem;
@@ -56,7 +60,6 @@
     border-radius: 8px;
     display: block;
     margin: auto;
-    margin-bottom: 1em;
 }
 
 #deletion-button{
