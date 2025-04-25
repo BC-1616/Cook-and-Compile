@@ -322,7 +322,7 @@ const generateDayPlan = async (day: Date) => {
           <div className="modal">
               <div className="modal-content">
                   <h3>Shopping List for {selectedDate.toDateString()}</h3>
-                  <ul>
+                  <ul className="shopping-list-parent">
                       {shoppingList.map((ingredient, index) => (
                           <li key={index}>{ingredient}</li>
                       ))}
