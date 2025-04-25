@@ -39,7 +39,7 @@
     overflow-y: auto; /* Enables vertical scrolling */
     max-height: 450px; /* Adjusts height to trigger scrolling */
     padding-right: 10px;
-    padding-bottom: 85px; /* Adds space for the bottom navbar */
+    padding-bottom: 115px; /* Adds space for the bottom navbar */
 }
 
 .meal-grid::-webkit-scrollbar {

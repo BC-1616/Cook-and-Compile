@@ -79,5 +79,6 @@
         flex-direction: column; 
         gap: 10px;
         width: 90%;
+        padding-bottom: 50px;
     }
 }
