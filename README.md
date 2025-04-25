@@ -45,6 +45,9 @@ Generate meal plan
 Delete meal plan
 - On the day view, you can use the button `Delete Meal Plan` to delete the plan for each meal of that specific day. You can also use the red button next to each meal to delete them individually as well.
 
+Shopping Lists
+- On either the day or the week view, you can view what your shopping list would be considering the recipes you have in your meal plan.
+
 ## Tech Stack 
 
 This app utilizes the following technologies:
