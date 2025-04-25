@@ -109,9 +109,9 @@ const DayView: React.FC<DayViewProps> = ({ selectedDate, userId }) => {
                             Object.entries(recipeDetails.ingredients).forEach(([ingredient, quantity]) => {
                                 // combine shared ingredients
                                 if (ingredientMap[ingredient]) {
-                                    ingredientMap[ingredient] = combine(ingredientMap[ingredient], quantity);
+                                    ingredientMap[ingredient] = combine(ingredientMap[ingredient], quantity as number);
                                 } else {
-                                    ingredientMap[ingredient] = quantity;
+                                    ingredientMap[ingredient] = quantity as number;
                                 }
                             });
                         }
